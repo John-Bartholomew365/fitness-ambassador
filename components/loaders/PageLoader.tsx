@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface PageLoaderProps {
   onComplete?: () => void;
@@ -37,34 +38,41 @@ export default function PageLoader({ onComplete }: PageLoaderProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center"
+      className="fixed inset-0 z-9999 bg-background flex flex-col items-center justify-center"
     >
       {/* Logo */}
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.4 }}
-        className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mb-8 shadow-xl"
+        className="relative w-32 h-32 mb-8"
       >
-        <span className="text-5xl font-bold text-primary-foreground">FA</span>
+        <Image
+          src="/fa-logo3.png"
+          alt="Fitness Ambassador Logo"
+          fill
+          sizes="128px"
+          className="object-contain"
+          priority
+        />
       </motion.div>
 
       {/* Progress Bar Container */}
-      <div className="w-64 h-3 bg-muted rounded-full overflow-hidden relative">
+      <div className="relative w-64 h-4 bg-muted rounded-full overflow-hidden">
         {/* Progress Bar */}
         <motion.div
           className="h-full bg-primary relative"
           initial={{ width: '0%' }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.1, ease: 'linear' }}
-        >
-          {/* Progress Text Inside Bar */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xs font-bold text-foreground">
-              {Math.round(progress)}%
-            </span>
-          </div>
-        </motion.div>
+        />
+        
+        {/* Progress Text - CENTERED OVER THE BAR */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-sm font-bold text-foreground z-10">
+            {Math.round(progress)}%
+          </span>
+        </div>
       </div>
     </motion.div>
   );

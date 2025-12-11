@@ -1,15 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Bebas_Neue, Poppins } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/layout/Navbar";
+import AppWrapper from "@/components/layout/AppWrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const bebasNeue = Bebas_Neue({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-bebas-neue",
+});
+
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -23,11 +32,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`
+          ${inter.variable}
+          ${bebasNeue.variable}
+          ${poppins.variable}
+          font-sans
+          antialiased
+          bg-background
+          text-foreground
+          min-h-screen
+        `}
       >
-        {children}
+        {/* Navbar is ALWAYS visible, outside AppWrapper */}
+        <Navbar />
+
+        {/* Only page content goes inside AppWrapper */}
+        <AppWrapper>
+          {children}
+        </AppWrapper>
       </body>
     </html>
   );
