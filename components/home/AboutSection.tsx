@@ -1,128 +1,124 @@
-import { motion } from 'framer-motion';
-import { Award, Users, Heart, Zap } from 'lucide-react';
-import { fadeUp, fadeLeft, fadeRight, staggerContainer, viewport } from '../../utils/animation';
+import { motion, useReducedMotion, Easing } from 'framer-motion';
+import { Award, Users, Calendar, BookOpen } from 'lucide-react';
 
-export default function AboutSection() {
-  const values = [
-    {
-      icon: Award,
-      title: 'Excellence',
-      description: '7+ years of certified fitness coaching experience',
+const AboutSection = () => {
+  const shouldReduceMotion = useReducedMotion();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0 : 0.1,
+      },
     },
-    {
-      icon: Users,
-      title: 'Community',
-      description: 'Building a vibrant fitness community across Nigeria',
+  };
+
+  const leftVariants = {
+    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : -60 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
     },
-    {
-      icon: Heart,
-      title: 'Passion',
-      description: 'Dedicated to transforming lives through wellness',
+  };
+
+  const rightVariants = {
+    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : 40 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
     },
-    {
-      icon: Zap,
-      title: 'Innovation',
-      description: 'Creating unique fitness experiences and events',
-    },
+  };
+
+  const achievements = [
+    { icon: Award, label: 'Certified Trainer', value: '7+ Years' },
+    { icon: Users, label: 'Clients Transformed', value: '500+' },
+    { icon: Calendar, label: 'Fitness Events', value: '10+' },
+    { icon: BookOpen, label: 'Published Author', value: 'Workout Compass' },
   ];
 
   return (
-    <section className="py-20 md:py-32 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Image Side */}
-          <motion.div
-            variants={fadeLeft}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="relative order-2 lg:order-1"
-          >
-            <div className="relative aspect-[4/5] max-w-md mx-auto">
-              {/* Decorative elements */}
-              <div className="absolute -top-6 -left-6 w-24 h-24 bg-secondary rounded-full opacity-30" />
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-accent rounded-full opacity-20" />
-              
-              {/* Placeholder for about image */}
-              <div className="relative bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl overflow-hidden border-4 border-border shadow-xl">
-                <div className="aspect-[4/5] flex items-center justify-center p-8">
-                  <div className="text-center space-y-6">
-                    <div className="w-48 h-48 bg-primary rounded-full flex items-center justify-center mx-auto shadow-2xl">
-                      <span className="text-8xl font-bold text-primary-foreground">FA</span>
-                    </div>
-                    <div>
-                      <p className="text-3xl font-bold text-foreground font-display mb-2">
-                        AJISAFE SULAIMAN
-                      </p>
-                      <p className="text-xl text-primary font-semibold">
-                        The Fitness Ambassador
-                      </p>
-                    </div>
+    <section className="section-padding bg-muted">
+      <div className="container-max">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+        >
+          {/* Left Content */}
+          <motion.div variants={leftVariants}>
+            <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+              About The Ambassador
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+              AJISAFE SULAIMAN
+            </h2>
+            <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+              Known as &quot;<b>The Fitness Ambassador</b>,&quot; I am a certified fitness coach with over 7 years of experience transforming lives through fitness. My mission is to make fitness accessible, enjoyable, and sustainable for everyone.
+            </p>
+            <p className="text-muted-foreground mb-8 leading-relaxed">
+              From organizing Nigeria&apos;s largest fitness events to authoring the comprehensive fitness guide &quot;<b>Workout Compass</b>,&quot; I&apos;ve dedicated my life to helping others discover the transformative power of exercise and healthy living.
+            </p>
+
+            {/* Achievement Grid */}
+            <div className="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 lg:w-auto w-[90%] mx-auto">
+              {achievements.map((item, index) => (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  viewport={{ once: true }}
+                  className="card-elevated flex items-start gap-4 hover:border-primary/20 transition-all"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <item.icon className="w-6 h-6 text-primary" />
                   </div>
+                  <div>
+                    <p className="font-display text-xl text-primary">{item.value}</p>
+                    <p className="text-sm text-muted-foreground">{item.label}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right Content - Image Grid */}
+          <motion.div variants={rightVariants} className="relative">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div className="h-48 bg-linear-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center">
+                  <span className="font-display text-6xl text-primary-foreground">FA</span>
+                </div>
+                <div className="h-64 bg-linear-to-br from-secondary/80 to-secondary rounded-2xl flex items-center justify-center p-6">
+                  <p className="font-display text-2xl text-secondary-foreground text-center">
+                    &quot;Transform Your Body, Strengthen Your Mind&quot;
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-4 pt-8">
+                <div className="h-64 bg-linear-to-br from-accent to-accent/80 rounded-2xl flex items-center justify-center p-6">
+                  <div className="text-center text-accent-foreground">
+                    <p className="font-display text-5xl">400+</p>
+                    <p className="text-sm mt-2">Jam2Fit Participants</p>
+                  </div>
+                </div>
+                <div className="h-48 bg-foreground rounded-2xl flex items-center justify-center p-6">
+                  <p className="font-display text-2xl text-background text-center">
+                    Ilorin&apos;s First Nighttime Fitness Party
+                  </p>
                 </div>
               </div>
             </div>
           </motion.div>
-
-          {/* Text Content */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="space-y-8 order-1 lg:order-2"
-          >
-            <motion.div variants={fadeRight} className="space-y-4">
-              <div className="inline-block px-6 py-2 bg-primary/10 border border-primary rounded-full">
-                <span className="text-primary font-bold text-sm">ABOUT THE AMBASSADOR</span>
-              </div>
-              
-              <h2 className="text-4xl md:text-6xl font-bold text-foreground">
-                MEET YOUR
-                <br />
-                <span className="text-primary">FITNESS PARTNER</span>
-              </h2>
-            </motion.div>
-
-            <motion.div variants={fadeRight} className="space-y-4 text-lg text-foreground/80">
-              <p>
-                Ajisafe Sulaiman, known as <strong className="text-primary">The Fitness Ambassador</strong>, 
-                is a certified fitness coach with over 7 years of experience in transforming lives through 
-                fitness and wellness.
-              </p>
-              <p>
-                From organizing Nigeria's first nighttime fitness party <strong>Jam2Fit</strong> with 400+ participants, 
-                to creating innovative events like Walk2Fitness and Afro Groove, Sulaiman has established himself 
-                as a pioneer in the Nigerian fitness industry.
-              </p>
-              <p>
-                As the author of <strong className="text-accent">Workout Compass</strong> and founder of 
-                <strong className="text-secondary"> FA Gym Wears</strong>, he provides comprehensive fitness 
-                solutions that empower individuals to achieve their health and wellness goals.
-              </p>
-            </motion.div>
-
-            {/* Values Grid */}
-            <motion.div variants={fadeRight} className="grid sm:grid-cols-2 gap-6 pt-8">
-              {values.map((value, index) => (
-                <motion.div
-                  key={value.title}
-                  variants={fadeUp}
-                  className="p-6 bg-muted rounded-2xl hover:shadow-lg transition-shadow duration-300"
-                >
-                  <value.icon className="w-10 h-10 text-primary mb-4" />
-                  <h3 className="text-xl font-bold text-foreground mb-2 font-display">
-                    {value.title}
-                  </h3>
-                  <p className="text-foreground/70 text-sm">
-                    {value.description}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
-}
+};
+
+export default AboutSection;

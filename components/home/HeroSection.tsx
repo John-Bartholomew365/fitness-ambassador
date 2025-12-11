@@ -1,122 +1,203 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion, Easing } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, Calendar } from 'lucide-react';
-import { fadeLeft, fadeRight, staggerContainer, } from '../../utils/animation';
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+import { CountUp } from 'countup.js';
 
-export default function HeroSection() {
+const HeroSection = () => {
+  const shouldReduceMotion = useReducedMotion();
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0 : 0.15,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
+    },
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : 40 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
+    },
+  };
+
+  // Stats for counting animation - with different durations but same finish time
+  const stats = [
+    { id: 'participants', value: 500, suffix: '+', color: 'text-primary', duration: 3 }, // 3 seconds
+    { id: 'experience', value: 7, suffix: '+', color: 'text-secondary', duration: 3 }, // 3 seconds 
+    { id: 'events', value: 10, suffix: '+', color: 'text-accent', duration: 3 }, // 3 seconds
+  ];
+
+  // Initialize count-up animations only when stats section is in viewport
+  useEffect(() => {
+    if (hasAnimated || !statsRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            stats.forEach((stat) => {
+              // Start all counters at the same time with same duration
+              setTimeout(() => {
+                const counter = new CountUp(stat.id, stat.value, {
+                  startVal: 0,
+                  duration: stat.duration, // All 3 seconds
+                  suffix: stat.suffix,
+                  useEasing: true,
+                  useGrouping: true,
+                  separator: ',',
+                  easingFn: (t, b, c, d) => {
+                    // Ease out cubic for smoother finish
+                    t /= d;
+                    t--;
+                    return c * (t * t * t + 1) + b;
+                  }
+                });
+
+                if (!counter.error) {
+                  counter.start();
+                }
+              }, 0); // Start all at the same time
+            });
+
+            setHasAnimated(true);
+            observer.disconnect(); // Stop observing after animation
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    observer.observe(statsRef.current);
+
+    return () => {
+      if (statsRef.current) {
+        observer.unobserve(statsRef.current);
+      }
+    };
+  }, [hasAnimated]);
+
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-linear-to-br from-background via-muted to-background">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
-      </div>
+    <section className="relative min-h-[80vh] lg:min-h-screen flex items-center pt-16 lg:pt-20 overflow-hidden">
+      {/* Background Gradient */}
+      <div className="absolute inset-0 bg-linear-to-br from-background via-background to-muted -z-10" />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      {/* Decorative Elements */}
+      <div className="absolute top-1/4 left-0 w-64 h-64 md:w-72 md:h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-1/4 right-0 w-80 h-80 md:w-96 md:h-96 bg-secondary/10 rounded-full blur-3xl -z-10" />
+
+      <div className="container-max px-4 md:px-8 py-8 md:py-16 lg:py-20">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Text Content */}
           <motion.div
-            variants={staggerContainer}
+            variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-8"
+            className="text-center lg:text-left order-2 lg:order-1"
           >
-            <motion.div variants={fadeLeft} className="space-y-4">
-              <div className="inline-block px-6 py-2 bg-primary/10 border-2 border-primary rounded-full">
-                <span className="text-primary font-bold text-sm">7+ YEARS OF EXCELLENCE</span>
-              </div>
-              
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">
-                <span className="text-foreground">THE</span>
-                <br />
-                <span className="text-primary">FITNESS</span>
-                <br />
-                <span className="text-accent">AMBASSADOR</span>
-              </h1>
-              
-              <p className="text-xl md:text-2xl text-foreground/80 font-medium max-w-xl">
-                Ajisafe Sulaiman - Your partner in transformation through premium fitness events, 
-                expert training, and comprehensive wellness solutions.
-              </p>
+            <motion.div variants={itemVariants} className="mb-4">
+              <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold">
+                🏋️ Your Fitness Journey Starts Here
+              </span>
             </motion.div>
 
-            <motion.div variants={fadeLeft} className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href="/training"
-                className="group px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
-              >
-                <span>BOOK A SESSION</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <motion.h1
+              variants={itemVariants}
+              className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-7xl text-foreground leading-tight md:leading-none mb-4 md:mb-6"
+            >
+              TRAIN WITH
+              <br />
+                <span className="text-gradient bg-clip-text text-transparent bg-linear-to-r from-[#008020] via-[#ffde00] to-[#ff8a00]">
+                  PURPOSE
+              </span>
+            </motion.h1>
+
+            <motion.p 
+              variants={itemVariants}
+              className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-6 md:mb-8"
+            >
+              Transform your body and mindset with Ajisafe Sulaiman — Nigeria&apos;s leading Fitness Ambassador with 7+ years of experience.
+            </motion.p>
+
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-8 md:mb-12"
+            >
+              <Link href="/training" className="btn-primary text-sm md:text-base py-3 md:py-4 px-6 md:px-8">
+                Book a Session
               </Link>
-              
-              <Link
-                href="/events"
-                className="group px-8 py-4 bg-transparent border-2 border-primary text-primary rounded-2xl font-bold text-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex items-center justify-center space-x-2"
-              >
-                <Calendar className="w-5 h-5" />
-                <span>VIEW EVENTS</span>
+              <Link href="/events" className="btn-outline text-sm md:text-base py-3 md:py-4 px-6 md:px-8">
+                View Events
               </Link>
             </motion.div>
 
-            {/* Stats */}
-            <motion.div variants={fadeLeft} className="grid grid-cols-3 gap-8 pt-8">
-              <div className="text-center lg:text-left">
-                <div className="text-4xl font-bold text-primary font-display">400+</div>
-                <div className="text-sm text-foreground/60 uppercase font-semibold">Participants</div>
-              </div>
-              <div className="text-center lg:text-left">
-                <div className="text-4xl font-bold text-accent font-display">10+</div>
-                <div className="text-sm text-foreground/60 uppercase font-semibold">Events</div>
-              </div>
-              <div className="text-center lg:text-left">
-                <div className="text-4xl font-bold text-secondary font-display">7+</div>
-                <div className="text-sm text-foreground/60 uppercase font-semibold">Years</div>
-              </div>
+            {/* Stats - All finish at same time */}
+            <motion.div
+              ref={statsRef}
+              variants={itemVariants}
+              className="grid grid-cols-3 gap-3 md:gap-4 mt-8 md:mt-12 pt-6 md:pt-8 border-t border-border"
+            >
+              {stats.map((stat) => (
+                <div key={stat.id} className="text-center lg:text-left">
+                  <p className={`font-display text-2xl md:text-3xl lg:text-4xl ${stat.color} mb-1`}>
+                    <span id={stat.id}>0</span>
+                  </p>
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    {stat.id === 'participants' && 'Participants'}
+                    {stat.id === 'experience' && 'Years Experience'}
+                    {stat.id === 'events' && 'Major Events'}
+                  </p>
+                </div>
+              ))}
             </motion.div>
           </motion.div>
 
-          {/* Image */}
+          {/* Hero Image */}
           <motion.div
-            variants={fadeRight}
+            variants={imageVariants}
             initial="hidden"
             animate="visible"
-            className="relative"
+            className="relative order-1 lg:order-2 mb-8 lg:mb-0"
           >
-            <div className="relative aspect-square max-w-lg mx-auto">
-              {/* Placeholder for hero image */}
-              <div className="absolute inset-0 bg-linear-to-br from-primary via-accent to-secondary rounded-[3rem] transform rotate-6 opacity-20" />
-              <div className="relative bg-linear-to-br from-primary/20 via-accent/20 to-secondary/20 rounded-[3rem] overflow-hidden border-4 border-primary shadow-2xl">
-                <div className="aspect-square flex items-center justify-center">
-                  <div className="text-center space-y-4 p-8">
-                    <div className="w-32 h-32 bg-primary rounded-full flex items-center justify-center mx-auto">
-                      <span className="text-6xl font-bold text-primary-foreground">FA</span>
-                    </div>
-                    <p className="text-2xl font-bold text-foreground font-display">
-                      AJISAFE SULAIMAN
-                    </p>
-                    <p className="text-lg text-foreground/60">
-                      Certified Fitness Coach
-                    </p>
-                  </div>
-                </div>
+            <div className="relative z-10">
+              <div className="relative aspect-square md:aspect-auto md:h-[400px] lg:h-[500px] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl">
+                <Image
+                  src="/athelets.png"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                  alt="Fitness Ambassador Ajisafe Sulaiman in action"
+                  className="object-cover"
+                  priority
+                />
               </div>
+              {/* Decorative border */}
+              <div className="absolute -inset-3 md:-inset-4 border-2 border-primary/20 rounded-2xl lg:rounded-3xl -z-10" />
             </div>
           </motion.div>
         </div>
       </div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.6, repeat: Infinity, repeatType: 'reverse' }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-      >
-        <div className="w-6 h-10 border-2 border-primary rounded-full flex items-start justify-center p-2">
-          <div className="w-1 h-2 bg-primary rounded-full animate-bounce" />
-        </div>
-      </motion.div>
     </section>
   );
-}
+};
+
+export default HeroSection;

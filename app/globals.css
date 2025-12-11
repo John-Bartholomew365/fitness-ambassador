@@ -8,50 +8,63 @@
   --brand-yellow: 50 100% 50%;        /* #ffde00 Secondary */
   --brand-orange: 32 100% 50%;        /* #ff8a00 Tertiary */
   
-  /* Colors */
-  --background: 0 0% 100%;             /* White */
-  --foreground: 0 0% 10%;              /* Almost black */
-  --card: 0 0% 100%;
+  /* Colors - Merged from Vite */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 10%;
+
+  --card: 0 0% 98%;
   --card-foreground: 0 0% 10%;
+
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 10%;
-  --primary: 140 100% 25.1%;           /* Brand Green */
+
+  /* Primary Green #008020 */
+  --primary: 140 100% 25%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 50 100% 50%;            /* Brand Yellow */
+
+  /* Secondary Yellow #ffde00 */
+  --secondary: 52 100% 50%;
   --secondary-foreground: 0 0% 10%;
-  --muted: 0 0% 96%;                   /* Very light grey */
-  --muted-foreground: 0 0% 40%;
-  --accent: 32 100% 50%;               /* Brand Orange */
+
+  /* Tertiary Orange #ff8a00 */
+  --accent: 32 100% 50%;
   --accent-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
+
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+
+  --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 100%;
+
   --border: 0 0% 90%;
   --input: 0 0% 90%;
-  --ring: 140 100% 25.1%;
+  --ring: 140 100% 25%;
 
-  /* Charts */
+  --radius: 1rem; /* From Vite (1rem instead of 0.5rem) */
+
+  /* Charts - From Next.js */
   --chart-1: 142.0859 70.5628% 45.2941%;
   --chart-2: 160.1183 84.0796% 39.4118%;
   --chart-3: 161.3793 93.5484% 30.3922%;
   --chart-4: 162.931 93.5484% 24.3137%;
   --chart-5: 163.1461 88.1188% 19.8039%;
 
-  /* Sidebar */
-  --sidebar: 204 93.75% 93.7255%;
-  --sidebar-foreground: 216.9231 19.1176% 26.6667%;
-  --sidebar-primary: 142.0859 70.5628% 45.2941%;
+  /* Sidebar - Merged */
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 0 0% 10%;
+  --sidebar-primary: 140 100% 25%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 149.2683 80.3922% 90%;
-  --sidebar-accent-foreground: 216.9231 19.1176% 26.6667%;
-  --sidebar-border: 220 13.0435% 90.9804%;
-  --sidebar-ring: 142.0859 70.5628% 45.2941%;
+  --sidebar-accent: 0 0% 96%;
+  --sidebar-accent-foreground: 0 0% 10%;
+  --sidebar-border: 0 0% 90%;
+  --sidebar-ring: 140 100% 25%;
 
-  /* Fonts */
+  /* Fonts - Keep both */
   --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-display: 'Bebas Neue', Impact, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  /* Shadows */
+  /* Shadows - Keep Next.js shadows but add Vite custom shadows */
   --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
   --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
@@ -61,47 +74,64 @@
   --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
   --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
 
-  /* Misc */
+  /* Vite Custom tokens - FIXED */
+  --gradient-energy: linear-gradient(135deg, hsl(140 100% 25%) 0%, hsl(52 100% 50%) 50%, hsl(32 100% 50%) 100%);
+  --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 96%) 100%);
+  --shadow-card: 0 4px 24px -4px hsl(0 0% 0% / 0.08);
+  --shadow-elevated: 0 12px 40px -8px hsl(0 0% 0% / 0.15);
+  --shadow-glow-primary: 0 0 40px hsl(140 100% 25% / 0.3);
+  --shadow-glow-secondary: 0 0 40px hsl(52 100% 50% / 0.4);
+
+  /* Misc - From Next.js */
   --tracking-normal: 0em;
   --spacing: 0.25rem;
-  --radius: 0.5rem;
 }
 
 .dark {
-  --background: 222.2222 47.3684% 11.1765%;
-  --foreground: 216 12.1951% 83.9216%;
-  --card: 217.2414 32.5843% 17.451%;
-  --card-foreground: 216 12.1951% 83.9216%;
-  --popover: 217.2414 32.5843% 17.451%;
-  --popover-foreground: 216 12.1951% 83.9216%;
-  --primary: 158.1132 64.3725% 51.5686%;
-  --primary-foreground: 222.2222 47.3684% 11.1765%;
-  --secondary: 217.7778 23.0769% 22.9412%;
-  --secondary-foreground: 240 5.0279% 64.902%;
-  --muted: 217.2414 32.5843% 17.451%;
-  --muted-foreground: 220 8.9362% 46.0784%;
-  --accent: 216.9231 19.1176% 26.6667%;
-  --accent-foreground: 240 5.0279% 64.902%;
-  --destructive: 0 84.2365% 60.1961%;
-  --destructive-foreground: 222.2222 47.3684% 11.1765%;
-  --border: 215 13.7931% 34.1176%;
-  --input: 215 13.7931% 34.1176%;
-  --ring: 158.1132 64.3725% 51.5686%;
+  --background: 0 0% 5%;
+  --foreground: 0 0% 98%;
 
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 98%;
+
+  --primary: 140 100% 35%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 52 100% 50%;
+  --secondary-foreground: 0 0% 10%;
+
+  --accent: 32 100% 50%;
+  --accent-foreground: 0 0% 100%;
+
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 65%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 140 100% 35%;
+
+  /* Charts - From Next.js dark mode */
   --chart-1: 158.1132 64.3725% 51.5686%;
   --chart-2: 172.4551 66.0079% 50.3922%;
   --chart-3: 142.0859 70.5628% 45.2941%;
   --chart-4: 160.1183 84.0796% 39.4118%;
   --chart-5: 161.3793 93.5484% 30.3922%;
 
-  --sidebar: 217.2414 32.5843% 17.451%;
-  --sidebar-foreground: 216 12.1951% 83.9216%;
-  --sidebar-primary: 158.1132 64.3725% 51.5686%;
-  --sidebar-primary-foreground: 222.2222 47.3684% 11.1765%;
-  --sidebar-accent: 216.9231 19.1176% 26.6667%;
-  --sidebar-accent-foreground: 240 5.0279% 64.902%;
-  --sidebar-border: 215 13.7931% 34.1176%;
-  --sidebar-ring: 158.1132 64.3725% 51.5686%;
+  /* Sidebar - Merged dark mode */
+  --sidebar: 0 0% 8%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary: 140 100% 35%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 15%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-border: 0 0% 20%;
+  --sidebar-ring: 140 100% 35%;
 }
 
 @theme inline {
@@ -173,6 +203,8 @@ body {
   color: hsl(var(--foreground));
   font-family: var(--font-body);
   letter-spacing: var(--tracking-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -182,7 +214,84 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
 }
 
-/* Animations from index.css */
+/* FIXED GRADIENT TEXT CLASS */
+.text-gradient {
+  background: var(--gradient-energy);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+/* UTILITY CLASSES - FIXED: Use @layer instead of @utility with hyphens */
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-primary-foreground font-semibold px-8 py-4 rounded-2xl transition-all duration-300;
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow-primary);
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground font-semibold px-8 py-4 rounded-2xl transition-all duration-300;
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow-secondary);
+  }
+
+  .btn-accent {
+    @apply bg-accent text-accent-foreground font-semibold px-8 py-4 rounded-2xl transition-all duration-300;
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary text-primary font-semibold px-8 py-4 rounded-2xl transition-all duration-300 bg-transparent;
+  }
+
+  .btn-outline:hover {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .card-elevated {
+    @apply bg-card rounded-2xl p-6;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-elevated:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .section-padding {
+    @apply px-4 py-16 md:px-8 md:py-24 lg:px-16 lg:py-32;
+  }
+
+  .container-max {
+    @apply max-w-7xl mx-auto;
+  }
+}
+
+@layer utilities {
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+}
+
+/* Animations */
 .animate-fade-in {
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -198,7 +307,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Styles from App.css - INCLUDED FOR COMPLETENESS */
+/* Styles from App.css */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -229,18 +338,17 @@ h1, h2, h3, h4, h5, h6 {
     animation: logo-spin infinite 20s linear;
   }
   
-  /* You might want to add this for any spinning elements */
   .animate-spin-slow {
     animation: logo-spin infinite 20s linear;
   }
 }
 
-/* Card styles - could be useful for any card components */
+/* Card styles */
 .card {
   padding: 2em;
 }
 
-/* Text style - might be used for hints/helper text */
+/* Text style */
 .read-the-docs {
   color: #888;
 }

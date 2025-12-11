@@ -1,139 +1,142 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion, Easing } from 'framer-motion';
 import Link from 'next/link';
-import { Book, CheckCircle, Download, ShoppingCart } from 'lucide-react';
-import { fadeUp, fadeLeft, fadeRight, staggerContainer, viewport } from '../../utils/animation';
+import { CheckCircle, ArrowRight, BookOpen, Target, TrendingUp } from 'lucide-react';
+import Image from 'next/image';
 
-export default function BookPromoSection() {
-  const features = [
-    'Personalized workout plans for all fitness levels',
-    'Complete guide to training splits and routines',
-    'Progressive overload principles explained',
-    'Stretching routines and mobility work',
-    'Simple dietary tips for better results',
-    'Real-life program templates you can start today',
-  ];
+const benefits = [
+  'Personalized workout plans for all fitness levels',
+  'Complete guide to training splits and routines',
+  'Progressive overload principles explained',
+  'Stretching routines and mobility work',
+  'Simple dietary tips for better results',
+  'Real-life program templates you can start today',
+];
+
+const BookPromoSection = () => {
+  const shouldReduceMotion = useReducedMotion();
+
+  const leftVariants = {
+    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : -60 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
+    },
+  };
+
+  const rightVariants = {
+    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : 40 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
+    },
+  };
 
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-accent/10">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Book Visual */}
+    <section className="section-padding bg-muted overflow-hidden">
+      <div className="container-max">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Book Image */}
           <motion.div
-            variants={fadeLeft}
+            variants={leftVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={viewport}
+            viewport={{ once: true, amount: 0.25 }}
             className="relative"
           >
-            <div className="relative max-w-md mx-auto">
-              {/* Floating elements */}
-              <motion.div
-                animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -top-8 -right-8 w-24 h-24 bg-secondary rounded-2xl rotate-12 opacity-30"
+            <div className="relative z-10">
+              <Image
+                src="/workout.jpg"
+                alt="Workout Compass Book"
+                width={600}
+                height={800}
+                className="w-full max-w-md mx-auto rounded-2xl shadow-2xl"
               />
-              <motion.div
-                animate={{ y: [0, 20, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -bottom-8 -left-8 w-32 h-32 bg-accent rounded-full opacity-20"
-              />
-
-              {/* Book mockup */}
-              <div className="relative aspect-[3/4] bg-gradient-to-br from-primary via-accent to-secondary rounded-3xl shadow-2xl p-12 flex flex-col items-center justify-center text-center">
-                <Book className="w-24 h-24 text-white mb-6" />
-                <h3 className="text-4xl font-bold text-white mb-4 font-display">
-                  WORKOUT
-                  <br />
-                  COMPASS
-                </h3>
-                <p className="text-white/90 text-lg font-semibold mb-2">
-                  BY AJISAFE SULAIMAN
-                </p>
-                <div className="mt-6 px-6 py-2 bg-white/20 backdrop-blur-sm rounded-full border-2 border-white/40">
-                  <span className="text-white font-bold">YOUR FITNESS ROADMAP</span>
-                </div>
-              </div>
             </div>
+            {/* Decorative elements */}
+            <div className="absolute -top-8 -left-8 w-48 h-48 bg-primary/10 rounded-full blur-2xl" />
+            <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-secondary/20 rounded-full blur-2xl" />
+
+            {/* Floating badges */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="absolute top-8 -right-4 md:right-8 bg-accent text-accent-foreground px-4 py-3 rounded-xl shadow-lg z-20"
+            >
+              <div className="flex items-center gap-2">
+                <BookOpen size={20} />
+                <span className="font-semibold text-sm">New Release</span>
+              </div>
+            </motion.div>
           </motion.div>
 
           {/* Content */}
           <motion.div
-            variants={staggerContainer}
+            variants={rightVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={viewport}
-            className="space-y-8"
+            viewport={{ once: true, amount: 0.25 }}
           >
-            <motion.div variants={fadeRight} className="space-y-4">
-              <div className="inline-block px-6 py-2 bg-accent/10 border border-accent rounded-full">
-                <span className="text-accent font-bold text-sm">BESTSELLING BOOK</span>
-              </div>
-              
-              <h2 className="text-4xl md:text-6xl font-bold text-foreground">
-                YOUR PERSONAL
-                <br />
-                <span className="text-primary">TRAINING BIBLE</span>
-              </h2>
-            </motion.div>
+            <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+              The Ultimate Fitness Guide
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+              WORKOUT <span className="text-gradient">COMPASS</span>
+            </h2>
+            <p className="text-[16px] text-muted-foreground mb-6 leading-tight">
+              A practical fitness guide designed to help beginners and experienced gym-goers train with clarity, confidence, and purpose. Stop guessing — start progressing.
+            </p>
 
-            <motion.p variants={fadeRight} className="text-xl text-foreground/80 leading-relaxed">
-              <strong className="text-accent">Workout Compass</strong> is your practical fitness guide 
-              designed to help beginners and experienced gym-goers train with clarity, confidence, and purpose. 
-              Stop guessing and start progressing with a structured roadmap to real results.
-            </motion.p>
-
-            {/* Features List */}
-            <motion.div variants={fadeRight} className="space-y-3">
-              {features.map((feature, index) => (
+            {/* Benefits */}
+            <div className="space-y-2 mb-8">
+              {benefits.map((benefit, index) => (
                 <motion.div
-                  key={index}
-                  variants={fadeUp}
-                  className="flex items-start space-x-3"
+                  key={benefit}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.4 }}
+                  className="flex items-center gap-3"
                 >
-                  <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-foreground/80">{feature}</span>
+                  <CheckCircle className="w-5 h-5 text-primary shrink-0" />
+                  <span className="text-foreground">{benefit}</span>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
 
-            {/* CTA Buttons */}
-            <motion.div variants={fadeRight} className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Link
-                href="/book"
-                className="group px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                <span>GET THE BOOK</span>
-              </Link>
-              
-              <Link
-                href="/book#sample"
-                className="group px-8 py-4 bg-transparent border-2 border-accent text-accent rounded-2xl font-bold text-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300 flex items-center justify-center space-x-2"
-              >
-                <Download className="w-5 h-5" />
-                <span>SAMPLE CHAPTER</span>
-              </Link>
-            </motion.div>
-
-            {/* Testimonial */}
-            <motion.div variants={fadeRight} className="p-6 bg-background/50 backdrop-blur-sm rounded-2xl border border-border">
-              <p className="text-foreground/70 italic mb-4">
-                &quot;This book changed my approach to fitness completely. The structured programs and 
-                clear explanations made everything click. Highly recommended!&quot;
-              </p>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold">JD</span>
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">John Doe</p>
-                  <p className="text-sm text-foreground/60">Fitness Enthusiast</p>
-                </div>
+            {/* Features icons */}
+            <div className="grid grid-cols-3 gap-4 mb-8 p-4 bg-background rounded-2xl">
+              <div className="text-center">
+                <Target className="w-8 h-8 text-primary mx-auto mb-2" />
+                <p className="text-sm font-medium">Goal-Focused</p>
               </div>
-            </motion.div>
+              <div className="text-center">
+                <TrendingUp className="w-8 h-8 text-secondary mx-auto mb-2" />
+                <p className="text-sm font-medium">Progressive</p>
+              </div>
+              <div className="text-center">
+                <BookOpen className="w-8 h-8 text-accent mx-auto mb-2" />
+                <p className="text-sm font-medium">Practical</p>
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/book" className="btn-primary inline-flex items-center justify-center gap-2">
+                Get the Book <ArrowRight size={18} />
+              </Link>
+              <Link href="/book#preview" className="btn-outline inline-flex items-center justify-center gap-2">
+                Download Sample Chapter
+              </Link>
+            </div>
           </motion.div>
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default BookPromoSection;

@@ -14,6 +14,7 @@ import AboutSection from '@/components/home/AboutSection';
 import FeaturedEventsSection from '@/components/home/FeaturedEventsSection';
 import BookPromoSection from '@/components/home/BookPromoSection';
 import NewsletterSection from '@/components/home/NewsletterSection';
+import ServicesSection from '@/components/home/ServicesSection';
 
 export default function HomePage() {
   const [showWelcome, setShowWelcome] = useState(() => {
@@ -79,6 +80,7 @@ export default function HomePage() {
             <AboutSection />
             <FeaturedEventsSection />
             <BookPromoSection />
+            <ServicesSection />
             <NewsletterSection />
           </main>
 

@@ -1,143 +1,179 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion, Easing } from 'framer-motion';
 import Link from 'next/link';
-import { Calendar, Users, MapPin, ArrowRight } from 'lucide-react';
-import { fadeUp, staggerContainer, viewport } from '../../utils/animation';
+import { ArrowRight, Users } from 'lucide-react';
+import Image from 'next/image';
 
-export default function FeaturedEventsSection() {
-  const events = [
-    {
-      id: 'walk2fitness',
-      title: 'Walk2Fitness',
-      version: '1.0 - 4.0',
-      description: 'A revolutionary walking fitness series that has evolved through 4 successful editions, bringing communities together for health and wellness.',
-      participants: '200+',
-      location: 'Ilorin',
-      color: 'primary',
+// Import your event images
+import eventImage1 from '../../public/walk.jpg';
+import eventImage2 from '../../public/walk.jpg';
+import eventImage3 from '../../public/ice.jpeg'; 
+import eventImage4 from '../../public/walk.jpg'; 
+
+const events = [
+  {
+    id: 1,
+    title: 'Walk2Fitness',
+    subtitle: '1.0 - 4.0',
+    description: 'A signature fitness walk event promoting active lifestyles through community engagement.',
+    participants: '200+',
+    image: eventImage1,
+  },
+  {
+    id: 2,
+    title: 'Afro Groove',
+    subtitle: 'Unilorin Sports Council',
+    description: 'A dynamic fitness collaboration blending African dance moves with intense cardio workouts.',
+    participants: '150+',
+    image: eventImage2,
+  },
+  {
+    id: 3,
+    title: 'Aerobics + Icebath',
+    subtitle: 'Massage Alchemy',
+    description: 'Combining high-energy aerobics with the rejuvenating power of ice bath therapy.',
+    participants: '80+',
+    image: eventImage3,
+  },
+  {
+    id: 4,
+    title: 'Jam2Fit',
+    subtitle: 'Nighttime Fitness Party',
+    description: "Ilorin's first-ever nighttime fitness party — dancing, sweating, and celebrating health!",
+    participants: '400+',
+    image: eventImage4, 
+  },
+];
+
+const FeaturedEventsSection = () => {
+  const shouldReduceMotion = useReducedMotion();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0 : 0.15,
+      },
     },
-    {
-      id: 'jam2fit',
-      title: 'Jam2Fit',
-      version: 'Nighttime Fitness Party',
-      description: "Ilorin's first-ever nighttime fitness party! An electrifying fusion of music, dance, and high-energy workouts under the stars.",
-      participants: '400+',
-      location: 'Ilorin',
-      color: 'secondary',
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
     },
-    {
-      id: 'afro-groove',
-      title: 'Afro Groove',
-      version: 'University Collaboration',
-      description: 'A dynamic fitness event created in collaboration with University of Ilorin Sports Council, celebrating African fitness culture.',
-      participants: '150+',
-      location: 'University of Ilorin',
-      color: 'accent',
-    },
-    {
-      id: 'aerobics-icebath',
-      title: 'Aerobics + Icebath',
-      version: 'Wellness Fusion',
-      description: 'An innovative collaboration with Massage Alchemy, combining high-intensity aerobics with the rejuvenating experience of ice bath therapy.',
-      participants: '100+',
-      location: 'Ilorin',
-      color: 'primary',
-    },
-  ];
+  };
 
   return (
-    <section className="py-20 md:py-32 bg-muted">
-      <div className="container mx-auto px-4">
+    <section className="section-padding bg-background">
+      <div className="container-max">
+        {/* Header */}
         <motion.div
-          variants={staggerContainer}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+            Events Portfolio
+          </span>
+          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-4">
+            FEATURED{' '}
+            <span className="text-gradient bg-clip-text text-transparent bg-linear-to-r from-[#008020] via-[#ffde00] to-[#ff8a00]">
+              EVENTS
+            </span>
+          </h2>
+          <p className="text-[16px] text-muted-foreground lg:w-[470px] leading-tight w-auto mx-auto">
+            From sunrise walks to nighttime fitness parties, we bring the community together through movement and energy.
+          </p>
+        </motion.div>
+
+        {/* Events Grid */}
+        <motion.div
+          variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={viewport}
-          className="space-y-12"
+          viewport={{ once: true, amount: 0.1 }}
+          className="grid md:grid-cols-2 gap-6 lg:gap-8"
         >
-          {/* Section Header */}
-          <motion.div variants={fadeUp} className="text-center max-w-3xl mx-auto space-y-4">
-            <div className="inline-block px-6 py-2 bg-primary/10 border border-primary rounded-full">
-              <span className="text-primary font-bold text-sm">SIGNATURE EVENTS</span>
-            </div>
-            
-            <h2 className="text-4xl md:text-6xl font-bold text-foreground">
-              TRANSFORMATIVE
-              <br />
-              <span className="text-primary">FITNESS EXPERIENCES</span>
-            </h2>
-            
-            <p className="text-xl text-foreground/70">
-              Join thousands who have experienced Nigeria&apos;s most innovative and energetic fitness events
-            </p>
-          </motion.div>
-
-          {/* Events Grid */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {events.map((event, index) => (
-              <motion.div
-                key={event.id}
-                variants={fadeUp}
-                className="group"
-              >
-                <Link href={`/events/${event.id}`}>
-                  <div className={`relative p-8 bg-background rounded-3xl border-2 border-border hover:border-${event.color} transition-all duration-300 hover:shadow-2xl overflow-hidden`}>
-                    {/* Background Gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-br from-${event.color}/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                    
-                    <div className="relative z-10 space-y-6">
-                      {/* Badge */}
-                      <div className={`inline-flex items-center px-4 py-2 bg-${event.color}/10 border border-${event.color} rounded-full`}>
-                        <span className={`text-${event.color} font-bold text-xs uppercase`}>
-                          {event.version}
-                        </span>
-                      </div>
-
-                      {/* Title */}
-                      <div>
-                        <h3 className="text-3xl font-bold text-foreground mb-2 font-display group-hover:text-primary transition-colors">
-                          {event.title}
-                        </h3>
-                        <p className="text-foreground/70 leading-relaxed">
-                          {event.description}
-                        </p>
-                      </div>
-
-                      {/* Stats */}
-                      <div className="flex flex-wrap gap-6 pt-4">
-                        <div className="flex items-center space-x-2 text-foreground/60">
-                          <Users className="w-5 h-5 text-primary" />
-                          <span className="font-semibold">{event.participants}</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-foreground/60">
-                          <MapPin className="w-5 h-5 text-accent" />
-                          <span className="font-semibold">{event.location}</span>
-                        </div>
-                      </div>
-
-                      {/* CTA */}
-                      <div className="flex items-center text-primary font-bold group-hover:translate-x-2 transition-transform duration-300">
-                        <span>View Gallery</span>
-                        <ArrowRight className="w-5 h-5 ml-2" />
-                      </div>
+          {events.map((event) => (
+            <motion.div
+              key={event.id}
+              variants={cardVariants}
+              whileHover={{ y: -8 }}
+              className="group relative overflow-hidden rounded-3xl"
+            >
+              {/* Always use Image component for all events */}
+              <div className="relative h-80 md:h-96">
+                {event.image ? (
+                  <>
+                    <Image
+                      src={event.image}
+                      alt={`${event.title} event`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      placeholder="blur"
+                      priority={event.id === 1} // Only first image gets priority loading
+                    />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-linear-to-t from-foreground/90 via-foreground/40 to-transparent" />
+                  </>
+                ) : (
+                  // Fallback if image is missing
+                  <div className="absolute inset-0 bg-linear-to-br from-primary via-secondary to-accent flex items-center justify-center">
+                    <div className="text-background text-center p-8">
+                      <h3 className="font-display text-3xl mb-2">{event.title}</h3>
+                      <p className="text-background/80">{event.subtitle}</p>
                     </div>
                   </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                )}
+                
+                {/* Content overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 z-10">
+                  <p className="text-white font-semibold text-sm mb-2">{event.subtitle}</p>
+                  <h3 className="font-display text-3xl md:text-4xl text-background mb-2">
+                    {event.title}
+                  </h3>
+                  <p className="text-background/80 text-sm mb-4 line-clamp-2">
+                    {event.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-background/70">
+                      <Users size={16} />
+                      <span className="text-sm">{event.participants} Participants</span>
+                    </div>
+                    <Link
+                      href={`/events/${event.id}`}
+                      className="flex items-center gap-2 text-secondary font-semibold text-sm group-hover:gap-3 transition-all"
+                    >
+                      View Gallery <ArrowRight size={16} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
-          {/* View All Button */}
-          <motion.div variants={fadeUp} className="text-center pt-8">
-            <Link
-              href="/events"
-              className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl space-x-2"
-            >
-              <Calendar className="w-5 h-5" />
-              <span>EXPLORE ALL EVENTS</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </motion.div>
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="text-center mt-12"
+        >
+          <Link href="/events" className="btn-primary inline-flex items-center gap-2">
+            View All Events <ArrowRight size={18} />
+          </Link>
         </motion.div>
       </div>
     </section>
   );
-}
+};
+
+export default FeaturedEventsSection;

@@ -1,112 +1,161 @@
 import Link from 'next/link';
-import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Instagram, Twitter, Facebook, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import Image from 'next/image';
+import { FaWhatsapp } from "react-icons/fa";
 
-export default function Footer() {
+const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
+  const quickLinks = [
+    { name: 'Events', path: '/events' },
+    { name: 'Workout Compass', path: '/book' },
+    { name: 'Training', path: '/training' },
+    { name: 'Shop', path: '/shop' },
+    { name: 'Gallery', path: '/gallery' },
+  ];
+
+  const socialLinks = [
+    { 
+      icon: Instagram, 
+      href: 'https://www.instagram.com/thefitnessambassador_events/?hl=en', 
+      label: 'Instagram' 
+    },
+    { 
+      icon: Twitter, 
+      href: 'https://x.com/AjisafeAkorede', 
+      label: 'Twitter' 
+    },
+    { 
+      icon: Facebook, 
+      href: 'https://www.facebook.com/profile.php?id=100067125615399', 
+      label: 'Facebook' 
+    },
+    { 
+      icon: Youtube, 
+      href: 'https://www.youtube.com/@FitnessAmbassador247/', 
+      label: 'YouTube' 
+    },
+  ];
+
+  // WhatsApp message with prefilled text
+  const whatsappNumber = '2348163702286';
+  const whatsappMessage = encodeURIComponent(`Hello Fitness Ambassador! I'm interested in your fitness programs. Can you tell me more about:\n\n1. Your training sessions\n2. Upcoming events\n3. The Workout Compass book\n\nThank you!`);
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
   return (
-    <footer className="bg-foreground text-background py-16">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          {/* Brand Section */}
-          <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary-foreground">FA</span>
-              </div>
-              <span className="text-xl font-bold font-display">FITNESS AMBASSADOR</span>
+    <footer className="text-background">
+      <div className="container-max section-padding">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand */}
+          <div className="space-y-4">
+            <div className="**:text-background!">
+              <Image src="/fa-logo3.png" alt="Fitness Ambassador Logo" width={150} height={40} />
             </div>
-            <p className="text-background/80 text-sm">
-              Empowering individuals through fitness events, personal training, and comprehensive wellness solutions.
+            <p className="text-black/70 text-sm leading-relaxed">
+              Your fitness journey starts here. Transform your body, strengthen your mindset, and achieve real results.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-4 font-display">QUICK LINKS</h3>
-            <ul className="space-y-2">
-              <li><Link href="/events" className="text-background/80 hover:text-primary transition-colors">Events</Link></li>
-              <li><Link href="/book" className="text-background/80 hover:text-primary transition-colors">Workout Compass</Link></li>
-              <li><Link href="/training" className="text-background/80 hover:text-primary transition-colors">Training</Link></li>
-              <li><Link href="/shop" className="text-background/80 hover:text-primary transition-colors">Shop</Link></li>
-              <li><Link href="/gallery" className="text-background/80 hover:text-primary transition-colors">Gallery</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-bold mb-4 font-display">CONTACT</h3>
+            <h4 className="font-display text-xl mb-6 text-black">Quick Links</h4>
             <ul className="space-y-3">
-              <li className="flex items-start space-x-2 text-background/80">
-                <Mail className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <span className="text-sm">info@fitnessambassador.com</span>
+              {quickLinks.map((link) => (
+                <li key={link.path}>
+                  <Link
+                    href={link.path}
+                    className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="font-display text-xl mb-6 text-black">Contact</h4>
+            <ul className="space-y-4">
+              <li className="flex items-center gap-3">
+                <Mail size={18} className="text-foreground/70" />
+                <a 
+                  href="mailto:fitnessambassador84@gmail.com" 
+                  className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                >
+                  fitnessambassador84@gmail.com
+                </a>
               </li>
-              <li className="flex items-start space-x-2 text-background/80">
-                <Phone className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <span className="text-sm">+234 XXX XXX XXXX</span>
+              <li className="flex items-center gap-3">
+                <FaWhatsapp size={18} className="text-foreground/70" />
+                <a
+                  href={whatsappUrl}
+                  className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  +234 816 370 2286
+                </a>
               </li>
-              <li className="flex items-start space-x-2 text-background/80">
-                <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                <span className="text-sm">Ilorin, Nigeria</span>
+
+              <li className="flex items-center gap-3">
+                <Phone size={18} className="text-foreground/70" />
+                <a 
+                  href="tel:+2348163702286" 
+                  className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                >
+                  +234 816 370 2286
+                </a>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin size={18} className="text-foreground/70 mt-0.5" />
+                <span className="text-foreground/70 text-sm">
+                  Ilorin, Kwara State, Nigeria
+                </span>
               </li>
             </ul>
           </div>
 
-          {/* Social Media */}
+          {/* Social */}
           <div>
-            <h3 className="text-lg font-bold mb-4 font-display">FOLLOW US</h3>
-            <div className="flex space-x-4">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/80 transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook className="w-5 h-5 text-primary-foreground" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:bg-secondary/80 transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-5 h-5 text-secondary-foreground" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-accent rounded-full flex items-center justify-center hover:bg-accent/80 transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-5 h-5 text-accent-foreground" />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/80 transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-5 h-5 text-primary-foreground" />
-              </a>
+            <h4 className="font-display text-xl mb-6 text-black">Follow Us</h4>
+            <div className="flex gap-4">
+              {socialLinks.map((social) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank" // Opens in new tab
+                  rel="noopener noreferrer" // Security best practice
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 rounded-full bg-foreground/70 flex items-center justify-center hover:bg-primary transition-colors"
+                  aria-label={social.label}
+                >
+                  <social.icon size={18} />
+                </motion.a>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-background/20">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-background/60 text-sm">
-              © {new Date().getFullYear()} Fitness Ambassador - Ajisafe Sulaiman. All rights reserved.
-            </p>
-            <div className="flex space-x-6 text-sm">
-              <Link href="/privacy" className="text-background/60 hover:text-primary transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="text-background/60 hover:text-primary transition-colors">Terms of Service</Link>
-            </div>
+        <div className="mt-16 pt-8 border-t border-foreground/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-foreground/50 text-sm">
+            © {currentYear} Fitness Ambassador - Ajisafe Sulaiman. All rights reserved.
+          </p>
+          <div className="flex gap-6">
+            <Link href="/privacy" className="text-foreground/50 hover:text-foreground text-sm transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="text-foreground/50 hover:text-foreground text-sm transition-colors">
+              Terms of Service
+            </Link>
           </div>
         </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;
