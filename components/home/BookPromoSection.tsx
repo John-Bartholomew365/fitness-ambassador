@@ -47,7 +47,7 @@ const BookPromoSection = () => {
           >
             <div className="relative z-10">
               <Image
-                src="/workout.jpg"
+                src="/workouts.jpg"
                 alt="Workout Compass Book"
                 width={600}
                 height={800}
