@@ -14,20 +14,11 @@ const AboutSection = () => {
     },
   };
 
-  const leftVariants = {
-    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : -60 },
+  const centerVariants = {
+    hidden: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 },
     visible: {
       opacity: 1,
-      x: 0,
-      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
-    },
-  };
-
-  const rightVariants = {
-    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : 40 },
-    visible: {
-      opacity: 1,
-      x: 0,
+      scale: 1,
       transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
     },
   };
@@ -50,7 +41,7 @@ const AboutSection = () => {
           className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"
         >
           {/* Left Content */}
-          <motion.div variants={leftVariants}>
+          <motion.div variants={centerVariants}>
             <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
               About The Ambassador
             </span>
@@ -69,8 +60,8 @@ const AboutSection = () => {
               {achievements.map((item, index) => (
                 <motion.div
                   key={item.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
                   viewport={{ once: true }}
                   className="card-elevated flex items-start gap-4 hover:border-primary/20 transition-all"
@@ -88,7 +79,7 @@ const AboutSection = () => {
           </motion.div>
 
           {/* Right Content - Image Grid */}
-          <motion.div variants={rightVariants} className="relative">
+          <motion.div variants={centerVariants} className="relative">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4">
                 <div className="h-48 bg-linear-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center">
