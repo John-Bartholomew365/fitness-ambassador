@@ -99,8 +99,21 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[80vh] lg:min-h-screen flex items-center pt-16 lg:pt-20 overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-linear-to-br from-background via-background to-muted -z-10" />
+      {/* Background Video */}
+      <div className="absolute inset-0 -z-20 overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover blur-sm"
+        >
+          <source src="/new-bg.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        {/* Dark overlay for better text contrast */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
+      </div>
 
       {/* Decorative Elements */}
       <div className="absolute top-1/4 left-0 w-64 h-64 md:w-72 md:h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
@@ -116,25 +129,25 @@ const HeroSection = () => {
             className="text-center lg:text-left order-2 lg:order-1"
           >
             <motion.div variants={itemVariants} className="mb-4">
-              <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold">
+              <span className="inline-block px-4 py-2 bg-white/10 text-white/70 rounded-full text-sm font-semibold">
                 🏋️ Your Fitness Journey Starts Here
               </span>
             </motion.div>
 
             <motion.h1
               variants={itemVariants}
-              className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-7xl text-foreground leading-tight md:leading-none mb-4 md:mb-6"
+              className="font-display text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-7xl leading-tight md:leading-none mb-4 md:mb-6"
             >
               TRAIN WITH
               <br />
-                <span className="text-gradient bg-clip-text text-transparent bg-linear-to-r from-[#008020] via-[#ffde00] to-[#ff8a00]">
-                  PURPOSE
+              <span className="text-gradient bg-clip-text text-transparent bg-linear-to-r from-[#008020] via-[#ffde00] to-[#ff8a00]">
+                PURPOSE
               </span>
             </motion.h1>
 
-            <motion.p 
+            <motion.p
               variants={itemVariants}
-              className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-6 md:mb-8"
+              className="text-base md:text-lg lg:text-xl text-white/70 max-w-xl mx-auto lg:mx-0 mb-6 md:mb-8"
             >
               Transform your body and mindset with Ajisafe Sulaiman — Nigeria&apos;s leading Fitness Ambassador with 7+ years of experience.
             </motion.p>
@@ -146,7 +159,7 @@ const HeroSection = () => {
               <Link href="/training" className="btn-primary text-sm md:text-base py-3 md:py-4 px-6 md:px-8">
                 Book a Session
               </Link>
-              <Link href="/events" className="btn-outline text-sm md:text-base py-3 md:py-4 px-6 md:px-8">
+              <Link href="/events" className="btn-outline text-white text-sm md:text-base py-3 md:py-4 px-6 md:px-8">
                 View Events
               </Link>
             </motion.div>
@@ -162,7 +175,7 @@ const HeroSection = () => {
                   <p className={`font-display text-2xl md:text-3xl lg:text-4xl ${stat.color} mb-1`}>
                     <span id={stat.id}>0</span>
                   </p>
-                  <p className="text-xs md:text-sm text-muted-foreground">
+                  <p className="text-xs md:text-sm text-white/70">
                     {stat.id === 'participants' && 'Participants'}
                     {stat.id === 'experience' && 'Years Experience'}
                     {stat.id === 'events' && 'Major Events'}
@@ -182,7 +195,7 @@ const HeroSection = () => {
             <div className="relative z-10">
               <div className="relative aspect-square md:aspect-auto md:h-[400px] lg:h-[500px] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl">
                 <Image
-                  src="/athelets.png"
+                  src="/hero-secs.png"
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                   alt="Fitness Ambassador Ajisafe Sulaiman in action"

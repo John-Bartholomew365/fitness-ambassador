@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import WelcomeScreen from '@/components/loaders/WelcomeScreen';
-// import PageLoader from '@/components/loaders/PageLoader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Toaster } from 'sonner';
@@ -15,22 +14,51 @@ import FeaturedEventsSection from '@/components/home/FeaturedEventsSection';
 import BookPromoSection from '@/components/home/BookPromoSection';
 import NewsletterSection from '@/components/home/NewsletterSection';
 import ServicesSection from '@/components/home/ServicesSection';
+import { usePathname } from 'next/navigation';
+import PageLoader from '@/components/loaders/PageLoader';
+import HomePageLoader from '@/components/loaders/HomePageLoader';
 
 export default function HomePage() {
-  const [showWelcome, setShowWelcome] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-      return hasSeenWelcome === 'true' ? false : true;
-    }
-    return true;
+  const pathname = usePathname();
+  const [showWelcome, setShowWelcome] = useState<boolean | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    return hasSeenWelcome !== 'true';
+  });
+  const [showPageLoader, setShowPageLoader] = useState(false);
+  const [isFirstVisit, setIsFirstVisit] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    return hasSeenWelcome !== 'true';
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  // Show PageLoader when navigating to home from another page
+  useEffect(() => {
+    // Skip on first visit (WelcomeScreen will show instead)
+    if (isFirstVisit) return;
+    
+    // Defer showing the PageLoader to avoid synchronous setState inside an effect
+    const showTimer = setTimeout(() => {
+      setShowPageLoader(true);
+    }, 0);
+
+    const hideTimer = setTimeout(() => {
+      setShowPageLoader(false);
+    }, 1500); // Match PageLoader duration
+
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
+  }, [pathname, isFirstVisit]);
 
   const handleWelcomeComplete = () => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('hasSeenWelcome', 'true');
     }
     setShowWelcome(false);
+    setIsFirstVisit(false);
   };
 
   // For smooth scrolling within the page
@@ -43,31 +71,31 @@ export default function HomePage() {
     setTimeout(() => setIsLoading(false), 500);
   };
 
-  // Handle "Get Started" and other CTA actions
-  // const handleGetStarted = () => {
-  //   // Just scroll to book section since it's on same page
-  //   scrollToSection('book-section');
-  // };
-
-  // const handleViewEvents = () => {
-  //   scrollToSection('events-section');
-  // };
-
   const handleContact = () => {
-    // Open contact modal or scroll to contact section if exists
     console.log('Contact action triggered');
-    // You could implement a modal here
   };
+
+  // Show nothing while checking localStorage
+  if (showWelcome === null) {
+    return null; // or a minimal loading state
+  }
 
   return (
     <>
       <AnimatePresence mode="wait">
+        {/* Welcome Screen - Only on first visit */}
         {showWelcome && (
           <WelcomeScreen onComplete={handleWelcomeComplete} />
         )}
+
+        {/* Page Loader - Only when navigating to home from other pages */}
+        {!showWelcome && showPageLoader && (
+          <HomePageLoader />
+        )}
       </AnimatePresence>
 
-      {!showWelcome && (
+      {/* Main Content - Show when neither WelcomeScreen nor PageLoader is showing */}
+      {!showWelcome && !showPageLoader && (
         <div className="min-h-screen flex flex-col">
           <Navbar
             onNavigate={scrollToSection}
@@ -92,4 +120,3 @@ export default function HomePage() {
     </>
   );
 }
-

@@ -1,17 +1,21 @@
-"use client"
-import Footer from '@/components/layout/Footer'
-import Navbar from '@/components/layout/Navbar'
-import BookPage from '@/components/pages/BookPage'
-import React from 'react'
+"use client";
 
-const page = () => {
-    return (
-        <div>
-            <Navbar />
-            <BookPage />
-            <Footer />
-        </div>
-    )
-}
+import Footer from '@/components/layout/Footer';
+import Navbar from '@/components/layout/Navbar';
+import PageLoader from '@/components/loaders/PageLoader';
+import BookPage from '@/components/pages/BookPage';
+import React from 'react';
 
-export default page
+const Page = () => {
+  return (
+    <PageLoader>
+      <div>
+        <Navbar />
+        <BookPage />
+        <Footer />
+      </div>
+    </PageLoader>
+  );
+};
+
+export default Page;
