@@ -17,6 +17,7 @@ import ServicesSection from '@/components/home/ServicesSection';
 import { usePathname } from 'next/navigation';
 import PageLoader from '@/components/loaders/PageLoader';
 import HomePageLoader from '@/components/loaders/HomePageLoader';
+import ShopPreviewSection from '@/components/home/ShopPreviewSection';
 
 export default function HomePage() {
   const pathname = usePathname();
@@ -37,7 +38,7 @@ export default function HomePage() {
   useEffect(() => {
     // Skip on first visit (WelcomeScreen will show instead)
     if (isFirstVisit) return;
-    
+
     // Defer showing the PageLoader to avoid synchronous setState inside an effect
     const showTimer = setTimeout(() => {
       setShowPageLoader(true);
@@ -108,6 +109,7 @@ export default function HomePage() {
             <AboutSection />
             <FeaturedEventsSection />
             <BookPromoSection />
+            <ShopPreviewSection />
             <ServicesSection />
             <NewsletterSection />
           </main>
