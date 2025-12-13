@@ -15,7 +15,6 @@ import BookPromoSection from '@/components/home/BookPromoSection';
 import NewsletterSection from '@/components/home/NewsletterSection';
 import ServicesSection from '@/components/home/ServicesSection';
 import { usePathname } from 'next/navigation';
-import PageLoader from '@/components/loaders/PageLoader';
 import HomePageLoader from '@/components/loaders/HomePageLoader';
 import ShopPreviewSection from '@/components/home/ShopPreviewSection';
 
