@@ -8,6 +8,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
+    { name: 'About', path: '/about' },
     { name: 'Events', path: '/events' },
     { name: 'Workout Compass', path: '/book' },
     { name: 'Training', path: '/training' },

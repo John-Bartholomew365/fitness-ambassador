@@ -22,6 +22,7 @@ export default function Navbar({ isLoading, }: NavbarProps) {
 
   // Define navigation items - all with page routes
   const navItems = [
+    { label: 'About', id: 'about', route: '/about' },
     { label: 'Events', id: 'events', route: '/events' },
     { label: 'Book', id: 'book', route: '/book' },
     { label: 'Training', id: 'training', route: '/training' },
