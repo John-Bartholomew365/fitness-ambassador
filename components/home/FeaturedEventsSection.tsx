@@ -5,9 +5,9 @@ import Image from 'next/image';
 
 // Import your event images
 import eventImage1 from '../../public/walk.jpg';
-import eventImage2 from '../../public/walk.jpg';
+import eventImage2 from '../../public/afro.jpeg';
 import eventImage3 from '../../public/ice.jpeg'; 
-import eventImage4 from '../../public/walk.jpg'; 
+import eventImage4 from '../../public/jamfit.jpg'; 
 
 const events = [
   {
