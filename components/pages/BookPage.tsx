@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle, ArrowRight, BookOpen, Target, TrendingUp, Download, Star } from 'lucide-react';
+import { CheckCircle, ArrowRight, BookOpen, Target, TrendingUp, Star } from 'lucide-react';
 import BookPurchaseForm from './BookPurchaseForm';
 
 const chapters = [
