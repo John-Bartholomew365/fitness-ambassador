@@ -220,7 +220,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-xl md:text-2xl lg:text-3xl font-bold text-accent font-display text-center px-4"
                 >
-                  <div className="text-center leading-relaxed">
+                  <div className="text-center text-gradient leading-relaxed">
                     ALL IN ONE PLACE
                   </div>
                 </motion.div>

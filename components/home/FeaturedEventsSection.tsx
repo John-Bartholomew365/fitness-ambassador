@@ -147,7 +147,7 @@ const FeaturedEventsSection = () => {
                       <span className="text-sm">{event.participants} Participants</span>
                     </div>
                     <Link
-                      href={`/events/${event.id}`}
+                      href={`/gallery`}
                       className="flex items-center gap-2 text-secondary font-semibold text-sm group-hover:gap-3 transition-all"
                     >
                       View Gallery <ArrowRight size={16} />

@@ -1,182 +1,201 @@
-"use client"
-import { motion } from 'framer-motion';
+import { motion, Easing } from 'framer-motion';
 import Link from 'next/link';
-import { Calendar, Users, MapPin, ArrowRight } from 'lucide-react';
-import { fadeUp, staggerContainer, viewport } from '../../utils/animation';
+import Image from 'next/image';
+import { ArrowRight, Users, MapPin } from 'lucide-react';
 
-export default function EventsPage() {
-  const events = [
-    {
-      id: 'walk2fitness',
-      title: 'Walk2Fitness',
-      versions: ['1.0', '2.0', '3.0', '4.0'],
-      description: 'A revolutionary walking fitness series that has evolved through multiple successful editions, bringing communities together for health and wellness through the power of walking.',
-      participants: '200+',
-      location: 'Ilorin',
-      image: null,
-    },
-    {
-      id: 'jam2fit',
-      title: 'Jam2Fit',
-      subtitle: "Ilorin's First Nighttime Fitness Party",
-      description: 'An electrifying fusion of music, dance, and high-energy workouts under the stars. Jam2Fit broke records with over 400 participants, creating an unforgettable nighttime fitness experience.',
-      participants: '400+',
-      location: 'Ilorin',
-      image: null,
-    },
-    {
-      id: 'afro-groove',
-      title: 'Afro Groove',
-      subtitle: 'University of Ilorin Collaboration',
-      description: 'A dynamic fitness event celebrating African culture through movement. Created in partnership with University of Ilorin Sports Council, combining traditional and modern fitness techniques.',
-      participants: '150+',
-      location: 'University of Ilorin',
-      image: null,
-    },
-    {
-      id: 'aerobics-icebath',
-      title: 'Aerobics + Icebath',
-      subtitle: 'Massage Alchemy Collaboration',
-      description: 'An innovative wellness fusion combining high-intensity aerobics with the rejuvenating power of ice bath therapy. Experience the perfect balance of exertion and relaxation.',
-      participants: '100+',
-      location: 'Ilorin',
-      image: null,
-    },
-  ];
+const events = [
+  {
+    id: 1,
+    title: 'Walk2Fitness',
+    editions: '1.0 - 4.0',
+    description: 'A signature fitness walk event promoting active lifestyles through community engagement. Walk2Fitness brings together fitness enthusiasts of all levels for an energizing morning walk combined with group exercises.',
+    participants: '200+',
+    location: 'Ilorin, Kwara State',
+    image: '/walk.jpg',
+    upcoming: true,
+  },
+  {
+    id: 2,
+    title: 'Afro Groove',
+    editions: 'x Unilorin Sports Council',
+    description: 'A dynamic fitness collaboration blending African dance moves with intense cardio workouts. Experience the fusion of culture and fitness in this high-energy event.',
+    participants: '150+',
+    location: 'University of Ilorin',
+    image: '/groove1.jpeg',
+  },
+  {
+    id: 3,
+    title: 'Aerobics + Icebath',
+    editions: 'x Massage Alchemy',
+    description: 'Combining high-energy aerobics with the rejuvenating power of ice bath therapy. This unique event offers the perfect balance of exertion and recovery.',
+    participants: '80+',
+    location: 'Ilorin, Kwara State',
+    image: '/ice1.jpeg',
+  },
+  {
+    id: 4,
+    title: 'Jam2Fit',
+    editions: 'Nighttime Fitness Party',
+    description: "Ilorin's first-ever nighttime fitness party — dancing, sweating, and celebrating health! Experience fitness like never before under the stars with pumping music and electrifying energy.",
+    participants: '400+',
+    location: 'Ilorin, Kwara State',
+    image: '/jamfit.jpg',
+    featured: true,
+  },
+  {
+    id: 5,
+    title: 'Every Sunday Cycling',
+    editions: 'Weekly Fitness Ride',
+    description: 'Join our weekly cycling sessions every Sunday morning! Build endurance, improve cardiovascular health, and enjoy scenic routes with fellow fitness enthusiasts. Perfect for all cycling levels.',
+    participants: '100+ weekly',
+    location: 'Various Routes in Ilorin',
+    image: '/cycling1.jpeg',
+  },
+];
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
+  },
+};
+
+const Events = () => {
   return (
-    <div className="min-h-screen py-20">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-20 bg-linear-to-br from-primary/10 via-background to-accent/10">
-        <div className="container mx-auto px-4">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="text-center max-w-3xl mx-auto space-y-6"
+      <section className="pt-32 pb-6 px-4 md:px-8 bg-linear-to-b from-muted to-background">
+        <div className="container-max text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6"
           >
-            <motion.div variants={fadeUp} className="inline-block px-6 py-2 bg-primary/10 border border-primary rounded-full">
-              <span className="text-primary font-bold text-sm">SIGNATURE EVENTS</span>
-            </motion.div>
-            
-            <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-bold text-foreground">
-              TRANSFORMATIVE
-              <br />
-              <span className="text-primary">FITNESS EXPERIENCES</span>
-            </motion.h1>
-            
-            <motion.p variants={fadeUp} className="text-xl text-foreground/70">
-              Discover Nigeria&apos;s most innovative fitness events designed to energize, motivate, and transform communities
-            </motion.p>
-          </motion.div>
+            Events Portfolio
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6"
+          >
+            FITNESS <span className="text-gradient">EVENTS</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-[16px] text-muted-foreground lg:w-[490px] w-auto mx-auto"
+          >
+            From sunrise walks to nighttime fitness parties, we bring the community together through movement, music, and energy.
+          </motion.p>
         </div>
       </section>
 
-      {/* Events List */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="space-y-12"
-          >
+      {/* Events Grid */}
+      <section className="section-padding">
+        <div className="container-max">
+          <div className="grid gap-20">
             {events.map((event, index) => (
               <motion.div
                 key={event.id}
-                variants={fadeUp}
-                className="group"
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.25 }}
+                className={`grid md:grid-cols-2 gap-6 lg:gap-12 items-center ${index % 2 === 1 ? 'md:flex-row-reverse' : ''
+                  }`}
               >
-                <Link href={`/events/${event.id}`}>
-                  <div className={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-center ${index % 2 === 1 ? 'lg:grid-flow-dense' : ''}`}>
-                    {/* Image */}
-                    <div className={`relative aspect-4/3 rounded-3xl overflow-hidden bg-linear-to-br from-primary/20 via-accent/20 to-secondary/20 border-4 border-border group-hover:border-primary transition-all duration-300 ${index % 2 === 1 ? 'lg:col-start-2' : ''}`}>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center space-y-4">
-                          <div className="w-32 h-32 bg-primary rounded-full flex items-center justify-center mx-auto">
-                            <span className="text-6xl font-bold text-primary-foreground">FA</span>
-                          </div>
-                          <p className="text-2xl font-bold text-foreground font-display">{event.title}</p>
-                        </div>
-                      </div>
+                {/* Image/Color Block */}
+                <div className={`relative h-64 md:h-96 rounded-3xl overflow-hidden ${index % 2 === 1 ? 'md:order-2' : ''}`}>
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={event.image}
+                      alt={event.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover"
+                      priority={index === 0}
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-foreground/60 to-transparent" />
+                  </div>
+                  {event.featured && (
+                    <div className="absolute top-4 left-4 px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-xs font-semibold">
+                      Featured Event
                     </div>
+                  )}
+                  {event.upcoming && (
+                    <div className="absolute top-4 left-4 px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-semibold">
+                      Next Edition Coming Soon
+                    </div>
+                  )}
+                </div>
 
-                    {/* Content */}
-                    <div className={`space-y-6 ${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
-                      <div>
-                        <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-3 font-display group-hover:text-primary transition-colors">
-                          {event.title}
-                        </h2>
-                        {event.subtitle && (
-                          <p className="text-xl text-accent font-semibold mb-4">{event.subtitle}</p>
-                        )}
-                        {event.versions && (
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {event.versions.map((version) => (
-                              <span key={version} className="px-4 py-1 bg-primary/10 border border-primary rounded-full text-primary text-sm font-bold">
-                                Version {version}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                        <p className="text-lg text-foreground/80 leading-relaxed">
-                          {event.description}
-                        </p>
-                      </div>
+                {/* Content */}
+                <div className={index % 2 === 1 ? 'md:order-1' : ''}>
+                  <p className="text-primary font-semibold text-sm mb-2">{event.editions}</p>
+                  <h2 className="font-display text-4xl md:text-5xl text-foreground mb-4">
+                    {event.title}
+                  </h2>
+                  <p className="text-muted-foreground mb-6 leading-tight">
+                    {event.description}
+                  </p>
 
-                      {/* Stats */}
-                      <div className="flex flex-wrap gap-6">
-                        <div className="flex items-center space-x-2 text-foreground/60">
-                          <Users className="w-6 h-6 text-primary" />
-                          <span className="font-semibold text-lg">{event.participants} Participants</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-foreground/60">
-                          <MapPin className="w-6 h-6 text-accent" />
-                          <span className="font-semibold text-lg">{event.location}</span>
-                        </div>
-                      </div>
-
-                      {/* CTA */}
-                      <div className="flex items-center text-primary font-bold text-lg group-hover:translate-x-2 transition-transform duration-300">
-                        <span>View Full Gallery</span>
-                        <ArrowRight className="w-6 h-6 ml-2" />
-                      </div>
+                  <div className="flex flex-wrap gap-4 mb-8">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Users size={18} className="text-primary" />
+                      <span className="text-sm">{event.participants} Participants</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin size={18} className="text-primary" />
+                      <span className="text-sm">{event.location}</span>
                     </div>
                   </div>
-                </Link>
+
+                  <Link
+                    href={`/gallery`}
+                    // href={`/gallery?event=${event.id}`}
+                    className="btn-primary inline-flex items-center gap-2"
+                  >
+                    View Gallery <ArrowRight size={18} />
+                  </Link>
+                </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-linear-to-br from-primary via-accent to-secondary">
-        <div className="container mx-auto px-4">
+      <section className="section-padding bg-muted">
+        <div className="container-max text-center">
           <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="text-center space-y-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-2xl mx-auto"
           >
-            <h2 className="text-4xl md:text-6xl font-bold text-white">
-              READY TO JOIN THE NEXT EVENT?
+            <h2 className="font-display text-4xl md:text-5xl text-foreground mb-4">
+              WANT TO JOIN THE NEXT EVENT?
             </h2>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Be part of Nigeria&apos;s most energetic fitness community. Follow us on social media to stay updated on upcoming events.
+            <p className="text-muted-foreground mb-8">
+              Follow us on social media to stay updated on upcoming events and be the first to register.
             </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center px-8 py-4 bg-white text-primary rounded-2xl font-bold text-lg hover:bg-white/90 transition-all duration-300 shadow-xl space-x-2"
-            >
-              <Calendar className="w-5 h-5" />
-              <span>GET NOTIFIED</span>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/contact" className="btn-primary">
+                Contact Us
+              </Link>
+              <Link href="/gallery" className="btn-outline">
+                View Full Gallery
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
     </div>
   );
-}
+};
+
+export default Events;

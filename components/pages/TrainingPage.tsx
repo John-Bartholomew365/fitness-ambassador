@@ -1,231 +1,302 @@
-"use client"
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Dumbbell, Users, Video, Calendar, Check } from 'lucide-react';
-import { fadeUp, staggerContainer, viewport } from '../../utils/animation';
-import { toast } from 'sonner';
+import { motion, Easing } from 'framer-motion';
+import { Dumbbell, Users, Video, Apple, Clock, Check, ArrowRight } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
-export default function TrainingPage() {
+const services = [
+  {
+    icon: Dumbbell,
+    title: 'Personal Training',
+    description: 'One-on-one sessions tailored to your specific goals, fitness level, and schedule.',
+    features: ['Custom workout plans', 'Form correction', 'Progress tracking', 'Flexible scheduling'],
+    price: 'From ₦15,000/session',
+    color: 'primary',
+  },
+  {
+    icon: Users,
+    title: 'Group Fitness',
+    description: 'High-energy group sessions that combine motivation, community, and results.',
+    features: ['Community support', 'Fun atmosphere', 'Varied workouts', 'Affordable pricing'],
+    price: 'From ₦5,000/session',
+    color: 'secondary',
+  },
+  {
+    icon: Video,
+    title: 'Online Coaching',
+    description: 'Remote training programs with video guidance and weekly check-ins.',
+    features: ['Video tutorials', 'Weekly check-ins', 'Workout plans', 'Chat support'],
+    price: 'From ₦25,000/month',
+    color: 'accent',
+  },
+  {
+    icon: Apple,
+    title: 'Nutrition Guidance',
+    description: 'Simple, sustainable dietary advice to fuel your fitness journey.',
+    features: ['Meal planning', 'Macro tracking', 'Recipe suggestions', 'Diet optimization'],
+    price: 'From ₦10,000/consultation',
+    color: 'foreground',
+  },
+];
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
+  },
+};
+
+const Training = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     service: '',
-    message: '',
+    goals: '',
+    experience: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const services = [
-    {
-      title: 'Personal Training',
-      icon: Dumbbell,
-      description: 'One-on-one coaching tailored to your fitness goals',
-      features: ['Customized workout plans', 'Form correction', 'Progress tracking', 'Nutrition guidance'],
-      price: '₦25,000/month',
-      color: 'primary',
-    },
-    {
-      title: 'Online Coaching',
-      icon: Video,
-      description: 'Train with me from anywhere in the world',
-      features: ['Video consultations', 'Weekly check-ins', 'Custom programs', '24/7 support'],
-      price: '₦15,000/month',
-      color: 'accent',
-    },
-    {
-      title: 'Group Sessions',
-      icon: Users,
-      description: 'High-energy group training for maximum motivation',
-      features: ['Small group sizes', 'Community support', 'Varied workouts', 'Flexible schedule'],
-      price: '₦10,000/month',
-      color: 'secondary',
-    },
-  ];
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Booking request sent! We\'ll contact you within 24 hours.');
-    setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+    setIsSubmitting(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsSubmitting(false);
+    toast({
+      title: "Booking Request Sent!",
+      description: "We'll get back to you within 24 hours to schedule your consultation.",
+    });
+    setFormData({ name: '', email: '', phone: '', service: '', goals: '', experience: '' });
+  };
+
+  const getColorClass = (color: string, type: 'bg' | 'text') => {
+    const colors: Record<string, Record<string, string>> = {
+      primary: { bg: 'bg-primary', text: 'text-primary' },
+      secondary: { bg: 'bg-secondary', text: 'text-secondary' },
+      accent: { bg: 'bg-accent', text: 'text-accent' },
+      foreground: { bg: 'bg-foreground', text: 'text-foreground' },
+    };
+    return colors[color]?.[type] || '';
   };
 
   return (
-    <div className="min-h-screen py-20">
-      {/* Hero */}
-      <section className="py-20 bg-linear-to-br from-primary/10 via-background to-accent/10">
-        <div className="container mx-auto px-4">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="text-center max-w-3xl mx-auto space-y-6"
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="pt-32 pb-16 px-4 md:px-8 bg-linear-to-b from-muted to-background">
+        <div className="container-max text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6"
           >
-            <motion.div variants={fadeUp} className="inline-block px-6 py-2 bg-primary/10 border border-primary rounded-full">
-              <span className="text-primary font-bold text-sm">PROFESSIONAL TRAINING</span>
-            </motion.div>
-            
-            <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-bold text-foreground">
-              TRANSFORM YOUR
-              <br />
-              <span className="text-primary">BODY & MIND</span>
-            </motion.h1>
-            
-            <motion.p variants={fadeUp} className="text-xl text-foreground/70">
-              Expert coaching from a certified fitness professional with 7+ years of experience
-            </motion.p>
-          </motion.div>
+            Training & Consultation
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6"
+          >
+            TRAINING <span className="text-gradient">SERVICES</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-[16px] text-muted-foreground lg:w-[480px] w-auto mx-auto"
+          >
+            Transform your body with personalized training programs designed to help you achieve your fitness goals.
+          </motion.p>
         </div>
       </section>
 
-      {/* Services */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="space-y-12"
-          >
-            <motion.div variants={fadeUp} className="text-center space-y-4">
-              <h2 className="text-4xl md:text-6xl font-bold text-foreground">
-                TRAINING <span className="text-primary">SERVICES</span>
-              </h2>
-              <p className="text-xl text-foreground/70">Choose the perfect program for your fitness journey</p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {services.map((service, index) => (
-                <motion.div
-                  key={index}
-                  variants={fadeUp}
-                  className={`relative p-8 bg-background rounded-3xl border-2 border-border hover:border-${service.color} transition-all duration-300 hover:shadow-2xl overflow-hidden`}
-                >
-                  <div className={`absolute inset-0 bg-linear-to-br from-${service.color}/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300`} />
-                  
-                  <div className="relative z-10 space-y-6">
-                    <div className={`w-16 h-16 bg-${service.color}/10 rounded-2xl flex items-center justify-center`}>
-                      <service.icon className={`w-8 h-8 text-${service.color}`} />
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-bold text-foreground mb-2 font-display">{service.title}</h3>
-                      <p className="text-foreground/70">{service.description}</p>
-                    </div>
-
-                    <ul className="space-y-3">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start space-x-2">
-                          <Check className={`w-5 h-5 text-${service.color} shrink-0 mt-0.5`} />
-                          <span className="text-foreground/80">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className={`pt-6 border-t border-border`}>
-                      <p className="text-3xl font-bold text-${service.color} mb-4">{service.price}</p>
-                      <button className={`w-full px-6 py-3 bg-${service.color} text-${service.color === 'secondary' ? 'secondary-foreground' : 'white'} rounded-2xl font-bold hover:opacity-90 transition-opacity`}>
-                        Select Plan
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+      {/* Services Grid */}
+      <section className="section-padding">
+        <div className="container-max">
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+            {services.map((service) => (
+              <motion.div
+                key={service.title}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.25 }}
+                className="card-elevated group hover:shadow-xl transition-all duration-300"
+              >
+                <div className={`w-16 h-16 ${getColorClass(service.color, 'bg')} rounded-2xl flex items-center justify-center mb-6`}>
+                  <service.icon className="w-8 h-8 text-background" />
+                </div>
+                <h3 className="font-display text-3xl text-foreground mb-3">
+                  {service.title}
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  {service.description}
+                </p>
+                <ul className="space-y-2 mb-6">
+                  {service.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm">
+                      <Check size={16} className={getColorClass(service.color, 'text')} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex items-center justify-between pt-4 border-t border-border">
+                  <span className={`font-semibold ${getColorClass(service.color, 'text')}`}>
+                    {service.price}
+                  </span>
+                  <a href="#booking" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all">
+                    Book Now <ArrowRight size={16} />
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Booking Form */}
-      <section className="py-20 bg-muted">
-        <div className="container mx-auto px-4">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="max-w-2xl mx-auto space-y-12"
-          >
-            <motion.div variants={fadeUp} className="text-center space-y-4">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-2xl">
-                <Calendar className="w-8 h-8 text-primary" />
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-                BOOK YOUR <span className="text-primary">SESSION</span>
+      <section id="booking" className="section-padding bg-muted">
+        <div className="container-max">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+            {/* Form Info */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+                Book a Session
+              </span>
+              <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
+                START YOUR <span className="text-gradient">JOURNEY</span>
               </h2>
-              <p className="text-xl text-foreground/70">Fill out the form and we&apos;ll get back to you within 24 hours</p>
+              <p className="text-muted-foreground mb-8 ">
+                Fill out the form to book a free consultation. <br /> We&apos;ll discuss your goals and create a personalized plan to help you succeed.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 p-4 bg-background rounded-2xl">
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold">Free Consultation</p>
+                    <p className="text-sm text-muted-foreground">30-minute session to discuss your goals</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-background rounded-2xl">
+                  <div className="w-12 h-12 bg-secondary/20 rounded-xl flex items-center justify-center">
+                    <Users className="w-6 h-6 text-secondary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold">Personalized Plan</p>
+                    <p className="text-sm text-muted-foreground">Custom program tailored to your needs</p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
 
-            <motion.form variants={fadeUp} onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+            {/* Form */}
+            <motion.form
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              onSubmit={handleSubmit}
+              className="bg-background rounded-3xl p-6 md:p-8 shadow-lg"
+            >
+              <div className="grid gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">Full Name *</label>
+                  <label className="block text-sm font-medium mb-2">Full Name *</label>
                   <input
                     type="text"
+                    required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl bg-background border-2 border-border focus:border-primary focus:outline-none transition-colors"
-                    required
+                    className="w-full px-4 py-3 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="John Doe"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">Email *</label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl bg-background border-2 border-border focus:border-primary focus:outline-none transition-colors"
-                    required
-                  />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email *</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="john@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Phone *</label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="+234 801 234 5678"
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">Phone *</label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl bg-background border-2 border-border focus:border-primary focus:outline-none transition-colors"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">Service *</label>
+                  <label className="block text-sm font-medium mb-2">Service Interest *</label>
                   <select
+                    required
                     value={formData.service}
                     onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl bg-background border-2 border-border focus:border-primary focus:outline-none transition-colors"
-                    required
+                    className="w-full px-4 py-3 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="">Select a service</option>
-                    <option value="personal">Personal Training</option>
-                    <option value="online">Online Coaching</option>
-                    <option value="group">Group Sessions</option>
+                    {services.map((s) => (
+                      <option key={s.title} value={s.title}>{s.title}</option>
+                    ))}
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Fitness Experience</label>
+                  <select
+                    value={formData.experience}
+                    onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="">Select your experience level</option>
+                    <option value="beginner">Beginner (New to fitness)</option>
+                    <option value="intermediate">Intermediate (1-2 years)</option>
+                    <option value="advanced">Advanced (3+ years)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Your Goals *</label>
+                  <textarea
+                    required
+                    value={formData.goals}
+                    onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-3 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                    placeholder="Tell us about your fitness goals..."
+                  />
+                </div>
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="btn-primary cursor-pointer w-full disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Sending...' : 'Book Free Consultation'}
+                </motion.button>
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Message</label>
-                <textarea
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-2xl bg-background border-2 border-border focus:border-primary focus:outline-none transition-colors"
-                  placeholder="Tell us about your fitness goals..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                SUBMIT BOOKING REQUEST
-              </button>
             </motion.form>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>
   );
-}
+};
+
+export default Training;

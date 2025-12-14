@@ -1,285 +1,306 @@
-"use client"
 import { motion } from 'framer-motion';
-import { Book, CheckCircle, Download, ShoppingCart, Star } from 'lucide-react';
-import { fadeUp, fadeLeft, fadeRight, staggerContainer, viewport } from '../../utils/animation';
+import Link from 'next/link';
+import Image from 'next/image';
+import { CheckCircle, ArrowRight, BookOpen, Target, TrendingUp, Download, Star } from 'lucide-react';
+import BookPurchaseForm from './BookPurchaseForm';
 
-export default function BookPage() {
-  const chapters = [
-    'Understanding Your Fitness Foundation',
-    'Creating Personalized Workout Plans',
-    'Mastering Training Splits',
-    'Progressive Overload Principles',
-    'Form and Technique Essentials',
-    'Stretching and Mobility Routines',
-    'Nutrition Basics for Results',
-    'Sample Programs and Templates',
-  ];
+const chapters = [
+  { number: '01', title: 'Understanding Your Body', description: 'Learn how muscles work and respond to training' },
+  { number: '02', title: 'Setting Goals', description: 'Define clear, achievable fitness objectives' },
+  { number: '03', title: 'Training Splits', description: 'Master the art of program design' },
+  { number: '04', title: 'Progressive Overload', description: 'The key to continuous improvement' },
+  { number: '05', title: 'Form & Technique', description: 'Exercise execution for maximum results' },
+  { number: '06', title: 'Nutrition Basics', description: 'Fuel your body for optimal performance' },
+];
 
-  const benefits = [
-    'Stop guessing and start progressing with structured plans',
-    'Build effective routines for any fitness goal',
-    'Learn proper form to prevent injuries',
-    'Understand how to progressively challenge yourself',
-    'Access ready-to-use program templates',
-    'Master the fundamentals of gym training',
-  ];
+const testimonials = [
+  {
+    name: 'Adebayo O.',
+    role: 'Fitness Enthusiast',
+    text: 'This book changed how I approach the gym. Finally, a guide that makes sense!',
+    rating: 5,
+  },
+  {
+    name: 'Chidinma A.',
+    role: 'Beginner',
+    text: 'As someone new to fitness, Workout Compass gave me the confidence to start my journey.',
+    rating: 5,
+  },
+  {
+    name: 'Emmanuel K.',
+    role: '2 Years Training',
+    text: 'I thought I knew it all, but this book showed me how much I was missing.',
+    rating: 5,
+  },
+];
 
-  const testimonials = [
-    {
-      name: 'Sarah Johnson',
-      role: 'Fitness Enthusiast',
-      content: 'This book completely transformed my approach to training. The program templates are pure gold!',
-      rating: 5,
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Beginner',
-      content: 'Finally, a fitness guide that makes sense! No more wandering around the gym confused.',
-      rating: 5,
-    },
-    {
-      name: 'Amina Ibrahim',
-      role: 'Athlete',
-      content: 'Even as an experienced athlete, I learned new techniques. Highly recommend to everyone!',
-      rating: 5,
-    },
-  ];
-
+const Book = () => {
   return (
-    <div className="min-h-screen py-20">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-20 bg-linear-to-br from-primary/10 via-accent/5 to-secondary/10">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Book Visual */}
+      <section className="pt-28 pb-16 px-4 md:px-8 bg-linear-to-b from-muted to-background">
+        <div className="container-max">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Book Image */}
             <motion.div
-              variants={fadeLeft}
-              initial="hidden"
-              animate="visible"
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
               className="relative"
             >
-              <div className="relative max-w-md mx-auto">
-                {/* Floating elements */}
-                <motion.div
-                  animate={{ y: [0, -20, 0], rotate: [12, 15, 12] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute -top-8 -right-8 w-24 h-24 bg-secondary rounded-2xl opacity-30"
+              <div className="relative w-full max-w-md mx-auto">
+                <Image
+                  src="/workouts.jpg"
+                  alt="Workout Compass Book"
+                  width={400}
+                  height={500}
+                  className="w-full rounded-2xl shadow-2xl"
+                  priority
                 />
                 <motion.div
-                  animate={{ y: [0, 20, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute -bottom-8 -left-8 w-32 h-32 bg-accent rounded-full opacity-20"
-                />
-
-                {/* Book mockup */}
-                <motion.div
-                  animate={{ rotateY: [0, 5, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                  className="relative aspect-3/4 bg-linear-to-br from-primary via-accent to-secondary rounded-3xl shadow-2xl p-12 flex flex-col items-center justify-center text-center"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="absolute -top-4 -right-4 md:right-8 lg:-right-12 bg-accent text-accent-foreground px-4 py-2 rounded-xl shadow-lg"
                 >
-                  <Book className="w-32 h-32 text-white mb-8" />
-                  <h3 className="text-5xl font-bold text-white mb-6 font-display">
-                    WORKOUT
-                    <br />
-                    COMPASS
-                  </h3>
-                  <p className="text-white/90 text-xl font-semibold mb-4">
-                    BY AJISAFE SULAIMAN
-                  </p>
-                  <div className="mt-6 px-8 py-3 bg-white/20 backdrop-blur-sm rounded-full border-2 border-white/40">
-                    <span className="text-white font-bold text-lg">YOUR FITNESS ROADMAP</span>
-                  </div>
+                  <span className="font-semibold text-sm">New Release!</span>
                 </motion.div>
               </div>
             </motion.div>
 
             {/* Content */}
             <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-              className="space-y-8"
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
             >
-              <motion.div variants={fadeRight} className="space-y-4">
-                <div className="inline-block px-6 py-2 bg-accent/10 border border-accent rounded-full">
-                  <span className="text-accent font-bold text-sm">BESTSELLING FITNESS GUIDE</span>
-                </div>
-                
-                <h1 className="text-5xl md:text-7xl font-bold text-foreground">
-                  WORKOUT
-                  <br />
-                  <span className="text-primary">COMPASS</span>
-                </h1>
-                
-                <p className="text-2xl text-accent font-semibold">
-                  Your Personal Training Bible
-                </p>
-              </motion.div>
+              <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+                The Ultimate Fitness Guide
+              </span>
+              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6">
+                WORKOUT <span className="text-gradient">COMPASS</span>
+              </h1>
+              <p className="text-[16px] text-muted-foreground mb-6 leading-relaxed">
+                A practical fitness guide designed to help beginners and experienced gym-goers train with clarity, confidence, and purpose.
+              </p>
+              <p className="text-muted-foreground mb-8">
+                Written by <span className="text-primary font-bold">Ajisafe Sulaiman — &quot;The Fitness Ambassador&quot;</span>, a certified fitness coach with 7+ years of experience.
+              </p>
 
-              <motion.p variants={fadeRight} className="text-xl text-foreground/80 leading-relaxed">
-                A practical fitness guide designed to help beginners and experienced gym-goers train 
-                with <strong className="text-primary">clarity</strong>, <strong className="text-accent">confidence</strong>, 
-                and <strong className="text-secondary">purpose</strong>. Stop guessing and start progressing with 
-                a structured roadmap to real results.
-              </motion.p>
-
-              <motion.div variants={fadeRight} className="flex flex-col sm:flex-row gap-4">
-                <button className="group px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl">
-                  <ShoppingCart className="w-5 h-5" />
-                  <span>BUY NOW - ₦5,000</span>
-                </button>
-                
-                <a
-                  href="#sample"
-                  className="group px-8 py-4 bg-transparent border-2 border-accent text-accent rounded-2xl font-bold text-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300 flex items-center justify-center space-x-2"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>SAMPLE CHAPTER</span>
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <a href="#buy" className="btn-primary inline-flex items-center justify-center gap-2">
+                  Get the Book <ArrowRight size={18} />
                 </a>
-              </motion.div>
+                {/* <a href="#preview" className="btn-outline inline-flex items-center justify-center gap-2">
+                  <Download size={18} /> Free Sample Chapter
+                </a> */}
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
+                <div>
+                  <p className="font-display text-2xl text-primary">150+</p>
+                  <p className="text-sm text-muted-foreground">Pages</p>
+                </div>
+                <div>
+                  <p className="font-display text-2xl text-secondary">6</p>
+                  <p className="text-sm text-muted-foreground">Chapters</p>
+                </div>
+                <div>
+                  <p className="font-display text-2xl text-accent">100+</p>
+                  <p className="text-sm text-muted-foreground">Exercises</p>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* What's Inside */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
+      <section className="section-padding bg-background">
+        <div className="container-max">
           <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="space-y-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-            <motion.div variants={fadeUp} className="text-center max-w-3xl mx-auto space-y-4">
-              <h2 className="text-4xl md:text-6xl font-bold text-foreground">
-                WHAT&apos;S <span className="text-primary">INSIDE</span>
-              </h2>
-              <p className="text-xl text-foreground/70">
-                Comprehensive chapters covering everything you need to build an effective training program
-              </p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {chapters.map((chapter, index) => (
-                <motion.div
-                  key={index}
-                  variants={fadeUp}
-                  className="flex items-start space-x-4 p-6 bg-muted rounded-2xl hover:shadow-lg transition-shadow duration-300"
-                >
-                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center shrink-0">
-                    <span className="text-primary-foreground font-bold">{index + 1}</span>
-                  </div>
-                  <p className="text-lg font-semibold text-foreground">{chapter}</p>
-                </motion.div>
-              ))}
-            </div>
+            <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+              Inside The Book
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl text-foreground mb-4">
+              WHAT YOU&apos;LL <span className="text-gradient">LEARN</span>
+            </h2>
           </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {chapters.map((chapter, index) => (
+              <motion.div
+                key={chapter.number}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="card-elevated group hover:shadow-xl transition-all"
+              >
+                <span className="font-display text-5xl text-primary/20 group-hover:text-primary/40 transition-colors">
+                  {chapter.number}
+                </span>
+                <h3 className="font-display text-2xl text-foreground mt-4 mb-2">
+                  {chapter.title}
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  {chapter.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Key Benefits */}
-      <section className="py-20 bg-muted">
-        <div className="container mx-auto px-4">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="space-y-12"
-          >
-            <motion.div variants={fadeUp} className="text-center max-w-3xl mx-auto space-y-4">
-              <h2 className="text-4xl md:text-6xl font-bold text-foreground">
-                KEY <span className="text-accent">BENEFITS</span>
+      {/* Benefits */}
+      <section className="section-padding bg-muted">
+        <div className="container-max">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+                Why This Book?
+              </span>
+              <h2 className="font-display text-4xl md:text-5xl text-foreground mb-8">
+                STOP GUESSING, <span className="text-gradient">START PROGRESSING</span>
               </h2>
+
+              <div className="space-y-4">
+                {[
+                  'Personalized workout plans for any goal',
+                  'Progressive overload principles explained',
+                  'Stretching routines & form guides',
+                  'Simple dietary tips for beginners',
+                  'Real program templates you can use today',
+                  '100+ exercise demonstrations',
+                ].map((benefit, index) => (
+                  <motion.div
+                    key={benefit}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="flex items-center gap-3"
+                  >
+                    <CheckCircle className="w-5 h-5 text-primary shrink-0" />
+                    <span className="text-foreground">{benefit}</span>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {benefits.map((benefit, index) => (
-                <motion.div
-                  key={index}
-                  variants={fadeUp}
-                  className="flex items-start space-x-3 p-6 bg-background rounded-2xl border border-border"
-                >
-                  <CheckCircle className="w-6 h-6 text-primary shrink-0 mt-1" />
-                  <p className="text-foreground/80">{benefit}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-2 gap-4"
+            >
+              <div className="space-y-4">
+                <div className="h-48 bg-primary rounded-2xl flex items-center justify-center p-6">
+                  <div className="text-center text-primary-foreground">
+                    <Target className="w-12 h-12 mx-auto mb-3" />
+                    <p className="font-display text-xl">Goal-Focused</p>
+                  </div>
+                </div>
+                <div className="h-32 bg-secondary rounded-2xl flex items-center justify-center p-6">
+                  <TrendingUp className="w-12 h-12 text-secondary-foreground" />
+                </div>
+              </div>
+              <div className="space-y-4 pt-8">
+                <div className="h-32 bg-accent rounded-2xl flex items-center justify-center p-6">
+                  <BookOpen className="w-12 h-12 text-accent-foreground" />
+                </div>
+                <div className="h-48 bg-foreground rounded-2xl flex items-center justify-center p-6">
+                  <div className="text-center text-background">
+                    <p className="font-display text-4xl">7+</p>
+                    <p className="text-sm mt-2">Years of Experience</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
+      <section className="section-padding bg-background">
+        <div className="container-max">
           <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="space-y-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-            <motion.div variants={fadeUp} className="text-center space-y-4">
-              <h2 className="text-4xl md:text-6xl font-bold text-foreground">
-                READER <span className="text-secondary">REVIEWS</span>
-              </h2>
-            </motion.div>
-
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={index}
-                  variants={fadeUp}
-                  className="p-8 bg-muted rounded-2xl space-y-4"
-                >
-                  <div className="flex space-x-1">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-secondary fill-secondary" />
-                    ))}
-                  </div>
-                  <p className="text-foreground/80 italic">&quot;{testimonial.content}&quot;</p>
-                  <div>
-                    <p className="font-semibold text-foreground">{testimonial.name}</p>
-                    <p className="text-sm text-foreground/60">{testimonial.role}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+              Reader Reviews
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl text-foreground">
+              WHAT READERS <span className="text-gradient">SAY</span>
+            </h2>
           </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="card-elevated"
+              >
+                <div className="flex gap-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} size={18} className="fill-secondary text-secondary" />
+                  ))}
+                </div>
+                <p className="text-muted-foreground mb-6 italic">
+                  &quot;{testimonial.text}&quot;
+                </p>
+                <div>
+                  <p className="font-semibold">{testimonial.name}</p>
+                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section id="sample" className="py-20 bg-linear-to-br from-primary via-accent to-secondary">
-        <div className="container mx-auto px-4">
+      {/* CTA */}
+      <section id="buy" className="section-padding bg-background">
+        <div className="container-max">
           <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            className="text-center space-y-8 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
           >
-            <h2 className="text-4xl md:text-6xl font-bold text-white">
-              START YOUR FITNESS JOURNEY TODAY
+            <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
+              Get Your Copy
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl text-foreground mb-4">
+              ORDER <span className="text-gradient">WORKOUT COMPASS</span>
             </h2>
-            <p className="text-xl text-white/90">
-              Get your copy of Workout Compass and transform the way you train forever.
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Get your personal copy delivered to your doorstep. <br /> Complete the order form below.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-white text-primary rounded-2xl font-bold text-lg hover:bg-white/90 transition-all duration-300 shadow-xl flex items-center justify-center space-x-2">
-                <ShoppingCart className="w-5 h-5" />
-                <span>BUY NOW - ₦5,000</span>
-              </button>
-              <button className="px-8 py-4 bg-white/20 backdrop-blur-sm border-2 border-white text-white rounded-2xl font-bold text-lg hover:bg-white/30 transition-all duration-300 flex items-center justify-center space-x-2">
-                <Download className="w-5 h-5" />
-                <span>DOWNLOAD SAMPLE</span>
-              </button>
-            </div>
           </motion.div>
+
+          <BookPurchaseForm />
         </div>
       </section>
     </div>
   );
-}
+};
+
+export default Book;

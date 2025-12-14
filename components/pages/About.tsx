@@ -124,11 +124,11 @@ const About = () => {
                                 A certified fitness coach with over 7 years of experience transforming lives through fitness.
                                 My mission is to make fitness accessible, enjoyable, and sustainable for everyone.
                             </p>
-                            <div className="flex flex-wrap gap-4">
-                                <Link href="/training" className="btn-primary">
+                            <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center">
+                                <Link href="/training" className="btn-primary w-full sm:w-auto text-center">
                                     Book a Session
                                 </Link>
-                                <Link href="/events" className="btn-secondary">
+                                <Link href="/events" className="btn-secondary w-full sm:w-auto text-center">
                                     View Events
                                 </Link>
                             </div>
@@ -326,16 +326,16 @@ const About = () => {
                         <p className="text-[16px] text-primary-foreground/80 mb-8 lg:w-[470px] w-auto mx-auto leading-tight">
                             Whether you&apos;re a beginner or experienced athlete, let&apos;s work together to achieve your fitness goals.
                         </p>
-                        <div className="flex flex-wrap gap-4 justify-center">
+                        <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-center">
                             <Link
                                 href="/training"
-                                className="inline-flex items-center gap-2 px-8 py-4 bg-background text-foreground font-bold rounded-2xl hover:bg-background/90 transition-colors"
+                                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-background text-foreground font-bold rounded-2xl hover:bg-background/90 transition-colors w-[90%] sm:w-auto text-center"
                             >
                                 Book a Session
                             </Link>
                             <Link
                                 href="/contact"
-                                className="inline-flex items-center gap-2 px-8 py-4 bg-primary-foreground/10 text-primary-foreground font-bold rounded-2xl border-2 border-primary-foreground/30 hover:bg-primary-foreground/20 transition-colors"
+                                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-foreground/10 text-primary-foreground font-bold rounded-2xl border-2 border-primary-foreground/30 hover:bg-primary-foreground/20 transition-colors w-[90%] sm:w-auto text-center"
                             >
                                 Get in Touch
                             </Link>
