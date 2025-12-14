@@ -592,14 +592,14 @@ const Gallery = () => {
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-4">
               CAPTURING THE <span className='text-gradient'>JOURNEY</span>
             </h1>
-            <p className="text-[16px] text-muted-foreground lg:w-[420px] w-auto mx-auto leading-tight">
+            <p className="text-[16px] text-muted-foreground lg:w-[420px] w-auto mx-auto leading-tight lg:px-0 px-4">
               Explore photos and videos from our fitness events, training sessions, and memorable moments.
             </p>
 
             {/* Event Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-2xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-2xl mx-auto lg:px-0 px-3">
               {[
-                { icon: Calendar, label: 'Events', value: '6+' },
+                { icon: Calendar, label: 'Events', value: '7+' },
                 { icon: Users, label: 'Participants', value: '2000+' },
                 { icon: Trophy, label: 'Editions', value: '10+' },
                 { icon: Heart, label: 'Happy Clients', value: '500+' },
