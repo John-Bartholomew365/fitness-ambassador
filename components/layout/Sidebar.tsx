@@ -1,0 +1,132 @@
+"use client"
+
+import { useState } from 'react'
+import { 
+  LayoutDashboard, 
+  Calendar, 
+  ShoppingBag, 
+  Book, 
+  Dumbbell, 
+  Users, 
+  MessageSquare,
+  Image,
+  Menu,
+  X,
+  ChevronLeft
+} from 'lucide-react'
+import Link from 'next/link'
+
+const menuItems = [
+  { icon: LayoutDashboard, label: 'Dashboard', key: 'dashboard' },
+  { icon: Calendar, label: 'Events', key: 'events' },
+  { icon: ShoppingBag, label: 'Shop / Products', key: 'shop' },
+  { icon: Book, label: 'Book Management', key: 'book' },
+  { icon: Dumbbell, label: 'Training', key: 'training' },
+  { icon: Users, label: 'Subscribers', key: 'subscribers' },
+  { icon: MessageSquare, label: 'Contact Messages', key: 'contacts' },
+  { icon: Image, label: 'Media Library', key: 'media' },
+]
+
+interface SidebarProps {
+  activeSection: string
+  setActiveSection: (section: string) => void
+}
+
+export default function Sidebar({ activeSection, setActiveSection }: SidebarProps) {
+  const [isOpen, setIsOpen] = useState(true)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-primary text-primary-foreground rounded-lg cursor-pointer"
+      >
+        <Menu className="w-6 h-6" />
+      </button>
+
+      {/* Overlay for mobile */}
+      {isMobileOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        ${isOpen ? 'w-64' : 'w-20'} 
+        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        fixed lg:relative h-screen bg-card border-r border-border flex flex-col z-40
+        transition-all duration-300
+      `}>
+        {/* Header */}
+        <div className="p-4 border-b border-border flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold">
+              FA
+            </div>
+            {isOpen && <span className="font-bold text-lg">Admin Panel</span>}
+          </div>
+          
+          {isOpen && (
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-1 hover:bg-muted rounded-md cursor-pointer"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+
+        {/* Close button for mobile */}
+        {isMobileOpen && (
+          <button
+            onClick={() => setIsMobileOpen(false)}
+            className="lg:hidden absolute top-4 right-4 p-1 cursor-pointer"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        )}
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 overflow-y-auto">
+          <ul className="space-y-2">
+            {menuItems.map((item) => (
+              <li key={item.key}>
+                <button
+                  onClick={() => {
+                    setActiveSection(item.key)
+                    setIsMobileOpen(false)
+                  }}
+                  className={`
+                    w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-colors cursor-pointer
+                    ${activeSection === item.key
+                      ? 'bg-primary text-primary-foreground'
+                      : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                    }
+                  `}
+                >
+                  <item.icon className="w-5 h-5 shrink-0" />
+                  {isOpen && <span className="font-medium text-sm">{item.label}</span>}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-border">
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          >
+            <ChevronLeft className="w-5 h-5" />
+            {isOpen && <span className="font-medium text-sm">Back to Site</span>}
+          </Link>
+        </div>
+      </aside>
+    </>
+  )
+}
