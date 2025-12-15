@@ -161,10 +161,11 @@ const Training = () => {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Form Info */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="lg:order-1"
             >
               <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-6">
                 Book a Session
@@ -172,12 +173,18 @@ const Training = () => {
               <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
                 START YOUR <span className="text-gradient">JOURNEY</span>
               </h2>
-              <p className="text-muted-foreground mb-8 ">
+              <p className="text-muted-foreground mb-8">
                 Fill out the form to book a free consultation. <br /> We&apos;ll discuss your goals and create a personalized plan to help you succeed.
               </p>
 
               <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 bg-background rounded-2xl">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  className="flex items-center gap-4 p-4 bg-background rounded-2xl"
+                >
                   <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
                     <Clock className="w-6 h-6 text-primary" />
                   </div>
@@ -185,8 +192,14 @@ const Training = () => {
                     <p className="font-semibold">Free Consultation</p>
                     <p className="text-sm text-muted-foreground">30-minute session to discuss your goals</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-4 p-4 bg-background rounded-2xl">
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  className="flex items-center gap-4 p-4 bg-background rounded-2xl"
+                >
                   <div className="w-12 h-12 bg-secondary/20 rounded-xl flex items-center justify-center">
                     <Users className="w-6 h-6 text-secondary" />
                   </div>
@@ -194,21 +207,31 @@ const Training = () => {
                     <p className="font-semibold">Personalized Plan</p>
                     <p className="text-sm text-muted-foreground">Custom program tailored to your needs</p>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
 
             {/* Form */}
             <motion.form
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
               onSubmit={handleSubmit}
-              className="bg-background rounded-3xl p-6 md:p-8 shadow-lg"
+              className="bg-background rounded-3xl p-6 md:p-8 shadow-lg lg:order-2"
             >
-              <div className="grid gap-4">
-                <div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ staggerChildren: 0.1 }}
+                className="grid gap-4"
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
                   <label className="block text-sm font-medium mb-2">Full Name *</label>
                   <input
                     type="text"
@@ -218,8 +241,13 @@ const Training = () => {
                     className="w-full px-4 py-3 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="John Doe"
                   />
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.05 }}
+                  className="grid md:grid-cols-2 gap-4"
+                >
                   <div>
                     <label className="block text-sm font-medium mb-2">Email *</label>
                     <input
@@ -242,8 +270,12 @@ const Training = () => {
                       placeholder="+234 801 234 5678"
                     />
                   </div>
-                </div>
-                <div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                >
                   <label className="block text-sm font-medium mb-2">Service Interest *</label>
                   <select
                     required
@@ -256,8 +288,12 @@ const Training = () => {
                       <option key={s.title} value={s.title}>{s.title}</option>
                     ))}
                   </select>
-                </div>
-                <div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.15 }}
+                >
                   <label className="block text-sm font-medium mb-2">Fitness Experience</label>
                   <select
                     value={formData.experience}
@@ -269,8 +305,12 @@ const Training = () => {
                     <option value="intermediate">Intermediate (1-2 years)</option>
                     <option value="advanced">Advanced (3+ years)</option>
                   </select>
-                </div>
-                <div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                >
                   <label className="block text-sm font-medium mb-2">Your Goals *</label>
                   <textarea
                     required
@@ -280,8 +320,11 @@ const Training = () => {
                     className="w-full px-4 py-3 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                     placeholder="Tell us about your fitness goals..."
                   />
-                </div>
+                </motion.div>
                 <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.25 }}
                   type="submit"
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
@@ -290,7 +333,7 @@ const Training = () => {
                 >
                   {isSubmitting ? 'Sending...' : 'Book Free Consultation'}
                 </motion.button>
-              </div>
+              </motion.div>
             </motion.form>
           </div>
         </div>
