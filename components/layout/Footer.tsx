@@ -14,6 +14,7 @@ const Footer = () => {
     { name: 'Training', path: '/training' },
     { name: 'Shop', path: '/shop' },
     { name: 'Gallery', path: '/gallery' },
+    { name: 'FAQ', path: '/faq' },
   ];
 
   const socialLinks = [
