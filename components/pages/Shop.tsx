@@ -291,7 +291,7 @@ const Shop = () => {
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-4">
               SHOP PREMIUM <span className="text-gradient">GEAR</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto lg:px-0 px-4">
               Elevate your training with our high-quality fitness apparel designed for peak performance.
             </p>
           </motion.div>
