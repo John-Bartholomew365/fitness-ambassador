@@ -28,7 +28,7 @@ export default function Navbar({ isLoading, }: NavbarProps) {
     { label: 'Training', id: 'training', route: '/training' },
     { label: 'Shop', id: 'shop', route: '/shop' },
     { label: 'Gallery', id: 'gallery', route: '/gallery' },
-    { label: 'Contact', id: 'contact', route: '/contact' },
+    // { label: 'Contact', id: 'contact', route: '/contact' },
   ];
 
   // Function to handle navigation
@@ -40,7 +40,7 @@ export default function Navbar({ isLoading, }: NavbarProps) {
   // Function to handle "Book a Session" button
   const handleBookSession = () => {
     setMobileMenuOpen(false);
-    router.push('/book');
+    router.push('/contact');
   };
 
   return (
