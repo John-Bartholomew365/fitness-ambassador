@@ -354,7 +354,7 @@ const CheckoutPage = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="max-w-6xl mx-auto"
+            className="lg:max-w-6xl max-w-full mx-auto"
           >
             <motion.div variants={itemVariants} className="text-center mb-8">
               <h1 className="font-display text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
