@@ -14,7 +14,7 @@ const services = [
   },
   {
     icon: Users,
-    title: 'Group Fitness',
+    title: 'Group / Corporate Fitness',
     description: 'High-energy group sessions that combine motivation, community, and results.',
     features: ['Community support', 'Fun atmosphere', 'Varied workouts', 'Affordable pricing'],
     price: 'From ₦5,000/session',

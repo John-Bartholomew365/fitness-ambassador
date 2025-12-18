@@ -116,7 +116,7 @@ const faqs = [
     questions: [
       {
         question: "What types of training programs do you offer?",
-        answer: "We offer comprehensive fitness solutions including: personal training (1-on-1), group fitness sessions, online coaching, specialized programs for weight loss, muscle building, athletic performance, and general fitness improvement."
+        answer: "We offer comprehensive fitness solutions including: personal training (1-on-1), group / corporate fitness sessions, online coaching, specialized programs for weight loss, muscle building, athletic performance, and general fitness improvement."
       },
       {
         question: "How do I book a consultation?",

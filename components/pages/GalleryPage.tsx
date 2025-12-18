@@ -692,7 +692,7 @@ const Gallery = () => {
               {
                 title: 'Personal Training',
                 color: '#ff8a00',
-                description: 'One-on-one & group fitness coaching',
+                description: 'One-on-one & group / corporate fitness coaching',
                 editions: 'Ongoing',
                 participants: '500+ transformed'
               },

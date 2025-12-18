@@ -11,7 +11,7 @@ const services = [
   },
   {
     icon: Users,
-    title: 'Group Fitness',
+    title: 'Group / Corporate Fitness',
     description: 'High-energy group sessions that combine motivation, community, and results.',
     color: 'bg-secondary',
   },
