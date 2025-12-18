@@ -18,20 +18,44 @@ import { usePathname } from 'next/navigation';
 import HomePageLoader from '@/components/loaders/HomePageLoader';
 import ShopPreviewSection from '@/components/home/ShopPreviewSection';
 
+// Helper function to check if welcome screen should show
+const shouldShowWelcomeScreen = (): boolean => {
+  if (typeof window === 'undefined') return true;
+  
+  const welcomeData = localStorage.getItem('hasSeenWelcome');
+  
+  if (!welcomeData) return true;
+  
+  try {
+    const parsedData = JSON.parse(welcomeData);
+    const storedTimestamp = parsedData.timestamp;
+    const currentTime = Date.now();
+    
+    // Check if more than 1 hour has passed (3600000 milliseconds)
+    return currentTime - storedTimestamp > 3600000;
+  } catch {
+    // If there's an error parsing, show welcome screen
+    return true;
+  }
+};
+
 export default function HomePage() {
   const pathname = usePathname();
-  const [showWelcome, setShowWelcome] = useState<boolean | null>(() => {
-    if (typeof window === 'undefined') return null;
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    return hasSeenWelcome !== 'true';
-  });
+  const [showWelcome, setShowWelcome] = useState<boolean | null>(null);
   const [showPageLoader, setShowPageLoader] = useState(false);
-  const [isFirstVisit, setIsFirstVisit] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return true;
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    return hasSeenWelcome !== 'true';
-  });
+  const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize welcome screen state
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const shouldShow = shouldShowWelcomeScreen();
+      setTimeout(() => {
+        setShowWelcome(shouldShow);
+        setIsFirstVisit(shouldShow);
+      }, 0);
+    }
+  }, []);
 
   // Show PageLoader when navigating to home from another page
   useEffect(() => {
@@ -55,7 +79,12 @@ export default function HomePage() {
 
   const handleWelcomeComplete = () => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('hasSeenWelcome', 'true');
+      // Store timestamp along with the flag
+      const welcomeData = {
+        hasSeen: true,
+        timestamp: Date.now()
+      };
+      localStorage.setItem('hasSeenWelcome', JSON.stringify(welcomeData));
     }
     setShowWelcome(false);
     setIsFirstVisit(false);
@@ -75,7 +104,7 @@ export default function HomePage() {
     console.log('Contact action triggered');
   };
 
-  // Show nothing while checking localStorage
+  // Show nothing while initializing
   if (showWelcome === null) {
     return null; // or a minimal loading state
   }
@@ -83,7 +112,7 @@ export default function HomePage() {
   return (
     <>
       <AnimatePresence mode="wait">
-        {/* Welcome Screen - Only on first visit */}
+        {/* Welcome Screen - Shows on first visit OR after 1 hour */}
         {showWelcome && (
           <WelcomeScreen onComplete={handleWelcomeComplete} />
         )}

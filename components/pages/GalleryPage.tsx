@@ -155,7 +155,7 @@ const galleryItems: GalleryItem[] = [
     type: 'image',
     description: 'The very first Walk2Fitness event that started it all.',
     date: '2021',
-    participants: '200+'
+    participants: '2000+'
   },
   {
     id: 14,
@@ -165,7 +165,7 @@ const galleryItems: GalleryItem[] = [
     type: 'image',
     description: 'First aerobics session of the inaugural Walk2Fitness event.',
     date: '2021',
-    participants: '200+'
+    participants: '2000+'
   },
   {
     id: 15,
@@ -175,7 +175,7 @@ const galleryItems: GalleryItem[] = [
     type: 'image',
     description: 'Building fitness community from the ground up.',
     date: '2021',
-    participants: '200+'
+    participants: '2000+'
   },
 
   // Jam2Fit

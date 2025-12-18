@@ -9,7 +9,7 @@ const events = [
     title: 'Walk2Fitness',
     editions: '1.0 - 4.0',
     description: 'A signature fitness walk event promoting active lifestyles through community engagement. Walk2Fitness brings together fitness enthusiasts of all levels for an energizing morning walk combined with group exercises.',
-    participants: '200+',
+    participants: '2000+',
     location: 'Ilorin, Kwara State',
     image: '/walk.jpg',
     upcoming: true,

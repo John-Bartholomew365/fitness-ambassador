@@ -15,7 +15,7 @@ const events = [
     title: 'Walk2Fitness',
     subtitle: '1.0 - 4.0',
     description: 'A signature fitness walk event promoting active lifestyles through community engagement.',
-    participants: '200+',
+    participants: '2000+',
     image: eventImage1,
   },
   {
