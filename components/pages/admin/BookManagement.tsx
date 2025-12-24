@@ -98,42 +98,42 @@ export default function BookManagement() {
   const physicalSales = orders.filter(o => o.format === 'Physical').length
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Workout Compass Orders</h2>
-        <Button variant="outline" className="cursor-pointer">
-          <Download className="w-4 h-4 mr-2" /> Export Orders
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold">Workout Compass Orders</h2>
+        <Button variant="outline" className="cursor-pointer w-full sm:w-auto">
+          <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Export Orders
         </Button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">₦{totalRevenue.toLocaleString()}</div>
-            <p className="text-sm text-muted-foreground">Total Revenue</p>
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-lg sm:text-xl lg:text-2xl font-bold">₦{totalRevenue.toLocaleString()}</div>
+            <p className="text-xs sm:text-sm text-muted-foreground">Total Revenue</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{digitalSales}</div>
-            <p className="text-sm text-muted-foreground">Digital Sales</p>
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-lg sm:text-xl lg:text-2xl font-bold">{digitalSales}</div>
+            <p className="text-xs sm:text-sm text-muted-foreground">Digital Sales</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{physicalSales}</div>
-            <p className="text-sm text-muted-foreground">Physical Sales</p>
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-lg sm:text-xl lg:text-2xl font-bold">{physicalSales}</div>
+            <p className="text-xs sm:text-sm text-muted-foreground">Physical Sales</p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3 sm:w-4 sm:h-4" />
           <Input
             placeholder="Search book orders..."
-            className="pl-10"
+            className="pl-8 sm:pl-10 text-sm sm:text-base"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -150,69 +150,70 @@ export default function BookManagement() {
       </div>
 
       <Card>
-        <CardContent className="pt-6">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Format</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Address</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id}</TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{order.customer}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        <div>{order.email}</div>
-                        <div className="text-muted-foreground">{order.phone}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={
-                        order.format === 'Digital' 
-                          ? 'bg-blue-100 text-blue-800' 
-                          : 'bg-green-100 text-green-800'
-                      }>
-                        {order.format}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{order.amount}</TableCell>
-                    <TableCell>
-                      <select
-                        className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(order.status)}`}
-                        value={order.status}
-                        onChange={(e) => updateOrderStatus(order.id, e.target.value as BookOrder['status'])}
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </TableCell>
-                    <TableCell>{order.date}</TableCell>
-                    <TableCell>
-                      <div className="text-sm text-muted-foreground truncate max-w-[150px]">
-                        {order.deliveryAddress || 'Digital Delivery'}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <CardContent className="pt-4 sm:pt-6">
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="min-w-full inline-block align-middle">
+              <div className="overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="px-4">Order ID</TableHead>
+                      <TableHead className="hidden sm:table-cell">Customer</TableHead>
+                      <TableHead className="hidden xs:table-cell">Contact</TableHead>
+                      <TableHead>Format</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="hidden md:table-cell">Date</TableHead>
+                      <TableHead className="hidden lg:table-cell">Address</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredOrders.map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell className="px-4 font-medium">{order.id}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          <div className="font-medium">{order.customer}</div>
+                        </TableCell>
+                        <TableCell className="hidden xs:table-cell">
+                          <div className="text-xs sm:text-sm">
+                            <div>{order.email}</div>
+                            <div className="text-muted-foreground">{order.phone}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={`text-xs ${order.format === 'Digital' 
+                            ? 'bg-blue-100 text-blue-800' 
+                            : 'bg-green-100 text-green-800'
+                          }`}>
+                            {order.format}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{order.amount}</TableCell>
+                        <TableCell>
+                          <select
+                            className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(order.status)}`}
+                            value={order.status}
+                            onChange={(e) => updateOrderStatus(order.id, e.target.value as BookOrder['status'])}
+                          >
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                          </select>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">{order.date}</TableCell>
+                        <TableCell className="hidden lg:table-cell">
+                          <div className="text-xs text-muted-foreground truncate max-w-[150px]">
+                            {order.deliveryAddress || 'Digital Delivery'}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

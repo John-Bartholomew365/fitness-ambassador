@@ -2,6 +2,7 @@
 
 import Header from '@/components/layout/Header'
 import Sidebar from '@/components/layout/Sidebar'
+import AdminBlogDashboard from '@/components/pages/admin/AdminBlogPage'
 import BookManagement from '@/components/pages/admin/BookManagement'
 import ContactMessages from '@/components/pages/admin/ContactMessages'
 import Dashboard from '@/components/pages/admin/Dashboard'
@@ -31,6 +32,8 @@ export default function AdminPage() {
         return <Subscribers />
       case 'contacts':
         return <ContactMessages />
+      case 'blog':
+        return <AdminBlogDashboard />
       case 'media':
         return <MediaLibrary />
       default:
@@ -47,7 +50,7 @@ export default function AdminPage() {
       
       <div className="flex-1 flex flex-col lg:ml-0">
         <Header activeSection={activeSection} />
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">
+        <main className="flex-1 p-3 sm:p-4 lg:p-6 overflow-auto">
           {renderContent()}
         </main>
       </div>

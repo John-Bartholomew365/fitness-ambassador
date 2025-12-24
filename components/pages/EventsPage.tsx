@@ -13,27 +13,10 @@ const events = [
     location: 'Ilorin, Kwara State',
     image: '/walk.jpg',
     upcoming: true,
+    learnMoreLink: '/events/walk2fitness', // Unique page for this event
   },
   {
     id: 2,
-    title: 'Afro Groove',
-    editions: 'x Unilorin Sports Council',
-    description: 'A dynamic fitness collaboration blending African dance moves with intense cardio workouts. Experience the fusion of culture and fitness in this high-energy event.',
-    participants: '150+',
-    location: 'University of Ilorin',
-    image: '/groove1.jpeg',
-  },
-  {
-    id: 3,
-    title: 'Aerobics + Icebath',
-    editions: 'x Massage Alchemy',
-    description: 'Combining high-energy aerobics with the rejuvenating power of ice bath therapy. This unique event offers the perfect balance of exertion and recovery.',
-    participants: '80+',
-    location: 'Ilorin, Kwara State',
-    image: '/ice1.jpeg',
-  },
-  {
-    id: 4,
     title: 'Jam2Fit',
     editions: 'Nighttime Fitness Party',
     description: "Ilorin's first-ever nighttime fitness party — dancing, sweating, and celebrating health! Experience fitness like never before under the stars with pumping music and electrifying energy.",
@@ -41,7 +24,29 @@ const events = [
     location: 'Ilorin, Kwara State',
     image: '/jamfit.jpg',
     featured: true,
+    learnMoreLink: '/events/jam2fit',
   },
+  {
+    id: 3,
+    title: 'Afro Groove',
+    editions: 'x Unilorin Sports Council',
+    description: 'A dynamic fitness collaboration blending African dance moves with intense cardio workouts. Experience the fusion of culture and fitness in this high-energy event.',
+    participants: '150+',
+    location: 'University of Ilorin',
+    image: '/groove1.jpeg',
+    learnMoreLink: '/events/afro-groove',
+  },
+  {
+    id: 4,
+    title: 'Aerobics + Icebath',
+    editions: 'x Massage Alchemy',
+    description: 'Combining high-energy aerobics with the rejuvenating power of ice bath therapy. This unique event offers the perfect balance of exertion and recovery.',
+    participants: '80+',
+    location: 'Ilorin, Kwara State',
+    image: '/ice1.jpeg',
+    learnMoreLink: '/events/aerobics-icebath',
+  },
+
   {
     id: 5,
     title: 'Every Sunday Cycling',
@@ -50,6 +55,7 @@ const events = [
     participants: '100+ weekly',
     location: 'Various Routes in Ilorin',
     image: '/cycling1.jpeg',
+    learnMoreLink: '/events/every-sunday-cycling',
   },
 ];
 
@@ -79,7 +85,7 @@ const Events = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6"
+            className="font-display text-[44px] md:text-[52px] lg:text-[64px] text-foreground mb-2"
           >
             FITNESS <span className="text-gradient">EVENTS</span>
           </motion.h1>
@@ -154,12 +160,12 @@ const Events = () => {
                     </div>
                   </div>
 
+                  {/* Changed from View Gallery to Learn More with unique link */}
                   <Link
-                    href={`/gallery`}
-                    // href={`/gallery?event=${event.id}`}
+                    href={event.learnMoreLink}
                     className="btn-primary inline-flex items-center gap-2"
                   >
-                    View Gallery <ArrowRight size={18} />
+                    Learn More <ArrowRight size={18} />
                   </Link>
                 </div>
               </motion.div>
@@ -177,10 +183,10 @@ const Events = () => {
             viewport={{ once: true }}
             className="max-w-2xl mx-auto"
           >
-            <h2 className="font-display text-4xl md:text-5xl text-foreground mb-4">
+            <h2 className="font-display text-[30px] lg:text-[40px] text-foreground mb-3">
               WANT TO JOIN THE NEXT EVENT?
             </h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-muted-foreground mb-8 lg:w-[400px] w-auto mx-auto leading-tight">
               Follow us on social media to stay updated on upcoming events and be the first to register.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

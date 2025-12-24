@@ -1,216 +1,284 @@
-import { motion, useReducedMotion, Easing } from 'framer-motion';
-import Link from 'next/link';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
-import { CountUp } from 'countup.js';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, ChevronLeft, ChevronRight, Users, BookOpen, Music } from 'lucide-react';
 
-const HeroSection = () => {
-  const shouldReduceMotion = useReducedMotion();
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const statsRef = useRef<HTMLDivElement>(null);
+const slides = [
+  {
+    id: 1,
+    title: 'WALK2FITNESS',
+    subtitle: 'Community Fitness Movement',
+    description: 'Join thousands who have discovered the joy of fitness through our signature walking events. Fresh air, great company, and a healthier you.',
+    image: '/walk.jpg',
+    icon: Users,
+    ctas: [
+      { label: 'Explore Past Event', href: '/event/walk2fitness', variant: 'primary' },
+      { label: 'Register Now', href: 'https://www.tixtango.com/spotlight/walk2fitness-50', variant: 'secondary' }
+    ],
+    accentColor: 'primary',
+  },
+  {
+    id: 2,
+    title: 'JAM2FIT',
+    subtitle: "Ilorin's First Nighttime Fitness Party",
+    description: 'Where fitness meets the night! Dance, sweat, and celebrate health under the stars with live DJs and an electric atmosphere.',
+    image: '/jamfit.jpg',
+    icon: Music,
+    ctas: [
+      { label: 'Explore Past Event', href: '/event/jam2fit', variant: 'primary' },
+      { label: 'View Gallery', href: '/gallery', variant: 'secondary' }
+    ],
+    accentColor: 'secondary',
+  },
+  {
+    id: 3,
+    title: 'WORKOUT COMPASS',
+    subtitle: 'Your Ultimate Fitness Guide',
+    description: 'Stop guessing, start progressing. The practical guide that transforms beginners into confident gym-goers with clear, actionable routines.',
+    image: '/book2.jpeg',
+    icon: BookOpen,
+    ctas: [
+      { label: 'Get the Book', href: '/book', variant: 'primary' },
+      { label: 'Meet the Author', href: '#', variant: 'secondary' }
+    ],
+    accentColor: 'accent',
+  },
+];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.15,
-        delayChildren: 0.2,
-      },
-    },
+const HeroCarousel = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  const nextSlide = useCallback(() => {
+    setDirection(1);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  }, []);
+
+  const prevSlide = useCallback(() => {
+    setDirection(-1);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  }, []);
+
+  const goToSlide = (index: number) => {
+    setDirection(index > currentSlide ? 1 : -1);
+    setCurrentSlide(index);
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
-    },
-  };
-
-  const imageVariants = {
-    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : 40 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] as Easing },
-    },
-  };
-
-  // Stats for counting animation - with different durations but same finish time
-  const stats = [
-    { id: 'participants', value: 500, suffix: '+', color: 'text-primary', duration: 3 }, // 3 seconds
-    { id: 'experience', value: 7, suffix: '+', color: 'text-secondary', duration: 3 }, // 3 seconds 
-    { id: 'events', value: 10, suffix: '+', color: 'text-accent', duration: 3 }, // 3 seconds
-  ];
-
-  // Initialize count-up animations only when stats section is in viewport
+  // Auto-play
   useEffect(() => {
-    if (hasAnimated || !statsRef.current) return;
+    const timer = setInterval(nextSlide, 6000);
+    return () => clearInterval(timer);
+  }, [nextSlide]);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            stats.forEach((stat) => {
-              // Start all counters at the same time with same duration
-              setTimeout(() => {
-                const counter = new CountUp(stat.id, stat.value, {
-                  startVal: 0,
-                  duration: stat.duration, // All 3 seconds
-                  suffix: stat.suffix,
-                  useEasing: true,
-                  useGrouping: true,
-                  separator: ',',
-                  easingFn: (t, b, c, d) => {
-                    // Ease out cubic for smoother finish
-                    t /= d;
-                    t--;
-                    return c * (t * t * t + 1) + b;
-                  }
-                });
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? '100%' : '-100%',
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (direction: number) => ({
+      x: direction > 0 ? '-100%' : '100%',
+      opacity: 0,
+    }),
+  };
 
-                if (!counter.error) {
-                  counter.start();
-                }
-              }, 0); // Start all at the same time
-            });
+  const slide = slides[currentSlide];
+  const IconComponent = slide.icon;
 
-            setHasAnimated(true);
-            observer.disconnect(); // Stop observing after animation
-          }
-        });
-      },
-      {
-        threshold: 0.5,
-        rootMargin: '0px 0px -50px 0px',
-      }
-    );
+  // Get border color based on accent color
+  const getBorderColor = (accentColor: string) => {
+    switch (accentColor) {
+      case 'primary':
+        return 'border-primary/50 hover:border-primary';
+      case 'secondary':
+        return 'border-secondary/50 hover:border-secondary';
+      case 'accent':
+        return 'border-accent/50 hover:border-accent';
+      default:
+        return 'border-primary/50 hover:border-primary';
+    }
+  };
 
-    observer.observe(statsRef.current);
-
-    return () => {
-      if (statsRef.current) {
-        observer.unobserve(statsRef.current);
-      }
-    };
-  }, [hasAnimated]);
+  // Get background color based on accent color
+  const getBgColor = (accentColor: string) => {
+    switch (accentColor) {
+      case 'primary':
+        return 'bg-primary text-primary-foreground hover:shadow-glow-primary';
+      case 'secondary':
+        return 'bg-secondary text-secondary-foreground hover:shadow-glow-secondary';
+      case 'accent':
+        return 'bg-accent text-accent-foreground hover:shadow-glow-accent';
+      default:
+        return 'bg-primary text-primary-foreground hover:shadow-glow-primary';
+    }
+  };
 
   return (
-    <section className="relative min-h-[80vh] lg:min-h-screen flex items-center pt-16 lg:pt-20 overflow-hidden">
-      {/* Background Video */}
-      <div className="absolute inset-0 -z-20 overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover blur-sm"
+    <section id="home" className="relative h-screen min-h-[700px] max-h-[900px] overflow-hidden">
+      {/* Background Images */}
+      <AnimatePresence initial={false} custom={direction}>
+        <motion.div
+          key={currentSlide}
+          custom={direction}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.7, ease: 'easeInOut' }}
+          className="absolute inset-0"
         >
-          <source src="/new-bg.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        {/* Dark overlay for better text contrast */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
+          <div className="relative w-full h-full">
+            <Image
+              src={slide.image}
+              alt={slide.title}
+              fill
+              className="object-cover"
+              priority={currentSlide === 0}
+              sizes="100vw"
+              quality={90}
+            />
+          </div>
+          {/* Dark Gradient Overlay for text readability */}
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-linear-to-r from-black/50 via-transparent to-transparent" />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Content */}
+      <div className="relative z-10 h-full container-max flex items-center">
+        <div className="max-w-2xl w-full lg:pt-20 pt-6">
+          <AnimatePresence mode="wait">
+            <motion.div key={currentSlide}>
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="mb-6 flex justify-center lg:justify-start"
+              >
+                <span
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${slide.accentColor === 'primary'
+                      ? 'bg-primary text-primary-foreground'
+                      : slide.accentColor === 'accent'
+                        ? 'bg-accent text-accent-foreground'
+                        : 'bg-secondary text-secondary-foreground'
+                    }`}
+                >
+                  <IconComponent size={16} />
+                  {slide.subtitle}
+                </span>
+              </motion.div>
+
+              {/* Title */}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white mb-6 lg:text-start text-center leading-tight"
+              >
+                {slide.title.split('').map((char, i) => (
+                  <span
+                    key={i}
+                    className={char === '2' ? 'text-gradient' : ''}
+                  >
+                    {char}
+                  </span>
+                ))}
+              </motion.h1>
+
+              {/* Description */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="text-lg md:text-xl text-white/90 mb-8 max-w-lg lg:text-start text-center lg:px-0 px-3"
+              >
+                {slide.description}
+              </motion.p>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center w-full"
+              >
+                {/* Primary CTA - Full width on mobile, auto on larger screens */}
+                <a
+                  href={slide.ctas[0].href}
+                  className={`group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] w-[90%] sm:w-auto ${getBgColor(slide.accentColor)}`}
+                >
+                  {slide.ctas[0].label}
+                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                </a>
+
+                {/* Secondary CTA - Full width on mobile, auto on larger screens with matching border */}
+                <a
+                  href={slide.ctas[1].href}
+                  className={`group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-transparent text-white border-2 ${getBorderColor(slide.accentColor)} hover:bg-white/10 w-[90%] sm:w-auto`}
+                >
+                  {slide.ctas[1].label}
+                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                </a>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
-      {/* Decorative Elements */}
-      <div className="absolute top-1/4 left-0 w-64 h-64 md:w-72 md:h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-1/4 right-0 w-80 h-80 md:w-96 md:h-96 bg-secondary/10 rounded-full blur-3xl -z-10" />
+      {/* Navigation Controls */}
+      <div className="absolute bottom-8 left-0 right-0 z-20 px-4 sm:px-6">
+        <div className="container-max flex items-center justify-between">
+          {/* Dots */}
+          <div className="flex items-center gap-3">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`h-3 rounded-full transition-all duration-300 ${currentSlide === index
+                    ? 'w-8 bg-primary'
+                    : 'w-3 bg-white/30 hover:bg-white/50'
+                  }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
 
-      <div className="container-max px-4 md:px-8 py-8 md:py-16 lg:py-20">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Text Content */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="text-center lg:text-left order-2 lg:order-1"
-          >
-            <motion.div variants={itemVariants} className="mb-4">
-              <span className="inline-block px-4 py-2 bg-white/10 text-white/70 rounded-full text-sm font-semibold">
-                🏋️ Your Fitness Journey Starts Here
-              </span>
-            </motion.div>
-
-            <motion.h1
-              variants={itemVariants}
-              className="font-display text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-7xl leading-tight md:leading-none mb-4 md:mb-6"
+          {/* Arrow Controls */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={prevSlide}
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-all hover:bg-white/20"
+              aria-label="Previous slide"
             >
-              TRAIN WITH
-              <br />
-              <span className="text-gradient bg-clip-text text-transparent bg-linear-to-r from-[#008020] via-[#ffde00] to-[#ff8a00]">
-                PURPOSE
-              </span>
-            </motion.h1>
-
-            <motion.p
-              variants={itemVariants}
-              className="text-base md:text-lg lg:text-xl text-white/70 max-w-xl mx-auto lg:mx-0 mb-6 md:mb-8"
+              <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-all hover:bg-white/20"
+              aria-label="Next slide"
             >
-              Transform your body and mindset with Ajisafe Sulaiman — Nigeria&apos;s leading Fitness Ambassador with 7+ years of experience.
-            </motion.p>
-
-            <motion.div
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-8 md:mb-12"
-            >
-              <Link href="/training" className="btn-primary text-sm md:text-base py-3 md:py-4 px-6 md:px-8">
-                Book a Session
-              </Link>
-              <Link href="/events" className="btn-outline text-white text-sm md:text-base py-3 md:py-4 px-6 md:px-8">
-                View Events
-              </Link>
-            </motion.div>
-
-            {/* Stats - All finish at same time */}
-            <motion.div
-              ref={statsRef}
-              variants={itemVariants}
-              className="grid grid-cols-3 gap-3 md:gap-4 mt-8 md:mt-12 pt-6 md:pt-8 border-t border-border"
-            >
-              {stats.map((stat) => (
-                <div key={stat.id} className="text-center lg:text-left">
-                  <p className={`font-display text-2xl md:text-3xl lg:text-4xl ${stat.color} mb-1`}>
-                    <span id={stat.id}>0</span>
-                  </p>
-                  <p className="text-xs md:text-sm text-white/70">
-                    {stat.id === 'participants' && 'Participants'}
-                    {stat.id === 'experience' && 'Years Experience'}
-                    {stat.id === 'events' && 'Major Events'}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* Hero Image */}
-          <motion.div
-            variants={imageVariants}
-            initial="hidden"
-            animate="visible"
-            className="relative order-1 lg:order-2 mb-8 lg:mb-0"
-          >
-            <div className="relative z-10">
-              <div className="relative aspect-square md:aspect-auto md:h-[400px] lg:h-[500px] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl">
-                <Image
-                  src="/hero-secs.png"
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                  alt="Fitness Ambassador Ajisafe Sulaiman in action"
-                  className="object-cover"
-                  priority
-                />
-              </div>
-              {/* Decorative border */}
-              <div className="absolute -inset-3 md:-inset-4 border-2 border-primary/20 rounded-2xl lg:rounded-3xl -z-10" />
-            </div>
-          </motion.div>
+              <ChevronRight size={20} className="sm:w-6 sm:h-6" />
+            </button>
+          </div>
         </div>
+      </div>
+
+      {/* Slide Counter - Responsive and always visible */}
+      <div className="absolute top-17 right-4 sm:top-8 sm:right-8 lg:top-1/2 lg:right-8 lg:-translate-y-1/2 z-20 flex flex-col items-center gap-1 sm:gap-2">
+        <span className="font-display text-2xl sm:text-3xl lg:text-3xl text-white drop-shadow-lg">
+          {String(currentSlide + 1).padStart(2, '0')}
+        </span>
+        <div className="w-px h-6 sm:h-8 lg:h-12 bg-white/50" />
+        <span className="text-xs sm:text-sm text-white/80 drop-shadow-lg">
+          {String(slides.length).padStart(2, '0')}
+        </span>
       </div>
     </section>
   );
 };
 
-export default HeroSection;
+export default HeroCarousel;

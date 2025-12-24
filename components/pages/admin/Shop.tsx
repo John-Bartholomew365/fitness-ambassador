@@ -109,22 +109,22 @@ export default function Shop() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Orders Management</h2>
-        <div className="flex gap-2">
-          <Button variant="outline" className="cursor-pointer">
-            <Download className="w-4 h-4 mr-2" /> Export
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold">Orders Management</h2>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="outline" className="cursor-pointer w-full sm:w-auto">
+            <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Export
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3 sm:w-4 sm:h-4" />
           <Input
             placeholder="Search orders..."
-            className="pl-10"
+            className="pl-8 sm:pl-10 text-sm sm:text-base"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -144,96 +144,86 @@ export default function Shop() {
       </div>
 
       <Card>
-        <CardContent className="pt-6">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Details</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id}</TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{order.customer}</div>
-                        <div className="text-sm text-muted-foreground">{order.email}</div>
-                        <div className="text-sm text-muted-foreground">{order.phone}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-muted rounded-md flex items-center justify-center">
-                          {/* Replace with actual image */}
-                          <div className="text-xs text-center">Image</div>
-                        </div>
-                        <div>
-                          <div className="font-medium">{order.product}</div>
-                          <div className="text-sm text-muted-foreground">
-                            Size: {order.size} | Color: {order.color}
+        <CardContent className="pt-4 sm:pt-6">
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="min-w-full inline-block align-middle">
+              <div className="overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="px-4">Order</TableHead>
+                      <TableHead className="hidden lg:table-cell">Customer</TableHead>
+                      <TableHead className="hidden md:table-cell">Product</TableHead>
+                      <TableHead className="hidden sm:table-cell">Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="hidden xs:table-cell">Date</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredOrders.map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell className="px-4 font-medium">{order.id}</TableCell>
+                        <TableCell className="hidden lg:table-cell">
+                          <div>
+                            <div className="font-medium">{order.customer}</div>
+                            <div className="text-xs text-muted-foreground">{order.email}</div>
                           </div>
-                          <div className="text-sm text-muted-foreground">
-                            Qty: {order.quantity}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-muted rounded-md flex items-center justify-center shrink-0">
+                              <div className="text-xs text-center">Img</div>
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-medium truncate max-w-[120px]">{order.product}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {order.size} | {order.color}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        <div className="font-medium">Shipping:</div>
-                        <div className="text-muted-foreground truncate max-w-[200px]">
-                          {order.address}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{order.amount}</TableCell>
-                    <TableCell>
-                      <select
-                        className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(order.status)}`}
-                        value={order.status}
-                        onChange={(e) => updateOrderStatus(order.id, e.target.value as Order['status'])}
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </TableCell>
-                    <TableCell>{order.date}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="cursor-pointer"
-                          onClick={() => {/* View details */}}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive cursor-pointer"
-                          onClick={() => deleteOrder(order.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">{order.amount}</TableCell>
+                        <TableCell>
+                          <select
+                            className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${getStatusColor(order.status)}`}
+                            value={order.status}
+                            onChange={(e) => updateOrderStatus(order.id, e.target.value as Order['status'])}
+                          >
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                          </select>
+                        </TableCell>
+                        <TableCell className="hidden xs:table-cell">{order.date}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-1 sm:gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 sm:h-9 sm:w-9 cursor-pointer"
+                              onClick={() => {/* View details */}}
+                            >
+                              <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 sm:h-9 sm:w-9 text-destructive cursor-pointer"
+                              onClick={() => deleteOrder(order.id)}
+                            >
+                              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

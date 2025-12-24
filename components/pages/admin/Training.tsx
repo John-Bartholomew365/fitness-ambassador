@@ -84,23 +84,23 @@ export default function Training() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Training Bookings</h2>
-        <Button variant="outline" className="cursor-pointer">
-          <Download className="w-4 h-4 mr-2" /> Export
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold">Training Bookings</h2>
+        <Button variant="outline" className="cursor-pointer w-full sm:w-auto">
+          <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Export
         </Button>
       </div>
 
       <Tabs defaultValue="pending" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="pending" className="cursor-pointer">
+          <TabsTrigger value="pending" className="cursor-pointer text-xs sm:text-sm">
             Pending ({pendingBookings.length})
           </TabsTrigger>
-          <TabsTrigger value="confirmed" className="cursor-pointer">
+          <TabsTrigger value="confirmed" className="cursor-pointer text-xs sm:text-sm">
             Confirmed ({confirmedBookings.length})
           </TabsTrigger>
-          <TabsTrigger value="completed" className="cursor-pointer">
+          <TabsTrigger value="completed" className="cursor-pointer text-xs sm:text-sm">
             Completed ({completedBookings.length})
           </TabsTrigger>
         </TabsList>
@@ -129,56 +129,56 @@ export default function Training() {
 
       {/* Booking Details Modal */}
       {selectedBooking && isDetailsOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
           <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <CardHeader>
-              <CardTitle>Booking Details</CardTitle>
+            <CardHeader className="p-4 sm:p-6">
               <div className="flex justify-between items-center">
+                <CardTitle className="text-lg sm:text-xl">Booking Details</CardTitle>
                 <Badge className={getStatusColor(selectedBooking.status)}>
                   {selectedBooking.status}
                 </Badge>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => setIsDetailsOpen(false)}
-                  className="cursor-pointer"
-                >
-                  ✕
-                </Button>
               </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsDetailsOpen(false)}
+                className="absolute right-2 top-2 cursor-pointer"
+              >
+                ✕
+              </Button>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Personal Information</h3>
-                  <p><strong>Name:</strong> {selectedBooking.fullName}</p>
-                  <p><strong>Email:</strong> {selectedBooking.email}</p>
-                  <p><strong>Phone:</strong> {selectedBooking.phone}</p>
+                  <h3 className="font-semibold mb-2 text-sm sm:text-base">Personal Information</h3>
+                  <p className="text-sm"><strong>Name:</strong> {selectedBooking.fullName}</p>
+                  <p className="text-sm"><strong>Email:</strong> {selectedBooking.email}</p>
+                  <p className="text-sm"><strong>Phone:</strong> {selectedBooking.phone}</p>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Service Details</h3>
-                  <p><strong>Service:</strong> {selectedBooking.service}</p>
-                  <p><strong>Preferred Time:</strong> {selectedBooking.preferredTime}</p>
-                  <p><strong>Booking Date:</strong> {selectedBooking.date}</p>
+                  <h3 className="font-semibold mb-2 text-sm sm:text-base">Service Details</h3>
+                  <p className="text-sm"><strong>Service:</strong> {selectedBooking.service}</p>
+                  <p className="text-sm"><strong>Preferred Time:</strong> {selectedBooking.preferredTime}</p>
+                  <p className="text-sm"><strong>Booking Date:</strong> {selectedBooking.date}</p>
                 </div>
               </div>
               
               <div>
-                <h3 className="font-semibold mb-2">Fitness Profile</h3>
-                <p><strong>Experience Level:</strong> {selectedBooking.fitnessExperience}</p>
-                <p><strong>Goals:</strong></p>
-                <ul className="list-disc pl-5 mt-1">
+                <h3 className="font-semibold mb-2 text-sm sm:text-base">Fitness Profile</h3>
+                <p className="text-sm"><strong>Experience Level:</strong> {selectedBooking.fitnessExperience}</p>
+                <p className="text-sm"><strong>Goals:</strong></p>
+                <ul className="list-disc pl-5 mt-1 text-sm">
                   {selectedBooking.goals.map((goal, index) => (
                     <li key={index}>{goal}</li>
                   ))}
                 </ul>
               </div>
               
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" className="cursor-pointer">
+              <div className="flex flex-col sm:flex-row gap-2 justify-end">
+                <Button variant="outline" className="cursor-pointer w-full sm:w-auto">
                   Confirm Booking
                 </Button>
-                <Button className="cursor-pointer">
+                <Button className="cursor-pointer w-full sm:w-auto">
                   Contact Client
                 </Button>
               </div>
@@ -196,66 +196,73 @@ function BookingsTable({ bookings, onViewDetails }: {
 }) {
   return (
     <Card>
-      <CardContent className="pt-6">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Service</TableHead>
-                <TableHead>Experience</TableHead>
-                <TableHead>Goals</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {bookings.map((booking) => (
-                <TableRow key={booking.id}>
-                  <TableCell className="font-medium">{booking.fullName}</TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      <div>{booking.email}</div>
-                      <div className="text-muted-foreground">{booking.phone}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{booking.service}</TableCell>
-                  <TableCell>
-                    <Badge className={
-                      booking.fitnessExperience === 'Beginner' ? 'bg-green-100 text-green-800' :
-                      booking.fitnessExperience === 'Intermediate' ? 'bg-blue-100 text-blue-800' :
-                      'bg-purple-100 text-purple-800'
-                    }>
-                      {booking.fitnessExperience}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm max-w-[150px] truncate">
-                      {booking.goals.join(', ')}
-                    </div>
-                  </TableCell>
-                  <TableCell>{booking.date}</TableCell>
-                  <TableCell>
-                    <Badge className={getStatusColor(booking.status)}>
-                      {booking.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onViewDetails(booking)}
-                      className="cursor-pointer"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      <CardContent className="pt-4 sm:pt-6">
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <div className="min-w-full inline-block align-middle">
+            <div className="overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="px-4">Name</TableHead>
+                    <TableHead className="hidden sm:table-cell">Contact</TableHead>
+                    <TableHead className="hidden xs:table-cell">Service</TableHead>
+                    <TableHead className="hidden md:table-cell">Experience</TableHead>
+                    <TableHead className="hidden lg:table-cell">Goals</TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {bookings.map((booking) => (
+                    <TableRow key={booking.id}>
+                      <TableCell className="px-4 font-medium max-w-[120px] truncate">
+                        {booking.fullName}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <div className="text-xs sm:text-sm">
+                          <div>{booking.email}</div>
+                          <div className="text-muted-foreground">{booking.phone}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden xs:table-cell max-w-[100px] truncate">
+                        {booking.service}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <Badge className={`text-xs ${booking.fitnessExperience === 'Beginner' ? 'bg-green-100 text-green-800' :
+                          booking.fitnessExperience === 'Intermediate' ? 'bg-blue-100 text-blue-800' :
+                          'bg-purple-100 text-purple-800'
+                        }`}>
+                          {booking.fitnessExperience}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        <div className="text-xs truncate max-w-[120px]">
+                          {booking.goals.join(', ')}
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">{booking.date}</TableCell>
+                      <TableCell>
+                        <Badge className={`text-xs ${getStatusColor(booking.status)}`}>
+                          {booking.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onViewDetails(booking)}
+                          className="h-8 w-8 sm:h-9 sm:w-9 cursor-pointer"
+                        >
+                          <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

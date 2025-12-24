@@ -31,9 +31,9 @@ const getStatusColor = (status: string) => {
 
 export default function Dashboard() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {mockStats.map((stat, index) => (
           <motion.div
             key={stat.title}
@@ -41,15 +41,15 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+            <Card className="h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 px-4 sm:px-6 pt-4 sm:pt-6">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
-                <stat.icon className="w-4 h-4 text-muted-foreground" />
+                <stat.icon className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
+              <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold">{stat.value}</div>
                 <p className="text-xs text-primary mt-1">{stat.change} from last month</p>
               </CardContent>
             </Card>
@@ -59,38 +59,44 @@ export default function Dashboard() {
 
       {/* Recent Orders */}
       <Card>
-        <CardHeader>
-          <CardTitle>Recent Orders</CardTitle>
-          <CardDescription>Latest orders from your shop</CardDescription>
+        <CardHeader className="px-4 sm:px-6 pt-4 sm:pt-6">
+          <CardTitle className="text-lg sm:text-xl">Recent Orders</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">Latest orders from your shop</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id}</TableCell>
-                    <TableCell>{order.customer}</TableCell>
-                    <TableCell>{order.product}</TableCell>
-                    <TableCell>{order.amount}</TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
-                    </TableCell>
-                    <TableCell>{order.date}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <CardContent className="px-0 sm:px-6 pb-4 sm:pb-6">
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="min-w-full inline-block align-middle">
+              <div className="overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="px-4">Order ID</TableHead>
+                      <TableHead className="hidden sm:table-cell">Customer</TableHead>
+                      <TableHead>Product</TableHead>
+                      <TableHead className="hidden xs:table-cell">Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="hidden md:table-cell">Date</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {mockOrders.map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell className="px-4 font-medium">{order.id}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{order.customer}</TableCell>
+                        <TableCell className="max-w-[120px] sm:max-w-none truncate">{order.product}</TableCell>
+                        <TableCell className="hidden xs:table-cell">{order.amount}</TableCell>
+                        <TableCell>
+                          <Badge className={`text-xs ${getStatusColor(order.status)}`}>
+                            {order.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">{order.date}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

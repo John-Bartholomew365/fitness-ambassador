@@ -23,7 +23,7 @@ interface BankAccount {
 const CheckoutPage = () => {
   const shouldReduceMotion = useReducedMotion();
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
-  const [selectedAccount, setSelectedAccount] = useState<string>('access');
+  const [selectedAccount, setSelectedAccount] = useState<string>('GT Bank'); // GT Bank is default
   const [paymentMethod, setPaymentMethod] = useState<string>('bank-transfer');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -72,32 +72,32 @@ const CheckoutPage = () => {
 
   const bankAccounts: BankAccount[] = [
     {
-      name: 'Access Bank',
-      bank: 'Access Bank',
-      accountNumber: '1234567890',
-      accountName: 'FITNESS AMBASSADOR LTD',
+      name: 'GT Bank',
+      bank: 'GT Bank',
+      accountNumber: '3002385769',
+      accountName: 'The Fitness Ambassador Ltd',
       type: 'bank-transfer',
       icon: <Banknote className="w-6 h-6" />,
     },
     {
-      name: 'First Bank',
-      bank: 'First Bank',
-      accountNumber: '0987654321',
-      accountName: 'FITNESS AMBASSADOR LTD',
+      name: 'Jaiz Bank',
+      bank: 'Jaiz Bank',
+      accountNumber: '0019155788',
+      accountName: 'Ajisafe Sulaiman',
       type: 'bank-transfer',
       icon: <CreditCard className="w-6 h-6" />,
     },
-    {
-      name: 'OPay',
-      bank: 'OPay',
-      accountNumber: '07012345678',
-      accountName: 'FITNESS AMBASSADOR',
-      type: 'mobile-transfer',
-      icon: <Smartphone className="w-6 h-6" />,
-    },
+    // {
+    //   name: 'OPay',
+    //   bank: 'OPay',
+    //   accountNumber: '07012345678',
+    //   accountName: 'FITNESS AMBASSADOR',
+    //   type: 'mobile-transfer',
+    //   icon: <Smartphone className="w-6 h-6" />,
+    // },
   ];
 
-  const selectedAccountDetails = bankAccounts.find(acc => acc.name.toLowerCase() === selectedAccount);
+  const selectedAccountDetails = bankAccounts.find(acc => acc.name === selectedAccount);
 
   const copyToClipboard = async (text: string, fieldName: string) => {
     try {
@@ -278,7 +278,7 @@ const CheckoutPage = () => {
                   </div>
                   
                   <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-                    <Link href="/shop" className="w-full sm:w-auto">
+                    <Link href="/innovator/gym-wears" className="w-full sm:w-auto">
                       <Button className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer">
                         Continue Shopping
                       </Button>
@@ -318,8 +318,8 @@ const CheckoutPage = () => {
           <ShoppingBag className="w-12 h-12 md:w-16 md:h-16 text-muted-foreground mx-auto mb-3 md:mb-4" />
           <h1 className="font-display text-xl md:text-2xl text-foreground mb-2">Your cart is empty</h1>
           <p className="text-muted-foreground text-sm md:text-base mb-4 md:mb-6">Add items to your cart before checkout</p>
-          <Link href="/shop">
-            <Button className="bg-primary text-primary-foreground">
+          <Link href="/innovator/gym-wears">
+            <Button className="bg-primary text-primary-foreground cursor-pointer">
               Return to Shop
             </Button>
           </Link>
@@ -335,7 +335,7 @@ const CheckoutPage = () => {
       <header className="py-4 md:py-6 border-b border-border bg-background/95 backdrop-blur-md sticky top-0 z-40 px-4 md:px-0">
         <div className="container-max">
           <div className="flex items-center justify-between">
-            <Link href="/shop" className="flex items-center gap-2 text-foreground hover:text-primary">
+            <Link href="/innovator/gym-wears" className="flex items-center gap-2 text-foreground hover:text-primary">
               <ArrowLeft className="w-5 h-5" />
               <span className="font-semibold text-sm md:text-base">Back to Shop</span>
             </Link>
@@ -486,10 +486,10 @@ const CheckoutPage = () => {
                       {bankAccounts.map((account) => (
                         <Button
                           key={account.name}
-                          variant={selectedAccount === account.name.toLowerCase() ? 'default' : 'outline'}
+                          variant={selectedAccount === account.name ? 'default' : 'outline'}
                           size="sm"
-                          onClick={() => setSelectedAccount(account.name.toLowerCase())}
-                          className={selectedAccount === account.name.toLowerCase() ? 'bg-primary cursor-pointer' : 'cursor-pointer'}
+                          onClick={() => setSelectedAccount(account.name)}
+                          className={selectedAccount === account.name ? 'bg-primary cursor-pointer' : 'cursor-pointer'}
                         >
                           {account.name}
                         </Button>

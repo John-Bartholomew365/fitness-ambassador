@@ -92,35 +92,36 @@ export default function MediaLibrary() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Shop Products</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold">Shop Products</h2>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 cursor-pointer">
-              <Plus className="w-4 h-4 mr-2" /> Add Product
+            <Button className="bg-primary hover:bg-primary/90 cursor-pointer w-full sm:w-auto">
+              <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Add Product
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Product</DialogTitle>
               <DialogDescription>
                 Upload new gym wear product to shop
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
+            <div className="grid gap-3 sm:gap-4 py-4">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Product Name</label>
                 <Input
                   value={newProduct.name}
                   onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                   placeholder="e.g., FA Power Leggings"
+                  className="text-sm sm:text-base"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Category</label>
                 <select
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm cursor-pointer"
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm sm:text-base cursor-pointer"
                   value={newProduct.category}
                   onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                 >
@@ -131,25 +132,26 @@ export default function MediaLibrary() {
                   <option value="Footwear">Footwear</option>
                 </select>
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Price (₦)</label>
                 <Input
                   type="number"
                   value={newProduct.price}
                   onChange={(e) => setNewProduct({ ...newProduct, price: `₦${parseInt(e.target.value) || 0}` })}
                   placeholder="18000"
+                  className="text-sm sm:text-base"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Description</label>
                 <textarea
-                  className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="w-full min-h-[80px] sm:min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={newProduct.description}
                   onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                   placeholder="Product description..."
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Available Sizes (comma-separated)</label>
                 <Input
                   value={newProduct.sizes.join(', ')}
@@ -158,22 +160,24 @@ export default function MediaLibrary() {
                     sizes: e.target.value.split(',').map(s => s.trim()).filter(s => s !== '')
                   })}
                   placeholder="S, M, L, XL"
+                  className="text-sm sm:text-base"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Image URL</label>
                 <Input
                   value={newProduct.image}
                   onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
                   placeholder="https://example.com/image.jpg"
+                  className="text-sm sm:text-base"
                 />
               </div>
             </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="cursor-pointer">
+            <div className="flex flex-col sm:flex-row justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="cursor-pointer w-full sm:w-auto">
                 Cancel
               </Button>
-              <Button onClick={handleAddProduct} className="cursor-pointer">
+              <Button onClick={handleAddProduct} className="cursor-pointer w-full sm:w-auto">
                 Add Product
               </Button>
             </div>
@@ -181,40 +185,40 @@ export default function MediaLibrary() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {products.map((product) => (
-          <Card key={product.id} className="overflow-hidden">
+          <Card key={product.id} className="overflow-hidden h-full">
             <div className="aspect-square bg-muted flex items-center justify-center">
               {product.image ? (
                 <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${product.image})` }} />
               ) : (
-                <ImageIcon className="w-16 h-16 text-muted-foreground" />
+                <ImageIcon className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground" />
               )}
             </div>
             <CardContent className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <Badge className="mb-2">{product.category}</Badge>
-                  <h3 className="font-bold text-lg">{product.name}</h3>
+                  <Badge className="mb-2 text-xs">{product.category}</Badge>
+                  <h3 className="font-bold text-base sm:text-lg">{product.name}</h3>
                 </div>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => handleDeleteProduct(product.id)}
-                  className="text-destructive cursor-pointer"
+                  className="text-destructive cursor-pointer h-8 w-8"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               </div>
-              <p className="text-muted-foreground text-sm mb-3">{product.description}</p>
-              <div className="flex justify-between items-center">
+              <p className="text-muted-foreground text-xs sm:text-sm mb-3 line-clamp-2">{product.description}</p>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
-                  <div className="font-bold text-primary">{product.price}</div>
+                  <div className="font-bold text-primary text-sm sm:text-base">{product.price}</div>
                   <div className="text-xs text-muted-foreground">
                     Sizes: {product.sizes.join(', ')}
                   </div>
                 </div>
-                <Button size="sm" variant="outline" className="cursor-pointer">
+                <Button size="sm" variant="outline" className="cursor-pointer w-full sm:w-auto">
                   Edit
                 </Button>
               </div>

@@ -124,69 +124,73 @@ export default function Events() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Events Management</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold">Events Management</h2>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 cursor-pointer">
-              <Plus className="w-4 h-4 mr-2" /> Add Event
+            <Button className="bg-primary hover:bg-primary/90 cursor-pointer w-full sm:w-auto">
+              <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Add Event
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[200px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Event</DialogTitle>
               <DialogDescription>
                 Create a new fitness event
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
+            <div className="grid gap-3 sm:gap-4 py-4">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Event Name</label>
                 <Input
                   value={newEvent.name}
                   onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
                   placeholder="e.g., Walk2Fitness 6.0"
+                  className="text-sm sm:text-base"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Date</label>
                 <Input
                   type="date"
                   value={newEvent.date}
                   onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+                  className="text-sm sm:text-base"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Location</label>
                 <Input
                   value={newEvent.location}
                   onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
                   placeholder="Event venue"
+                  className="text-sm sm:text-base"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Description</label>
                 <textarea
-                  className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="w-full min-h-[80px] sm:min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={newEvent.description}
                   onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
                   placeholder="Event description..."
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="grid gap-1 sm:gap-2">
                   <label className="text-sm font-medium">Max Capacity</label>
                   <Input
                     type="number"
                     value={newEvent.maxCapacity}
                     onChange={(e) => setNewEvent({ ...newEvent, maxCapacity: parseInt(e.target.value) || 0 })}
+                    className="text-sm sm:text-base"
                   />
                 </div>
-                <div className="grid gap-2">
+                <div className="grid gap-1 sm:gap-2">
                   <label className="text-sm font-medium">Status</label>
                   <select
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm sm:text-base"
                     value={newEvent.status}
                     onChange={(e) => setNewEvent({ ...newEvent, status: e.target.value as Event['status'] })}
                   >
@@ -199,7 +203,7 @@ export default function Events() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={handleAddEvent} className="cursor-pointer">
+              <Button type="submit" onClick={handleAddEvent} className="cursor-pointer w-full sm:w-auto">
                 Add Event
               </Button>
             </DialogFooter>
@@ -207,102 +211,114 @@ export default function Events() {
         </Dialog>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3 sm:w-4 sm:h-4" />
           <Input
             placeholder="Search events..."
-            className="pl-10"
+            className="pl-8 sm:pl-10 text-sm sm:text-base"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button variant="outline" className="cursor-pointer">
-          <Filter className="w-4 h-4 mr-2" /> Filter
+        <Button variant="outline" className="cursor-pointer w-full sm:w-auto">
+          <Filter className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Filter
         </Button>
       </div>
 
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-4 sm:pt-6 p-0 sm:p-6">
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Event Name</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Registrations</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredEvents.map((event) => (
-                  <TableRow key={event.id}>
-                    <TableCell className="font-medium">{event.name}</TableCell>
-                    <TableCell>{event.date}</TableCell>
-                    <TableCell>{event.location}</TableCell>
-                    <TableCell>
-                      {event.registrations}/{event.maxCapacity}
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(event.status)}>{event.status}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openEditDialog(event)}
-                          className="cursor-pointer"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openDeleteAlert(event)}
-                          className="text-destructive cursor-pointer"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+            <div className="min-w-max w-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap px-4">Event Name</TableHead>
+                    <TableHead className="whitespace-nowrap px-4 hidden sm:table-cell">Date</TableHead>
+                    <TableHead className="whitespace-nowrap px-4">Location</TableHead>
+                    <TableHead className="whitespace-nowrap px-4 hidden xs:table-cell">Registrations</TableHead>
+                    <TableHead className="whitespace-nowrap px-4">Status</TableHead>
+                    <TableHead className="whitespace-nowrap px-4">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filteredEvents.map((event) => (
+                    <TableRow key={event.id}>
+                      <TableCell className="whitespace-nowrap px-4 font-medium">
+                        {event.name}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap px-4 hidden sm:table-cell">
+                        {event.date}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap px-4">
+                        {event.location}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap px-4 hidden xs:table-cell">
+                        {event.registrations}/{event.maxCapacity}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap px-4">
+                        <Badge className={`text-xs ${getStatusColor(event.status)}`}>
+                          {event.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap px-4">
+                        <div className="flex gap-1 sm:gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openEditDialog(event)}
+                            className="h-7 w-7 sm:h-8 sm:w-8 cursor-pointer"
+                          >
+                            <Edit className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openDeleteAlert(event)}
+                            className="h-7 w-7 sm:h-8 sm:w-8 text-destructive cursor-pointer"
+                          >
+                            <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[200px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Event</DialogTitle>
           </DialogHeader>
           {selectedEvent && (
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
+            <div className="grid gap-3 sm:gap-4 py-4">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Event Name</label>
                 <Input
                   value={selectedEvent.name}
                   onChange={(e) => setSelectedEvent({ ...selectedEvent, name: e.target.value })}
+                  className="text-sm sm:text-base"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Date</label>
                 <Input
                   type="date"
                   value={selectedEvent.date}
                   onChange={(e) => setSelectedEvent({ ...selectedEvent, date: e.target.value })}
+                  className="text-sm sm:text-base"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1 sm:gap-2">
                 <label className="text-sm font-medium">Description</label>
                 <textarea
-                  className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="w-full min-h-[80px] sm:min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={selectedEvent.description}
                   onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
                 />
@@ -310,7 +326,7 @@ export default function Events() {
             </div>
           )}
           <DialogFooter>
-            <Button type="submit" onClick={handleEditEvent} className="cursor-pointer">
+            <Button type="submit" onClick={handleEditEvent} className="cursor-pointer w-full sm:w-auto">
               Save Changes
             </Button>
           </DialogFooter>
@@ -319,7 +335,7 @@ export default function Events() {
 
       {/* Delete Alert */}
       <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-[95vw] sm:max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -328,7 +344,7 @@ export default function Events() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="cursor-pointer mt-2 sm:mt-0">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteEvent}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"

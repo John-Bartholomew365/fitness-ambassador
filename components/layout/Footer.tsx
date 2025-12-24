@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Instagram, Twitter, Facebook, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { Instagram,  Mail, Phone, MapPin, Linkedin, } from 'lucide-react';
+import { FaXTwitter } from "react-icons/fa6";
 import Image from 'next/image';
-import { FaWhatsapp } from "react-icons/fa";
+import { FaTiktok, FaWhatsapp } from "react-icons/fa";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -20,24 +21,36 @@ const Footer = () => {
   const socialLinks = [
     { 
       icon: Instagram, 
-      href: 'https://www.instagram.com/thefitnessambassador_events/?hl=en', 
+      href: 'https://www.instagram.com/fitness_ambassadorr?igsh=MXdleGcxNTY2a2Jiaw%3D%3D&utm_source=qr', 
       label: 'Instagram' 
     },
     { 
-      icon: Twitter, 
-      href: 'https://x.com/AjisafeAkorede', 
+      icon: FaTiktok, 
+      href: 'https://www.tiktok.com/@fitness_ambassador1?_r=1&_t=ZS-92KxrL9eBQi', 
+      label: 'Instagram' 
+    },
+
+    { 
+      icon: FaXTwitter, 
+      href: 'https://x.com/ajisafe_akorede?s=21', 
       label: 'Twitter' 
     },
+    // { 
     { 
-      icon: Facebook, 
-      href: 'https://www.facebook.com/profile.php?id=100067125615399', 
-      label: 'Facebook' 
+      icon: Linkedin, 
+      href: 'https://www.linkedin.com/in/sulaiman-ajisafe-30061b16a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app', 
+      label: 'Twitter' 
     },
-    { 
-      icon: Youtube, 
-      href: 'https://www.youtube.com/@FitnessAmbassador247/', 
-      label: 'YouTube' 
-    },
+    // { 
+    //   icon: Facebook, 
+    //   href: 'https://www.facebook.com/profile.php?id=100067125615399', 
+    //   label: 'Facebook' 
+    // },
+    // { 
+    //   icon: Youtube, 
+    //   href: 'https://www.youtube.com/@FitnessAmbassador247/', 
+    //   label: 'YouTube' 
+    // },
   ];
 
   // WhatsApp message with prefilled text

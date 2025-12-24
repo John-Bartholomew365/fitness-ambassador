@@ -18,7 +18,7 @@ interface BankAccount {
 
 const BookPurchaseForm = () => {
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
-  const [selectedAccount, setSelectedAccount] = useState<string>('access');
+  const [selectedAccount, setSelectedAccount] = useState<string>('GT Bank'); // GT Bank is default
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [orderSubmitted, setOrderSubmitted] = useState(false);
@@ -44,29 +44,29 @@ const BookPurchaseForm = () => {
 
   const bankAccounts: BankAccount[] = [
     {
-      name: 'Access Bank',
-      bank: 'Access Bank',
-      accountNumber: '1234567890',
-      accountName: 'FITNESS AMBASSADOR LTD',
+      name: 'GT Bank',
+      bank: 'GT Bank',
+      accountNumber: '3002385769',
+      accountName: 'The Fitness Ambassador Ltd',
       icon: <CreditCard className="w-6 h-6" />,
     },
     {
-      name: 'First Bank',
-      bank: 'First Bank',
-      accountNumber: '0987654321',
-      accountName: 'FITNESS AMBASSADOR LTD',
+      name: 'Jaiz Bank',
+      bank: 'Jaiz Bank',
+      accountNumber: '0019155788',
+      accountName: 'Ajisafe Sulaiman',
       icon: <CreditCard className="w-6 h-6" />,
     },
-    {
-      name: 'OPay',
-      bank: 'OPay',
-      accountNumber: '07012345678',
-      accountName: 'FITNESS AMBASSADOR',
-      icon: <CreditCard className="w-6 h-6" />,
-    },
+    // {
+    //   name: 'OPay',
+    //   bank: 'OPay',
+    //   accountNumber: '07012345678',
+    //   accountName: 'FITNESS AMBASSADOR',
+    //   icon: <CreditCard className="w-6 h-6" />,
+    // },
   ];
 
-  const selectedAccountDetails = bankAccounts.find(acc => acc.name.toLowerCase() === selectedAccount);
+  const selectedAccountDetails = bankAccounts.find(acc => acc.name === selectedAccount);
 
   const copyToClipboard = async (text: string, fieldName: string) => {
     try {
@@ -267,10 +267,10 @@ const BookPurchaseForm = () => {
               {bankAccounts.map((account) => (
                 <Button
                   key={account.name}
-                  variant={selectedAccount === account.name.toLowerCase() ? 'default' : 'outline'}
+                  variant={selectedAccount === account.name ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setSelectedAccount(account.name.toLowerCase())}
-                  className={selectedAccount === account.name.toLowerCase() ? 'bg-[#008020]' : ''}
+                  onClick={() => setSelectedAccount(account.name)}
+                  className={selectedAccount === account.name ? 'bg-[#008020]' : ''}
                 >
                   {account.name}
                 </Button>

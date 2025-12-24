@@ -3,28 +3,29 @@
 import { useState } from 'react'
 import { 
   LayoutDashboard, 
-  Calendar, 
+  // Calendar, 
   ShoppingBag, 
   Book, 
   Dumbbell, 
   Users, 
   MessageSquare,
-  Image,
   Menu,
   X,
   ChevronLeft
 } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { FaBlog } from 'react-icons/fa6'
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', key: 'dashboard' },
-  { icon: Calendar, label: 'Events', key: 'events' },
+  // { icon: Calendar, label: 'Events', key: 'events' },
   { icon: ShoppingBag, label: 'Shop / Products', key: 'shop' },
   { icon: Book, label: 'Book Management', key: 'book' },
   { icon: Dumbbell, label: 'Training', key: 'training' },
   { icon: Users, label: 'Subscribers', key: 'subscribers' },
   { icon: MessageSquare, label: 'Contact Messages', key: 'contacts' },
-  { icon: Image, label: 'Media Library', key: 'media' },
+  { icon: FaBlog, label: 'Blog Article', key: 'blog' },
 ]
 
 interface SidebarProps {
@@ -64,8 +65,14 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
         {/* Header */}
         <div className="p-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold">
-              FA
+            <div className="w-10 h-10 relative">
+              <Image
+                src="/fa-logo3.png"
+                alt="Fitness Ambassador Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
             {isOpen && <span className="font-bold text-lg">Admin Panel</span>}
           </div>

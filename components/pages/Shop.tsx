@@ -288,10 +288,10 @@ const Shop = () => {
               <ShoppingBag className="w-4 h-4" />
               FA Gym Wears
             </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-4">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-[56px] text-foreground mb-3">
               SHOP PREMIUM <span className="text-gradient">GEAR</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto lg:px-0 px-4">
+            <p className="text-muted-foreground lg:w-[420px] w-auto mx-auto lg:px-0 px-4">
               Elevate your training with our high-quality fitness apparel designed for peak performance.
             </p>
           </motion.div>

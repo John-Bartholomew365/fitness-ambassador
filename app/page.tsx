@@ -11,26 +11,30 @@ import { Toaster } from 'sonner';
 import HeroSection from '@/components/home/HeroSection';
 import AboutSection from '@/components/home/AboutSection';
 import FeaturedEventsSection from '@/components/home/FeaturedEventsSection';
-import BookPromoSection from '@/components/home/BookPromoSection';
 import NewsletterSection from '@/components/home/NewsletterSection';
-import ServicesSection from '@/components/home/ServicesSection';
+// import ServicesSection from '@/components/home/ServicesSection';
 import { usePathname } from 'next/navigation';
 import HomePageLoader from '@/components/loaders/HomePageLoader';
-import ShopPreviewSection from '@/components/home/ShopPreviewSection';
+// import ShopPreviewSection from '@/components/home/ShopPreviewSection';
+import MissionVisionPhilosophySection from '@/components/home/MissionVision';
+import AllServicesOverviewSection from '@/components/home/AllServices';
+import TestimonialsCarousel from '@/components/home/TestimonialSection';
+import GuidedUserPathSection from '@/components/home/GuideUser';
+import FAQSection from '@/components/home/Faq';
 
 // Helper function to check if welcome screen should show
 const shouldShowWelcomeScreen = (): boolean => {
   if (typeof window === 'undefined') return true;
-  
+
   const welcomeData = localStorage.getItem('hasSeenWelcome');
-  
+
   if (!welcomeData) return true;
-  
+
   try {
     const parsedData = JSON.parse(welcomeData);
     const storedTimestamp = parsedData.timestamp;
     const currentTime = Date.now();
-    
+
     // Check if more than 1 hour has passed (3600000 milliseconds)
     return currentTime - storedTimestamp > 3600000;
   } catch {
@@ -136,9 +140,13 @@ export default function HomePage() {
             <HeroSection />
             <AboutSection />
             <FeaturedEventsSection />
-            <BookPromoSection />
-            <ShopPreviewSection />
-            <ServicesSection />
+            <MissionVisionPhilosophySection />
+            <AllServicesOverviewSection />
+            {/* <ShopPreviewSection /> */}
+            {/* <ServicesSection /> */}
+            <GuidedUserPathSection />
+            <TestimonialsCarousel />
+            <FAQSection />
             <NewsletterSection />
           </main>
 
