@@ -296,16 +296,16 @@ const ExperienceOverviewSection = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.a
-                href="/start-free-trial"
+                href="/contact"
                 whileHover={{ scale: 1.05, backgroundColor: "#ffde00", color: "#000" }}
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-4 bg-white cursor-pointer text-[#008020] font-semibold rounded-xl hover:shadow-2xl transition-all duration-300 text-center"
                 style={{ fontWeight: "600" }}
               >
-                Start Free Trial
+                Make Enquiry
               </motion.a>
 
-              <motion.a
+              {/* <motion.a
                 href="/book-demo"
                 whileHover={{
                   scale: 1.05,
@@ -318,7 +318,7 @@ const ExperienceOverviewSection = () => {
                 style={{ fontWeight: "600" }}
               >
                 Book a Demo
-              </motion.a>
+              </motion.a> */}
             </div>
 
           </div>

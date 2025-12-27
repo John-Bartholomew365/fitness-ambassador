@@ -185,9 +185,9 @@ const FlagshipExperiencesSection = () => {
           {/* Auto-Play Status Indicator */}
           <div className="flex justify-center items-center gap-2 mt-6">
             <div className={`w-2 h-2 rounded-full ${isAutoPlaying ? 'bg-[#008020] animate-pulse' : 'bg-gray-400'}`} />
-            <span className="text-sm text-gray-600">
+            {/* <span className="text-sm text-gray-600">
               {isAutoPlaying ? 'Auto-rotating' : 'Paused - tap to resume'}
-            </span>
+            </span> */}
           </div>
         </div>
 

@@ -138,8 +138,8 @@ const SponsorsPage = () => {
     // Success stories
     const successStories = [
         {
-            sponsor: 'FitFuel NG',
-            quote: 'Partnering with The Fitness Ambassador increased our brand recognition by 40% within the fitness community.',
+            sponsor: 'PulseFit',
+            quote: 'Partnering with The Fitness Ambassador increased our brand recognition by 20% within the fitness community.',
             result: '3x sales growth in Ilorin',
             color: '#008020'
         },
@@ -151,7 +151,7 @@ const SponsorsPage = () => {
         },
         {
             sponsor: 'Hydrate Pro',
-            quote: 'Being associated with these events positioned us as the preferred hydration choice for athletes.',
+            quote: 'Being actively associated with these events positioned us as the preferred hydration choice for athletes.',
             result: 'Market leader in region',
             color: '#ffde00'
         }

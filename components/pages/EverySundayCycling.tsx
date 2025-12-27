@@ -35,27 +35,27 @@ const EverySundayCyclingPage = () => {
 
     // Gallery images
     const galleryImages = [
-        { 
-            src: '/cycling1.jpeg', 
-            title: 'Every Sunday Cycling Group', 
+        {
+            src: '/cycling1.jpeg',
+            title: 'Every Sunday Cycling Group',
             category: 'Weekly Tradition',
             distance: '25-35 KM'
         },
-        { 
-            src: '/cycling2.jpeg', 
-            title: 'Cycling Fitness Challenge', 
+        {
+            src: '/cycling2.jpeg',
+            title: 'Cycling Fitness Challenge',
             category: 'Team Building',
             distance: '40-50 KM'
         },
-        { 
-            src: '/cycling3.jpeg', 
-            title: 'Scenic Route Cycling', 
+        {
+            src: '/cycling3.jpeg',
+            title: 'Scenic Route Cycling',
             category: 'Nature Exploration',
             distance: '30-40 KM'
         },
-        { 
-            src: '/cycling4.jpeg', 
-            title: 'Group Cycling Dynamics', 
+        {
+            src: '/cycling4.jpeg',
+            title: 'Group Cycling Dynamics',
             category: 'Community Ride',
             distance: '25-35 KM'
         }
@@ -121,7 +121,7 @@ const EverySundayCyclingPage = () => {
         {
             name: 'Sarah Johnson',
             role: 'Fitness Enthusiast',
-            content: 'As someone new to cycling, the supportive group made all the difference. Now I look forward to Sundays more than weekends!',
+            content: 'As someone new to cycling, the supportive group made all the difference. Now I look forward to Sundays!',
             weeksAttended: '26 weeks'
         },
         {
@@ -138,7 +138,7 @@ const EverySundayCyclingPage = () => {
             <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 px-4 md:px-8 overflow-hidden">
                 {/* Animated Road Lines */}
                 <div className="absolute inset-0 opacity-10">
-                    <div className="absolute inset-0" 
+                    <div className="absolute inset-0"
                         style={{
                             backgroundImage: `repeating-linear-gradient(
                                 90deg,
@@ -181,8 +181,8 @@ const EverySundayCyclingPage = () => {
                             </h1>
 
                             <p className="text-gray-600 text-[16px] mb-8 leading-normal">
-                                Join 100+ cyclists every Sunday morning for a community-driven fitness experience 
-                                that combines cardiovascular exercise, scenic exploration, and meaningful connections. 
+                                Join 100+ cyclists every Sunday morning for a community-driven fitness experience
+                                that combines cardiovascular exercise, scenic exploration, and meaningful connections.
                                 Our weekly ritual keeps you fit and connected year-round.
                             </p>
 
@@ -195,7 +195,7 @@ const EverySundayCyclingPage = () => {
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ delay: index * 0.1 }}
                                         className="text-center p-4 rounded-xl bg-white border-2 border-gray-100 hover:shadow-lg transition-all duration-300 group"
-                                        style={{ 
+                                        style={{
                                             borderBottomColor: stat.color,
                                             borderBottomWidth: '3px'
                                         }}
@@ -252,13 +252,13 @@ const EverySundayCyclingPage = () => {
                                             className="object-cover"
                                         />
                                         <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
-                                        
+
                                         {/* Time Display */}
                                         <div className="absolute top-4 left-4 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm">
                                             <div className="text-sm font-bold text-gray-900">SUN 6:00 AM</div>
                                             <div className="text-xs text-gray-600">Weekly Departure</div>
                                         </div>
-                                        
+
                                         {/* Distance Display */}
                                         <div className="absolute top-4 right-4 px-4 py-2 rounded-full bg-[#008020]/90 text-white">
                                             <div className="text-sm font-bold">25-50 KM</div>
@@ -266,7 +266,7 @@ const EverySundayCyclingPage = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Road Effect Bottom */}
                                 <div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-r from-transparent via-gray-800 to-transparent opacity-30" />
                             </div>
@@ -317,13 +317,13 @@ const EverySundayCyclingPage = () => {
                                     <div className={`text-4xl font-bold mb-6 bg-linear-to-r ${benefit.gradient} bg-clip-text text-transparent`}>
                                         0{index + 1}
                                     </div>
-                                    
+
                                     <h3 className="text-2xl font-bold text-gray-900 mb-4">{benefit.title}</h3>
                                     <p className="text-gray-600">{benefit.description}</p>
-                                    
+
                                     {/* Bottom accent */}
                                     <div className="absolute bottom-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                        style={{ 
+                                        style={{
                                             background: `linear-gradient(90deg, ${benefit.gradient.replace('from-', '').replace('to-', '').split(' ')[0]} 0%, ${benefit.gradient.replace('from-', '').replace('to-', '').split(' ')[2]} 100%)`
                                         }}
                                     />
@@ -342,11 +342,11 @@ const EverySundayCyclingPage = () => {
                         <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">
                             A <span className="text-[#ff8a00]">Typical</span> Sunday Morning
                         </h3>
-                        
+
                         <div className="relative">
                             {/* Timeline Line */}
                             <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-linear-to-b from-[#008020] via-[#ffde00] to-[#ff8a00] hidden md:block" />
-                            
+
                             <div className="space-y-8">
                                 {weeklyHighlights.map((highlight, index) => (
                                     <motion.div
@@ -368,7 +368,7 @@ const EverySundayCyclingPage = () => {
                                             {/* Connector dot */}
                                             <div className="absolute top-1/2 -right-6 w-6 h-0.5 bg-gray-200 hidden md:block" />
                                         </div>
-                                        
+
                                         {/* Activity Details */}
                                         <div className="flex-1">
                                             <h4 className="text-xl font-bold text-gray-900 mb-2">{highlight.activity}</h4>
@@ -395,7 +395,7 @@ const EverySundayCyclingPage = () => {
                             <span className="text-[#ff8a00]">Sunday</span> Route Varieties
                         </h2>
                         <p className="text-gray-600 text-[16px] lg:w-[410px] w-auto mx-auto leading-normal">
-                            Different routes each week to keep your rides exciting and challenging.
+                            Different routes each week to keep the rides exciting and challenging.
                         </p>
                     </motion.div>
 
@@ -454,9 +454,9 @@ const EverySundayCyclingPage = () => {
                                         <div className="space-y-3">
                                             {sundayRoutes[activeRoute].highlights.map((highlight, index) => (
                                                 <div key={index} className="flex items-center gap-3">
-                                                    <div 
+                                                    <div
                                                         className="w-6 h-6 rounded-full flex items-center justify-center text-sm"
-                                                        style={{ 
+                                                        style={{
                                                             backgroundColor: sundayRoutes[activeRoute].color + '20',
                                                             color: sundayRoutes[activeRoute].color
                                                         }}
@@ -473,7 +473,7 @@ const EverySundayCyclingPage = () => {
                                 <div className="relative">
                                     {/* Route Visualization */}
                                     <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden border-2 border-gray-100">
-                                        <div 
+                                        <div
                                             className="absolute inset-0 flex items-center justify-center"
                                             style={{ backgroundColor: sundayRoutes[activeRoute].color + '10' }}
                                         >
@@ -509,7 +509,7 @@ const EverySundayCyclingPage = () => {
                             Weekly <span className="text-[#ff8a00]">Moments</span>
                         </h2>
                         <p className="text-gray-600 text-[16px] lg:w-[410px] w-auto mx-auto leading-normal">
-                            Capturing the energy and camaraderie of our Sunday rides.
+                            Good vibes from our Sunday rides.
                         </p>
                     </motion.div>
 
@@ -542,7 +542,7 @@ const EverySundayCyclingPage = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Road effect overlay */}
                                 <div className="absolute -bottom-2 -left-2 -right-2 h-4 bg-linear-to-r from-transparent via-gray-800/20 to-transparent rounded-b-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </motion.div>
@@ -618,7 +618,7 @@ const EverySundayCyclingPage = () => {
                         </h2>
 
                         <p className="text-gray-700 text-[16px] mb-10 max-w-2xl mx-auto">
-                            Join 100+ riders this Sunday morning. No registration needed - just bring your bike, 
+                            Join 100+ riders this Sunday morning. No registration needed - just bring your bike,
                             helmet, and enthusiasm. Be part of Ilorin&apos;s most consistent fitness community.
                         </p>
 

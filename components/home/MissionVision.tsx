@@ -142,7 +142,7 @@ const MissionVisionPhilosophySection = () => {
                             <div className="relative">
                                 <div className="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
                                     <Image
-                                        src="/vision.jpeg"
+                                        src="/jam2fit5.jpg"
                                         alt="Our Vision - Fitness integrated into daily community life"
                                         width={800}
                                         height={500}
@@ -208,7 +208,7 @@ const MissionVisionPhilosophySection = () => {
                             <div className="relative">
                                 <div className="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
                                     <Image
-                                        src="/vision.jpeg"
+                                        src="/jam2fit5.jpg"
                                         alt="Our Vision - Fitness integrated into daily community life"
                                         width={800}
                                         height={500}

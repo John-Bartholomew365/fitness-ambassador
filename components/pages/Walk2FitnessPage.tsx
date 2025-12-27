@@ -63,7 +63,7 @@ const Walk2FitnessPage = () => {
         {
             name: 'Tunde Olamide',
             role: 'Fitness Enthusiast',
-            content: 'The structured approach in 4.0 helped me lose 12kg. The community support and expert guidance made all the difference in my fitness journey.',
+            content: 'The structured approach in 4.0 helped me lose 1000+ calories. The community support and expert guidance made all the difference in my fitness journey.',
             rating: 5,
             edition: '4.0 Participant'
         },
@@ -463,7 +463,7 @@ const Walk2FitnessPage = () => {
                         <div className="mt-12 pt-8 border-t border-gray-300/30">
                             <p className="text-gray-600">
                                 <span className="font-semibold">Location:</span> Ilorin, Kwara State<br />
-                                <span className="text-sm">Multiple venues across the city for maximum accessibility</span>
+                                {/* <span className="text-sm">Multiple venues across the city for maximum accessibility</span> */}
                             </p>
                         </div>
                     </motion.div>

@@ -110,9 +110,9 @@ const FAQSection = () => {
                                                     className="w-2 h-2 rounded-full"
                                                     style={{ backgroundColor: color }}
                                                 />
-                                                <span className="text-sm text-gray-500">
+                                                {/* <span className="text-sm text-gray-500">
                                                     {isOpen ? 'Click to close' : 'Click to expand'}
-                                                </span>
+                                                </span> */}
                                             </div>
                                         </div>
                                     </div>

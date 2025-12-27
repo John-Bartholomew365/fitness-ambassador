@@ -86,7 +86,7 @@ const AerobicsIceBathPage = () => {
         {
             name: 'Chinedu Okafor',
             role: 'Marathon Runner',
-            content: 'The combination is revolutionary. I recover faster from long runs than with any other method I\'ve tried.',
+            content: 'The combination changed how my body responds after intense runs. My muscles feel less sore, and I bounce back quicker compared to other recovery routines I’ve used.',
             highlight: 'Faster recovery than ever'
         },
         {

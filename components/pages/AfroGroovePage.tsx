@@ -125,7 +125,7 @@ const AfroGroovePage = () => {
                             </h1>
 
                             <p className="text-gray-600 text-lg mb-8 leading-normal">
-                                A groundbreaking fitness collaboration with the University of Ilorin Sports Council,
+                                A fitness collaboration with the University of Ilorin Sports Council,
                                 blending traditional African dance with modern fitness techniques. Experience the
                                 rhythm, energy, and community spirit of African culture in a transformative workout.
                             </p>

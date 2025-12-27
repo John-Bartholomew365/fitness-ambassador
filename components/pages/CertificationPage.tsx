@@ -47,45 +47,58 @@ const CertificationPortfolio = () => {
       validity: '3-Year Renewal',
       verificationId: 'NASM-2020-89234'
     },
-    // {
-    //   id: 4,
-    //   title: 'Sports Nutrition Consultant',
-    //   issuer: 'International Society of Sports Nutrition',
-    //   year: '2021',
-    //   type: 'Nutrition Specialization',
-    //   image: '/certification3.jpeg',
-    //   description: 'Seeing participants struggle with nutrition alongside fitness, I pursued this to provide holistic guidance. This certification forms the basis of the nutritional tips in Workout Compass.',
-    //   personalNote: 'The practical nutrition strategies from this certification are now part of every fitness consultation I provide.',
-    //   skills: ['Sports Nutrition', 'Supplementation', 'Meal Planning', 'Hydration Strategies'],
-    //   validity: '3-Year Renewal',
-    //   verificationId: 'ISSN-2021-56789'
-    // },
-    // {
-    //   id: 5,
-    //   title: 'Community Fitness Leadership',
-    //   issuer: 'African Fitness Association',
-    //   year: '2022',
-    //   type: 'Community Focus',
-    //   image: '/certification4.jpeg',
-    //   description: 'This certification was specifically for creating and managing community fitness programs. It provided the framework for building sustainable fitness communities like our Sunday Cycling group.',
-    //   personalNote: 'This taught me how to scale fitness from individual coaching to community impact.',
-    //   skills: ['Community Building', 'Group Dynamics', 'Event Planning', 'Inclusive Programming'],
-    //   validity: 'Lifetime',
-    //   verificationId: 'AFA-2022-12345'
-    // },
-    // {
-    //   id: 6,
-    //   title: 'Emergency First Aid & CPR',
-    //   issuer: 'Red Cross International',
-    //   year: '2023',
-    //   type: 'Safety Certification',
-    //   image: '/certification5.jpeg',
-    //   description: 'Safety is non-negotiable. With events growing to 400+ participants, I knew I needed this certification to ensure everyone\'s wellbeing during our fitness experiences.',
-    //   personalNote: 'This certification gives me peace of mind knowing I can handle emergencies during any event.',
-    //   skills: ['CPR', 'First Aid', 'Emergency Response', 'Injury Prevention'],
-    //   validity: '2-Year Renewal',
-    //   verificationId: 'RCI-2023-67890'
-    // }
+    {
+      id: 3,
+      title: 'Safety in the Gym ',
+      issuer: 'INSTITUTE OF EXERCISE PROFESSIONALS',
+      year: '2024',
+      type: 'Nutrition Specialization',
+      image: '/certification3.jpeg',
+      description: 'This certification confirms professional knowledge of gym safety standards, equipment handling, and risk prevention to ensure safe and effective training sessions.',
+      personalNote: 'This certification reinforces the importance of creating training environments where movement is controlled, equipment is used correctly, and risks are minimized.',
+      skills: ['Sports Nutrition', 'Supplementation', 'Meal Planning', 'Hydration Strategies'],
+      validity: '3-Year Renewal',
+      verificationId: 'ISSN-2021-56789'
+    },
+    {
+      id: 4,
+      title: 'Institute of Exercise Professionals',
+      issuer: 'We Move Summit',
+      year: '2024',
+      type: 'Community Focus',
+      image: '/certification4.jpeg',
+      description: 'This certification represents formal recognition of professional competence, industry standards, and ongoing development within the fitness field.',
+      personalNote: 'Training under the Institute of Exercise Professionals reinforces a structured, professional approach to fitness, emphasizing standards, ethics, and continuous improvement in coaching.',
+      skills: ['Community Building', 'Group Dynamics', 'Event Planning', 'Inclusive Programming'],
+      validity: 'Lifetime',
+      verificationId: 'AFA-2022-12345'
+    },
+    {
+      id: 5,
+      title: 'Human Resource Management',
+      issuer: 'Human Resource Certification Institute USA',
+      year: '2022',
+      type: 'Safety Certification',
+      image: '/certification5.jpeg',
+      description: 'This certification represents knowledge of people management, leadership, communication, and organizational practices within a professional environment.',
+      personalNote: 'Human Resource Management highlights the importance of people, communication, and structure in building effective teams and delivering organized, professional fitness experiences.',
+      skills: ['CPR', 'First Aid', 'Emergency Response', 'Injury Prevention'],
+      validity: '2-Year Renewal',
+      verificationId: 'RCI-2023-67890'
+    },
+    {
+      id: 6,
+      title: 'Certification on Fitness/Exercise Therapy',
+      issuer: 'Exercise is Medicine',
+      year: '2021',
+      type: 'Safety Certification',
+      image: '/certification6.jpeg',
+      description: 'It represents professional training in applying exercise safely and effectively to support rehabilitation, mobility, and functional health goals.',
+      personalNote: 'This certification emphasizes using exercise as a structured tool for recovery, mobility improvement, and overall physical well-being through guided and intentional movement.',
+      skills: ['CPR', 'First Aid', 'Emergency Response', 'Injury Prevention'],
+      validity: '2-Year Renewal',
+      verificationId: 'RCI-2023-67890'
+    }
   ];
 
   // Why certification matters - personal perspective
