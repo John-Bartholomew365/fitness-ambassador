@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Instagram,  Mail, Phone, MapPin, Linkedin, } from 'lucide-react';
+import { Instagram, Mail, Phone, MapPin, Linkedin, } from 'lucide-react';
 import { FaXTwitter } from "react-icons/fa6";
 import Image from 'next/image';
 import { FaTiktok, FaWhatsapp } from "react-icons/fa";
@@ -19,27 +19,27 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { 
-      icon: Instagram, 
-      href: 'https://www.instagram.com/fitness_ambassadorr?igsh=MXdleGcxNTY2a2Jiaw%3D%3D&utm_source=qr', 
-      label: 'Instagram' 
+    {
+      icon: Instagram,
+      href: 'https://www.instagram.com/fitness_ambassadorr?igsh=MXdleGcxNTY2a2Jiaw%3D%3D&utm_source=qr',
+      label: 'Instagram'
     },
-    { 
-      icon: FaTiktok, 
-      href: 'https://www.tiktok.com/@fitness_ambassador1?_r=1&_t=ZS-92KxrL9eBQi', 
-      label: 'Instagram' 
+    {
+      icon: FaTiktok,
+      href: 'https://www.tiktok.com/@fitness_ambassador1?_r=1&_t=ZS-92KxrL9eBQi',
+      label: 'Instagram'
     },
 
-    { 
-      icon: FaXTwitter, 
-      href: 'https://x.com/ajisafe_akorede?s=21', 
-      label: 'Twitter' 
+    {
+      icon: FaXTwitter,
+      href: 'https://x.com/ajisafe_akorede?s=21',
+      label: 'Twitter'
     },
     // { 
-    { 
-      icon: Linkedin, 
-      href: 'https://www.linkedin.com/in/sulaiman-ajisafe-30061b16a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app', 
-      label: 'Twitter' 
+    {
+      icon: Linkedin,
+      href: 'https://www.linkedin.com/in/sulaiman-ajisafe-30061b16a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
+      label: 'Twitter'
     },
     // { 
     //   icon: Facebook, 
@@ -64,10 +64,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="**:text-background!">
+            <div className="flex lg:justify-start justify-center **:text-background!">
               <Image src="/fa-logo3.png" alt="Fitness Ambassador Logo" width={150} height={40} />
             </div>
-            <p className="text-black/70 text-sm leading-relaxed">
+            <p className="text-black/70 text-sm leading-relaxed lg:text-left text-center">
               Your fitness journey starts here. Transform your body, strengthen your mindset, and achieve real results.
             </p>
           </div>
@@ -95,8 +95,8 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-foreground/70" />
-                <a 
-                  href="mailto:fitnessambassador84@gmail.com" 
+                <a
+                  href="mailto:fitnessambassador84@gmail.com"
                   className="text-foreground/70 hover:text-primary transition-colors text-sm"
                 >
                   fitnessambassador84@gmail.com
@@ -116,8 +116,8 @@ const Footer = () => {
 
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-foreground/70" />
-                <a 
-                  href="tel:+2348163702286" 
+                <a
+                  href="tel:+2348163702286"
                   className="text-foreground/70 hover:text-primary transition-colors text-sm"
                 >
                   +234 816 370 2286

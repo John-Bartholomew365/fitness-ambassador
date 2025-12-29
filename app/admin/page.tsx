@@ -11,6 +11,7 @@ import MediaLibrary from '@/components/pages/admin/MediaLibrary'
 import Shop from '@/components/pages/admin/Shop'
 import Subscribers from '@/components/pages/admin/Subscribers'
 import Training from '@/components/pages/admin/Training'
+// import UserRegistrationDetails from '@/components/pages/UserRegistrationDetails'
 import { useState } from 'react'
 
 export default function AdminPage() {
@@ -34,6 +35,8 @@ export default function AdminPage() {
         return <ContactMessages />
       case 'blog':
         return <AdminBlogDashboard />
+      // case 'registration':
+      //   return <UserRegistrationDetails />
       case 'media':
         return <MediaLibrary />
       default:

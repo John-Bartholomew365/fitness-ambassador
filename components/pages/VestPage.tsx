@@ -10,7 +10,7 @@ const Walk2FitnessVestPage = () => {
             type: 'Hoodie',
             color: '#008020',
             colorName: 'Forest Green',
-            price: '₦15,000',
+            price: '₦12,000',
             features: [
                 'Premium quality hoodie',
                 'Official Walk2Fitness 5.0 branding',
@@ -23,7 +23,7 @@ const Walk2FitnessVestPage = () => {
             type: 'Hoodie',
             color: '#1e40af',
             colorName: 'Royal Blue',
-            price: '₦15,000',
+            price: '₦12,000',
             features: [
                 'Premium quality hoodie',
                 'Official Walk2Fitness 5.0 branding',
@@ -36,33 +36,33 @@ const Walk2FitnessVestPage = () => {
             type: 'T-Shirt',
             color: '#ff8a00',
             colorName: 'Sunset Orange',
-            price: '₦8,000',
+            price: '₦10,000',
             features: [
                 'Breathable cotton fabric',
                 'Official event branding',
                 'Lightweight and comfortable',
                 'Ideal for warm weather'
             ],
-            image: '/blue-tshirt.png' // Fixed: added .png extension
+            image: '/blue-tshirt.png'
         },
         {
             type: 'T-Shirt',
             color: '#ffde00',
             colorName: 'Sunshine Yellow',
-            price: '₦8,000',
+            price: '₦10,000',
             features: [
                 'Breathable cotton fabric',
                 'Official event branding',
                 'Lightweight and comfortable',
                 'Ideal for warm weather'
             ],
-            image: '/green-shirt.png' // Fixed: added .png extension
+            image: '/green-shirt.png'
         },
         {
             type: 'Armless Vest',
             color: '#008020',
             colorName: 'Forest Green',
-            price: '₦6,000',
+            price: '₦10,000',
             features: [
                 'Sleeveless design',
                 'Moisture-wicking fabric',
@@ -75,7 +75,7 @@ const Walk2FitnessVestPage = () => {
             type: 'Armless Vest',
             color: '#000000',
             colorName: 'Classic Blue',
-            price: '₦6,000',
+            price: '₦10,000',
             features: [
                 'Sleeveless design',
                 'Moisture-wicking fabric',
@@ -143,8 +143,8 @@ const Walk2FitnessVestPage = () => {
                         transition={{ delay: 0.2 }}
                         className="text-white/90 text-[16px] lg:text-[18px] lg:w-[700px] mx-auto leading-relaxed mb-10"
                     >
-                        Exclusive collection of high-quality event vests. Choose from Hoodies, T-Shirts, 
-                        and Armless Vests in various colors. Each piece is designed for comfort, style, 
+                        Exclusive collection of high-quality event vests. Choose from Hoodies, T-Shirts,
+                        and Armless Vests in various colors. Each piece is designed for comfort, style,
                         and maximum performance during the walk.
                     </motion.p>
 
@@ -155,7 +155,7 @@ const Walk2FitnessVestPage = () => {
                         transition={{ delay: 0.3 }}
                         className="mb-8"
                     >
-                        <Link href="/register">
+                        <Link href="/register"> {/* Changed from /register to /register */}
                             <button className="px-10 py-4 bg-[#ff8a00] text-white text-lg font-bold rounded-xl hover:shadow-2xl hover:shadow-[#ff8a00]/25 transition-all duration-300 transform hover:scale-105 cursor-pointer">
                                 Register & Choose Your Vest
                             </button>
@@ -205,7 +205,7 @@ const Walk2FitnessVestPage = () => {
                                         <div>
                                             <h3 className="text-xl font-bold text-gray-900">{hoodie.type}</h3>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <div 
+                                                <div
                                                     className="w-4 h-4 rounded-full border border-gray-300"
                                                     style={{ backgroundColor: hoodie.color }}
                                                 />
@@ -273,7 +273,7 @@ const Walk2FitnessVestPage = () => {
                                         <div>
                                             <h3 className="text-xl font-bold text-gray-900">{tshirt.type}</h3>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <div 
+                                                <div
                                                     className="w-4 h-4 rounded-full border border-gray-300"
                                                     style={{ backgroundColor: tshirt.color }}
                                                 />
@@ -341,7 +341,7 @@ const Walk2FitnessVestPage = () => {
                                         <div>
                                             <h3 className="text-xl font-bold text-gray-900">{vest.type}</h3>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <div 
+                                                <div
                                                     className="w-4 h-4 rounded-full border border-gray-300"
                                                     style={{ backgroundColor: vest.color }}
                                                 />
@@ -386,19 +386,19 @@ const Walk2FitnessVestPage = () => {
                         {[
                             {
                                 type: 'Hoodie',
-                                price: '₦15,000',
+                                price: '₦12,000',
                                 bestFor: 'Cool weather & style',
                                 features: ['Premium material', 'Full coverage', 'Event branding', 'Comfortable fit']
                             },
                             {
                                 type: 'T-Shirt',
-                                price: '₦8,000',
+                                price: '₦10,000',
                                 bestFor: 'Everyday comfort',
                                 features: ['Lightweight cotton', 'Breathable', 'Event branding', 'Versatile wear']
                             },
                             {
                                 type: 'Armless Vest',
-                                price: '₦6,000',
+                                price: '₦10,000',
                                 bestFor: 'Maximum mobility',
                                 features: ['Moisture-wicking', 'Sleeveless design', 'Event branding', 'Workout-ready']
                             }
@@ -445,10 +445,10 @@ const Walk2FitnessVestPage = () => {
                             Ready to <span className="text-[#ff8a00]">Choose Your Vest?</span>
                         </h2>
                         <p className="text-gray-700 mb-8 max-w-2xl mx-auto">
-                            Select your preferred vest during registration. All vests come with official 
+                            Select your preferred vest during registration. All vests come with official
                             Walk2Fitness 5.0 branding and are designed for maximum comfort during the event.
                         </p>
-                        
+
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <Link href="/register">
                                 <button className="px-10 py-4 bg-[#008020] text-white text-lg font-bold rounded-xl hover:shadow-2xl hover:shadow-[#008020]/25 transition-all duration-300 cursor-pointer">

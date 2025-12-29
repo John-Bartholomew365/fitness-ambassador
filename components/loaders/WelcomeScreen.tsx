@@ -34,8 +34,12 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     // Convert to radians
     const radians = (angle * Math.PI) / 180;
     
-    // Adjust radius based on screen size for responsiveness
-    const radius = typeof window !== 'undefined' && window.innerWidth < 768 ? 75 : 100;
+    // Different radius for different screen sizes - reduced on mobile
+    const radius = typeof window !== 'undefined' ? 
+      window.innerWidth < 640 ? 55 :  // Mobile - reduced from 75
+      window.innerWidth < 768 ? 65 :  // Small tablet
+      window.innerWidth < 1024 ? 85 : // Tablet
+      100 : 100;                      // Desktop (unchanged)
     
     // Calculate position - for upward curve, Y should be negative (above center)
     const x = Math.cos(radians) * radius;
@@ -111,13 +115,27 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     >
       <div className="relative w-full max-w-2xl flex flex-col items-center justify-center">
         {/* Complete Circle Composition */}
-        <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 flex items-center justify-center mb-1 sm:mb-2 md:mb-4 lg:mb-6">
+        <div className="relative w-32 h-32 sm:w-36 sm:h-36 md:w-48 md:h-48 lg:w-56 lg:h-56 flex items-center justify-center mb-0 sm:mb-0 md:mb-2 lg:mb-4">
           
           {/* TOP HALF-CIRCLE: "WELCOME TO" - CURVING UPWARD */}
-          <div className="absolute top-0 sm:top-1 md:top-2 lg:top-4 left-1/2 transform -translate-x-1/2 w-full h-22 sm:h-24 md:h-32 lg:h-36 overflow-visible">
+          <div className="absolute top-0 sm:top-0 md:top-1 lg:top-2 left-1/2 transform -translate-x-1/2 w-full h-16 sm:h-20 md:h-28 lg:h-36 overflow-visible">
             {welcomeText.split('').map((letter, index) => {
               const position = getTopHalfCirclePosition(index, welcomeText.length);
               const isVisible = index < welcomeLetters.length;
+              
+              // Responsive font sizes - smaller on mobile
+              const fontSize = typeof window !== 'undefined' ? 
+                window.innerWidth < 640 ? 'text-[22px]' :
+                window.innerWidth < 768 ? 'text-[26px]' :
+                window.innerWidth < 1024 ? 'text-2xl' :
+                'text-4xl' : 'text-4xl';
+              
+              // Responsive vertical offset - reduced on mobile
+              const verticalOffset = typeof window !== 'undefined' ? 
+                window.innerWidth < 640 ? 12 :  // Reduced from 18
+                window.innerWidth < 768 ? 15 :
+                window.innerWidth < 1024 ? 20 :
+                25 : 25;
               
               return (
                 <motion.span
@@ -132,7 +150,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                   animate={isVisible ? { 
                     opacity: 1, 
                     x: position.x, 
-                    y: position.y - (typeof window !== 'undefined' && window.innerWidth < 768 ? 18 : 25), // Slightly increased to accommodate bigger logo
+                    y: position.y - verticalOffset,
                     rotate: position.rotation,
                     scale: 1 
                   } : {}}
@@ -143,7 +161,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                     stiffness: 100,
                     damping: 12
                   }}
-                  className="absolute text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground font-display whitespace-nowrap"
+                  className={`absolute font-bold text-foreground font-display whitespace-nowrap ${fontSize}`}
                   style={{
                     left: '50%',
                     top: '50%',
@@ -156,7 +174,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             })}
           </div>
 
-          {/* CENTER: Logo positioned in the middle - INCREASED SIZE */}
+          {/* CENTER: Logo positioned in the middle - INCREASED SIZE ON MOBILE */}
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -167,9 +185,9 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
               stiffness: 200,
               damping: 15
             }}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 mt-1 sm:mt-2 md:mt-3 lg:mt-4"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
           >
-            <div className="relative w-20 h-20 sm:w-22 sm:h-22 md:w-26 md:h-26 lg:w-30 lg:h-30">
+            <div className="relative w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-30 lg:h-30">
               <Image 
                 src="/fa-logo3.png" 
                 alt="Fitness Ambassador Logo" 
@@ -182,7 +200,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
           </motion.div>
         </div>
 
-        {/* Typewriter Effect for Phrases */}
+        {/* Typewriter Effect for Phrases - Reduced spacing on mobile */}
         <motion.div
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
@@ -190,7 +208,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             delay: welcomeText.length * 0.1 + 0.9,
             duration: 0.6 
           }}
-          className="mt-0 sm:mt-1 md:mt-2 lg:mt-3 flex items-center justify-center"
+          className="mt-1 sm:mt-1 md:mt-2 lg:mt-3 flex items-center justify-center"
         >
           <div className="flex items-center justify-center">
             <AnimatePresence mode="wait">
@@ -200,9 +218,9 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-primary font-sans flex items-center text-center px-4"
+                  className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold text-primary font-sans flex items-center text-center px-4"
                 >
-                  <div className="text-center leading-relaxed min-h-[20px] sm:min-h-[24px] md:min-h-[28px] lg:min-h-[32px]">
+                  <div className="text-center leading-relaxed min-h-[18px] sm:min-h-[20px] md:min-h-[24px] lg:min-h-[32px]">
                     {displayText}
                     <motion.span
                       animate={{ opacity: [1, 0] }}
@@ -218,7 +236,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                   key="final"
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-accent font-display text-center px-4"
+                  className="text-base sm:text-lg md:text-2xl lg:text-3xl font-bold text-accent font-display text-center px-4"
                 >
                   <div className="text-center text-gradient leading-relaxed">
                     ALL IN ONE PLACE

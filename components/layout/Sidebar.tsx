@@ -24,6 +24,7 @@ const menuItems = [
   { icon: Book, label: 'Book Management', key: 'book' },
   { icon: Dumbbell, label: 'Training', key: 'training' },
   { icon: Users, label: 'Subscribers', key: 'subscribers' },
+  { icon: Users, label: 'Registrations', key: 'registration' },
   { icon: MessageSquare, label: 'Contact Messages', key: 'contacts' },
   { icon: FaBlog, label: 'Blog Article', key: 'blog' },
 ]

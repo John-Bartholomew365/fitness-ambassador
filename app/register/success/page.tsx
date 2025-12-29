@@ -1,15 +1,12 @@
-"use client"
-// import Footer from '@/components/layout/Footer'
-// import Navbar from '@/components/layout/Navbar'
 import PageLoader from '@/components/loaders/PageLoader'
-import RegisterPage from '@/components/pages/RegisterPage'
+import SuccessPage from '@/components/pages/Vest/SuccessPage'
 
 const page = () => {
     return (
         <PageLoader>
             <div>
                 {/* <Navbar /> */}
-                <RegisterPage />
+                <SuccessPage />
                 {/* <Footer /> */}
             </div>
         </PageLoader>
