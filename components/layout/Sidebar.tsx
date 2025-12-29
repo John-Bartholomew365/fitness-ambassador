@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { FaBlog } from 'react-icons/fa6'
+import { FaBlog, FaUserPlus } from 'react-icons/fa6'
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', key: 'dashboard' },
@@ -23,7 +23,7 @@ const menuItems = [
   { icon: ShoppingBag, label: 'Shop / Products', key: 'shop' },
   { icon: Book, label: 'Book Management', key: 'book' },
   { icon: Dumbbell, label: 'Training', key: 'training' },
-  { icon: Users, label: 'Subscribers', key: 'subscribers' },
+  { icon: FaUserPlus, label: 'Subscribers', key: 'subscribers' },
   { icon: Users, label: 'Registrations', key: 'registration' },
   { icon: MessageSquare, label: 'Contact Messages', key: 'contacts' },
   { icon: FaBlog, label: 'Blog Article', key: 'blog' },

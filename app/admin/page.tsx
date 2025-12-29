@@ -11,7 +11,7 @@ import MediaLibrary from '@/components/pages/admin/MediaLibrary'
 import Shop from '@/components/pages/admin/Shop'
 import Subscribers from '@/components/pages/admin/Subscribers'
 import Training from '@/components/pages/admin/Training'
-// import UserRegistrationDetails from '@/components/pages/UserRegistrationDetails'
+import UserRegistrationDetails from '@/components/pages/UserRegistrationDetails'
 import { useState } from 'react'
 
 export default function AdminPage() {
@@ -35,8 +35,8 @@ export default function AdminPage() {
         return <ContactMessages />
       case 'blog':
         return <AdminBlogDashboard />
-      // case 'registration':
-      //   return <UserRegistrationDetails />
+      case 'registration':
+        return <UserRegistrationDetails />
       case 'media':
         return <MediaLibrary />
       default:
@@ -53,7 +53,7 @@ export default function AdminPage() {
       
       <div className="flex-1 flex flex-col lg:ml-0">
         <Header activeSection={activeSection} />
-        <main className="flex-1 p-3 sm:p-4 lg:p-6 overflow-auto">
+        <main className="flex-1 p-1 sm:p-1 lg:p-6 overflow-auto">
           {renderContent()}
         </main>
       </div>
