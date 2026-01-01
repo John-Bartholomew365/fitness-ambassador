@@ -48,10 +48,10 @@ const FlagshipExperiencesSection = () => {
       features: ['Personalized Workout Planning', 'Training Split Guidance', 'Form Improvement Techniques', 'Progressive Overload Principles'],
       color: '#ff8a00',
       includes: ['Stretching Routines', 'Simple Dietary Tips', 'Program Templates', 'Progression Guide'],
-      joinLink: '/book',
+      joinLink: '/innovator/workout-compass',
       isExternal: false,
       joinText: 'Get Your Copy',
-      detailsLink: '#',
+      detailsLink: '/innovator',
       detailsText: 'Meet the Author'
     }
   ];

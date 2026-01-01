@@ -12,7 +12,7 @@ const slides = [
     image: '/walk.jpg',
     icon: Users,
     ctas: [
-      { label: 'Explore Past Event', href: '/event/walk2fitness', variant: 'primary' },
+      { label: 'Explore Past Event', href: '/events/walk2fitness', variant: 'primary' },
       { label: 'Register Now', href: 'https://www.tixtango.com/spotlight/walk2fitness-50', variant: 'secondary' }
     ],
     accentColor: 'primary',
@@ -25,7 +25,7 @@ const slides = [
     image: '/jamfit.jpg',
     icon: Music,
     ctas: [
-      { label: 'Explore Past Event', href: '/event/jam2fit', variant: 'primary' },
+      { label: 'Explore Past Event', href: '/events/jam2fit', variant: 'primary' },
       { label: 'View Gallery', href: '/gallery', variant: 'secondary' }
     ],
     accentColor: 'secondary',
@@ -38,7 +38,7 @@ const slides = [
     image: '/book2.jpeg',
     icon: BookOpen,
     ctas: [
-      { label: 'Get the Book', href: '/book', variant: 'primary' },
+      { label: 'Get the Book', href: '/innovator/workout-compass', variant: 'primary' },
       { label: 'Meet the Author', href: '#', variant: 'secondary' }
     ],
     accentColor: 'accent',

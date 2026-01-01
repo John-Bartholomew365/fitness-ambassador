@@ -25,7 +25,7 @@ const ExperienceOverviewSection = () => {
 
   const stats = [
     {
-      number: 500,
+      number: 10,
       suffix: "+",
       label: "Community Events",
       color: "#008020",
