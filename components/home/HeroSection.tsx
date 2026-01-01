@@ -39,7 +39,7 @@ const slides = [
     icon: BookOpen,
     ctas: [
       { label: 'Get the Book', href: '/innovator/workout-compass', variant: 'primary' },
-      { label: 'Meet the Author', href: '#', variant: 'secondary' }
+      { label: 'Meet the Author', href: '/innovator', variant: 'secondary' }
     ],
     accentColor: 'accent',
   },
