@@ -91,6 +91,7 @@ export default function HomePage() {
           name="description"
           content="Welcome to The Fitness Ambassador. Explore fitness events, training programs, gym wear, and tools to transform your health and wellness journey."
         />
+        <meta name="keywords" content="The Fitness Ambassador, fitness events Ilorin, Walk2Fitness, Jam2Fit, Workout Compass, FA Gym Wears, personal trainer Nigeria, fitness coach Ilorin, fitness training, fitness consultation, Afro Groove, Aerobics Icebath, fitness certification Nigeria, gym wears, fitness apparel, fitness book Nigeria" />
         <link rel="icon" href="/favicon.ico" />
         <meta property="og:title" content="The Fitness Ambassador | Personalized Workouts & Events" />
         <meta property="og:description" content="Welcome to The Fitness Ambassador. Explore fitness events, training programs, gym wear, and tools to transform your health and wellness journey." />

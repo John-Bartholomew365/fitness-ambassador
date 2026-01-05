@@ -18,6 +18,7 @@ const Walk2Fitness = () => {
             name="description"
             content="Join Walk2Fitness, the exciting fitness event by The Fitness Ambassador. Participate in charity walks, fitness challenges, and connect with the community."
           />
+          <meta name="keywords" content="Walk2Fitness, Walk2Fitness Ilorin, Walk2Fitness 1.0 2.0 3.0 4.0, group walking fitness, walking exercise program Nigeria, fitness walking events, community walking Ilorin, health walk program, walking for weight loss, outdoor fitness walking, morning walk exercise, walking group Nigeria, Walk2Fitness registration, walking challenge Ilorin, fitness community walking, walking workout schedule, walking events Kwara, walking for health Nigeria, group exercise walking, walking fitness program, walking clubs Ilorin" />
           <link rel="icon" href="/favicon.ico" />
 
           {/* Open Graph / Twitter */}

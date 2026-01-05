@@ -17,6 +17,7 @@ const EverySundayCycling = () => {
             name="description"
             content="Join Every Sunday Cycling, a community fitness ride organized by The Fitness Ambassador. Stay active, socialize, and enjoy cycling every Sunday."
           />
+          <meta name="keywords" content="Every Sunday Cycling, Sunday cycling Ilorin, weekend cycling group, cycling fitness Nigeria, Sunday morning cycling, bicycle workout Nigeria, cycling club Ilorin, group cycling events, cycling exercise Nigeria, weekend cycling workout, cycling for fitness, Sunday bike ride, cycling community Nigeria, outdoor cycling workout, cycling events Ilorin, bike fitness group, cycling program Nigeria, recreational cycling, cycling for health, Sunday cycling schedule, cycling routes Ilorin" />
           <link rel="icon" href="/favicon.ico" />
 
           <meta property="og:title" content="Every Sunday Cycling | Fitness Community Ride | The Fitness Ambassador" />

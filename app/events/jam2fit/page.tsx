@@ -17,6 +17,13 @@ const Jam2Fit = () => {
             name="description"
             content="Experience Jam2Fit, Ilorin's first nighttime fitness party hosted by The Fitness Ambassador. Join over 400+ participants for an energetic fitness celebration."
           />
+
+                    
+          {/* Keywords Meta Tag */}
+          <meta 
+            name="keywords" 
+            content="Jam2Fit, Jam2Fit Ilorin, Jam2Fit 2024, Jam2Fit Nigeria, Jam2Fit tickets, Jam2Fit registration, fitness party Ilorin, nighttime fitness party, fitness concert Nigeria, Ilorin fitness event, dance workout event, workout concert, fitness rave, night workout event, fitness events in Ilorin, Ilorin workout parties, fitness activities Ilorin, exercise events Kwara, Nigeria fitness festivals, Kwara fitness events, what is Jam2Fit, when is Jam2Fit 2024, where is Jam2Fit held, how to register for Jam2Fit, Jam2Fit ticket price, Jam2Fit date and venue, Jam2Fit reviews, Jam2Fit past events, who organizes Jam2Fit, The Fitness Ambassador Jam2Fit, Jam2Fit nighttime fitness, Jam2Fit dance workout, Jam2Fit live DJ workout, Jam2Fit group fitness, Jam2Fit fitness celebration" 
+          />
           <link rel="icon" href="/favicon.ico" />
 
           <meta property="og:title" content="Jam2Fit | Nighttime Fitness Party | The Fitness Ambassador" />

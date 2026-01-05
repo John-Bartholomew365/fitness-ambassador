@@ -17,6 +17,7 @@ const FAGymWears = () => {
             name="description"
             content="Explore FA Gym Wears by The Fitness Ambassador. Premium fitness apparel designed for comfort, style, and performance during workouts."
           />
+          <meta name="keywords" content="FA Gym Wears, Fitness Ambassador apparel, gym clothes Nigeria, workout clothing Ilorin, fitness merchandise, exercise wear brand, Nigerian sportswear, fitness branded shirts, gym outfits, workout gear Nigeria, fitness apparel store, FA workout collection, athletic wear Ilorin, fitness fashion Nigeria, gym accessories, workout shorts, fitness hoodies, training apparel, sports clothing brand, FA fitness wear online store" />
           <link rel="icon" href="/favicon.ico" />
 
           <meta property="og:title" content="FA Gym Wears | Fitness Apparel | The Fitness Ambassador" />

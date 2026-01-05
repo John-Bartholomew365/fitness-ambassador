@@ -17,6 +17,7 @@ const AerobicsIceBath = () => {
                         name="description"
                         content="Join Aerobics + IceBath, a unique fitness event by The Fitness Ambassador in collaboration with Massage Alchemy. Combine energetic workouts with relaxing ice bath sessions."
                     />
+                    <meta name="keywords" content="Aerobics and Icebath, Aerobics Icebath Massage Alchemy, fitness recovery event, workout with cold therapy, aerobics ice bath Nigeria, post-exercise recovery, cold plunge after workout, relaxation fitness event, recovery techniques Nigeria, Massage Alchemy collaboration, wellness and fitness event, cryotherapy fitness, ice bath benefits Nigeria, aerobics class with ice bath, recovery workshop Ilorin, fitness and wellness combo, cold water therapy workout, stress relief fitness, holistic fitness event, recovery day fitness Nigeria" />
                     <link rel="icon" href="/favicon.ico" />
 
                     <meta property="og:title" content="Aerobics + IceBath | Fitness & Relaxation Event | The Fitness Ambassador" />

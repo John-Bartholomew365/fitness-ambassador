@@ -17,6 +17,7 @@ const WorkoutCompass = () => {
             name="description"
             content="Workout Compass is your ultimate fitness guide book by The Fitness Ambassador. Learn to create structured workout plans, improve form, and achieve results."
           />
+          <meta name="keywords" content="Workout Compass book, Workout Compass Ajisafe Sulaiman, fitness guide Nigeria, gym workout manual, structured workout plans, progressive overload guide, muscle gain book, fat loss guide Nigeria, fitness roadmap, beginner fitness guide, workout templates, exercise program book, fitness education Nigeria, training guide PDF, workout strategies, fitness mindset book, gym training manual, fitness book purchase, Nigerian fitness author, exercise science guide, fitness principles book" />
           <link rel="icon" href="/favicon.ico" />
 
           <meta property="og:title" content="Workout Compass | Fitness Guide Book | The Fitness Ambassador" />

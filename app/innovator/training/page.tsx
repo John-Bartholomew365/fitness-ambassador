@@ -17,6 +17,7 @@ const Training = () => {
             name="description"
             content="Book personalized fitness training and consultation sessions with The Fitness Ambassador. Achieve your fitness goals with expert guidance."
           />
+          <meta name="keywords" content="personal trainer Ilorin, fitness coach Nigeria, online fitness consultation, personalized workout plans, weight loss coaching Nigeria, muscle building training, virtual fitness training, nutrition coaching Ilorin, body transformation coaching, fitness accountability partner, one-on-one fitness training, home workout coaching, fitness assessment Nigeria, customized training programs, fitness goal setting, exercise form correction, workout routine design, fitness progress tracking, personal fitness coaching, training session booking Ilorin" />
           <link rel="icon" href="/favicon.ico" />
 
           <meta property="og:title" content="Fitness Training & Consultation | The Fitness Ambassador" />
