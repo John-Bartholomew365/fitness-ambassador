@@ -7,38 +7,29 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Toaster } from 'sonner';
 
-// Import your landing page components
 import HeroSection from '@/components/home/HeroSection';
 import AboutSection from '@/components/home/AboutSection';
 import FeaturedEventsSection from '@/components/home/FeaturedEventsSection';
 import NewsletterSection from '@/components/home/NewsletterSection';
-// import ServicesSection from '@/components/home/ServicesSection';
-import { usePathname } from 'next/navigation';
-import HomePageLoader from '@/components/loaders/HomePageLoader';
-// import ShopPreviewSection from '@/components/home/ShopPreviewSection';
 import MissionVisionPhilosophySection from '@/components/home/MissionVision';
 import AllServicesOverviewSection from '@/components/home/AllServices';
 import TestimonialsCarousel from '@/components/home/TestimonialSection';
 import GuidedUserPathSection from '@/components/home/GuideUser';
 import FAQSection from '@/components/home/Faq';
+import HomePageLoader from '@/components/loaders/HomePageLoader';
 
-// Helper function to check if welcome screen should show
+import Head from 'next/head';
+import { usePathname } from 'next/navigation';
+
 const shouldShowWelcomeScreen = (): boolean => {
   if (typeof window === 'undefined') return true;
-
   const welcomeData = localStorage.getItem('hasSeenWelcome');
-
   if (!welcomeData) return true;
 
   try {
     const parsedData = JSON.parse(welcomeData);
-    const storedTimestamp = parsedData.timestamp;
-    const currentTime = Date.now();
-
-    // Check if more than 1 hour has passed (3600000 milliseconds)
-    return currentTime - storedTimestamp > 3600000;
+    return Date.now() - parsedData.timestamp > 3600000;
   } catch {
-    // If there's an error parsing, show welcome screen
     return true;
   }
 };
@@ -50,31 +41,20 @@ export default function HomePage() {
   const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize welcome screen state
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const shouldShow = shouldShowWelcomeScreen();
       setTimeout(() => {
+        const shouldShow = shouldShowWelcomeScreen();
         setShowWelcome(shouldShow);
         setIsFirstVisit(shouldShow);
       }, 0);
     }
   }, []);
 
-  // Show PageLoader when navigating to home from another page
   useEffect(() => {
-    // Skip on first visit (WelcomeScreen will show instead)
     if (isFirstVisit) return;
-
-    // Defer showing the PageLoader to avoid synchronous setState inside an effect
-    const showTimer = setTimeout(() => {
-      setShowPageLoader(true);
-    }, 0);
-
-    const hideTimer = setTimeout(() => {
-      setShowPageLoader(false);
-    }, 1500); // Match PageLoader duration
-
+    const showTimer = setTimeout(() => setShowPageLoader(true), 0);
+    const hideTimer = setTimeout(() => setShowPageLoader(false), 1500);
     return () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
@@ -83,77 +63,68 @@ export default function HomePage() {
 
   const handleWelcomeComplete = () => {
     if (typeof window !== 'undefined') {
-      // Store timestamp along with the flag
-      const welcomeData = {
-        hasSeen: true,
-        timestamp: Date.now()
-      };
-      localStorage.setItem('hasSeenWelcome', JSON.stringify(welcomeData));
+      localStorage.setItem(
+        'hasSeenWelcome',
+        JSON.stringify({ hasSeen: true, timestamp: Date.now() })
+      );
     }
     setShowWelcome(false);
     setIsFirstVisit(false);
   };
 
-  // For smooth scrolling within the page
   const scrollToSection = (sectionId: string) => {
     setIsLoading(true);
     const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' });
     setTimeout(() => setIsLoading(false), 500);
   };
 
-  const handleContact = () => {
-    console.log('Contact action triggered');
-  };
+  const handleContact = () => console.log('Contact triggered');
 
-  // Show nothing while initializing
-  if (showWelcome === null) {
-    return null; // or a minimal loading state
-  }
+  if (showWelcome === null) return null;
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        {/* Welcome Screen - Shows on first visit OR after 1 hour */}
-        {showWelcome && (
-          <WelcomeScreen onComplete={handleWelcomeComplete} />
-        )}
+      <Head>
+        <title>The Fitness Ambassador | Personalized Workouts & Events</title>
+        <meta
+          name="description"
+          content="Welcome to The Fitness Ambassador. Explore fitness events, training programs, gym wear, and tools to transform your health and wellness journey."
+        />
+        <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content="The Fitness Ambassador | Personalized Workouts & Events" />
+        <meta property="og:description" content="Welcome to The Fitness Ambassador. Explore fitness events, training programs, gym wear, and tools to transform your health and wellness journey." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.thefitnessambassador.com" />
+        <meta property="og:image" content="https://www.thefitnessambassador.com/favicon.ico" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="The Fitness Ambassador | Personalized Workouts & Events" />
+        <meta name="twitter:description" content="Welcome to The Fitness Ambassador. Explore fitness events, training programs, gym wear, and tools to transform your health and wellness journey." />
+        <meta name="twitter:image" content="https://www.thefitnessambassador.com/favicon.ico" />
+      </Head>
 
-        {/* Page Loader - Only when navigating to home from other pages */}
-        {!showWelcome && showPageLoader && (
-          <HomePageLoader />
-        )}
+      <AnimatePresence mode="wait">
+        {showWelcome && <WelcomeScreen onComplete={handleWelcomeComplete} />}
+        {!showWelcome && showPageLoader && <HomePageLoader />}
       </AnimatePresence>
 
-      {/* Main Content - Show when neither WelcomeScreen nor PageLoader is showing */}
       {!showWelcome && !showPageLoader && (
         <div className="min-h-screen flex flex-col">
-          <Navbar
-            onNavigate={scrollToSection}
-            isLoading={isLoading}
-            onContact={handleContact}
-          />
-
+          <Navbar onNavigate={scrollToSection} isLoading={isLoading} onContact={handleContact} />
           <main className="flex-1">
             <HeroSection />
             <AboutSection />
             <FeaturedEventsSection />
             <MissionVisionPhilosophySection />
             <AllServicesOverviewSection />
-            {/* <ShopPreviewSection /> */}
-            {/* <ServicesSection /> */}
             <GuidedUserPathSection />
             <TestimonialsCarousel />
             <FAQSection />
             <NewsletterSection />
           </main>
-
           <Footer />
         </div>
       )}
-
       <Toaster position="top-right" />
     </>
   );

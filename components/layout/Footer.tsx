@@ -11,6 +11,8 @@ const Footer = () => {
   const quickLinks = [
     { name: 'About', path: '/about' },
     { name: 'All Events', path: '/events' },
+    { name: 'Walk2Fitness', path: '/events/walk2fitness' },
+    { name: 'Jam2Fit', path: '/events/jam2fit' },
     { name: 'Workout Compass', path: '/innovator/workout-compass' },
     { name: 'Training', path: '/innovator/training' },
     { name: 'Gym Wears', path: '/innovator/gym-wears' },
