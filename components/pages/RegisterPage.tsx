@@ -753,7 +753,7 @@ const RegisterPage = () => {
           className="flex justify-center"
         >
           <Link href="/">
-            <button className="group inline-flex items-center gap-3 px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 hover:shadow-lg transition-all lg:w-auto w-full justify-center">
+            <button className="group inline-flex items-center gap-3 px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 hover:shadow-lg transition-all lg:w-auto w-full justify-center cursor-pointer">
               ← Return to Homepage
             </button>
           </Link>
