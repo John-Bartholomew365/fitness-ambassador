@@ -8,7 +8,7 @@ const Walk2FitnessVestPage = () => {
     const vestCollections = [
         {
             type: 'Hoodie',
-            color: '#008020',
+            color: '#4E5839',
             colorName: 'Forest Green',
             price: '₦12,000',
             features: [
@@ -21,7 +21,7 @@ const Walk2FitnessVestPage = () => {
         },
         {
             type: 'Hoodie',
-            color: '#1e40af',
+            color: '#19253E',
             colorName: 'Royal Blue',
             price: '₦12,000',
             features: [
@@ -34,8 +34,8 @@ const Walk2FitnessVestPage = () => {
         },
         {
             type: 'T-Shirt',
-            color: '#ff8a00',
-            colorName: 'Sunset Orange',
+            color: '#4E5839',
+            colorName: 'Forest Green',
             price: '₦10,000',
             features: [
                 'Breathable cotton fabric',
@@ -47,8 +47,8 @@ const Walk2FitnessVestPage = () => {
         },
         {
             type: 'T-Shirt',
-            color: '#ffde00',
-            colorName: 'Sunshine Yellow',
+            color: '#19253E',
+            colorName: 'Royal Blue',
             price: '₦10,000',
             features: [
                 'Breathable cotton fabric',
@@ -60,7 +60,7 @@ const Walk2FitnessVestPage = () => {
         },
         {
             type: 'Armless Vest',
-            color: '#008020',
+            color: '#4E5839',
             colorName: 'Forest Green',
             price: '₦10,000',
             features: [
@@ -73,8 +73,8 @@ const Walk2FitnessVestPage = () => {
         },
         {
             type: 'Armless Vest',
-            color: '#000000',
-            colorName: 'Classic Blue',
+            color: '#19253E',
+            colorName: 'Royal Blue',
             price: '₦10,000',
             features: [
                 'Sleeveless design',
