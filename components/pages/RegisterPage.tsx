@@ -648,7 +648,7 @@ const RegisterPage = () => {
                   href={getWhatsAppLink({ number: contactNumbers[0].number })}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center justify-center gap-4 px-8 py-4 bg-linear-to-r from-green-600 to-green-700 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-300 transform hover:-translate-y-1 w-full lg:w-auto"
+                  className="group inline-flex items-center justify-center gap-4 lg:px-8 px-4 py-4 bg-linear-to-r from-green-600 to-green-700 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-300 transform hover:-translate-y-1 w-full lg:w-auto"
                 >
                   <FaWhatsapp className="w-6 h-6" />
                   <span className="text-lg">Start General Inquiry</span>
