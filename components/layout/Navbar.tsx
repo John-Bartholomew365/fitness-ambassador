@@ -65,7 +65,7 @@ export default function Navbar({ isLoading }: NavbarProps) {
         { label: 'Jam2Fit', route: '/events/jam2fit' },
         { label: 'Afro Groove', route: '/events/afro-groove' },
         { label: 'Aerobics & Icebath', route: '/events/aerobics-icebath' },
-        { label: 'Vest', route: '/events/vest' },
+        // { label: 'Vest', route: '/events/vest' },
         { label: 'Every Sunday Cycling', route: '/events/every-sunday-cycling' },
         { label: 'Sponsors', route: '/events/sponsors' },
       ]
