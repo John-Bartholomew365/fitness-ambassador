@@ -1,10 +1,14 @@
-import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { toast } from '@/hooks/use-toast';
+'use client';
 
+import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
+
+// Define training plans with proper backend plan values
 const trainingPackages = [
   {
     title: 'Basic Training Plan',
+    backendValue: 'basic', // Changed for backend
     price: '₦40,000/month',
     originalPrice: '₦50,000',
     discount: '20% OFF',
@@ -22,6 +26,7 @@ const trainingPackages = [
   },
   {
     title: 'Standard Training Plan',
+    backendValue: 'standard', // Changed for backend
     price: '₦50,000/month',
     originalPrice: '₦65,000',
     discount: '23% OFF',
@@ -39,6 +44,7 @@ const trainingPackages = [
   },
   {
     title: 'Premium Training Plan',
+    backendValue: 'premium', // Changed for backend
     price: '₦60,000/month',
     originalPrice: '₦80,000',
     discount: '25% OFF',
@@ -57,41 +63,148 @@ const trainingPackages = [
   }
 ];
 
+interface BookingFormData {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  experienceLevel: string; // Should be "beginner", "intermediate", or "advanced"
+  plan: string; // Should be "basic", "standard", or "premium"
+  fitnessGoal: string;
+}
+
+interface BookingResponse {
+  statusCode: string;
+  message: string;
+  data?: {
+    bookingId: string;
+    fullName: string;
+    email: string;
+    plan: string;
+  };
+}
+
 const Training = () => {
-  const [formData, setFormData] = useState({
-    name: '',
+  const [formData, setFormData] = useState<BookingFormData>({
+    fullName: '',
     email: '',
-    phone: '',
-    package: '',
-    experience: '',
-    goals: ''
+    phoneNumber: '',
+    experienceLevel: '',
+    plan: '',
+    fitnessGoal: ''
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('Standard Training Plan');
+  const [selectedPlanBackendValue, setSelectedPlanBackendValue] = useState('standard');
   const [playingVideos, setPlayingVideos] = useState<number[]>([]);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
+  // Initialize form with selected plan
+  useEffect(() => {
+    const selectedPackage = trainingPackages.find(pkg => pkg.title === selectedPlan);
+    const backendValue = selectedPackage?.backendValue || 'standard';
+    
+    setSelectedPlanBackendValue(backendValue);
+    setFormData(prev => ({
+      ...prev,
+      plan: backendValue
+    }));
+  }, [selectedPlan]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form
+    if (!isFormValid()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+    
+    // Validate experience level
+    const validExperienceLevels = ['beginner', 'intermediate', 'advanced'];
+    if (!validExperienceLevels.includes(formData.experienceLevel.toLowerCase())) {
+      toast.error('Please select a valid experience level: Beginner, Intermediate, or Advanced');
+      return;
+    }
+    
+    // Validate plan
+    const validPlans = ['basic', 'standard', 'premium'];
+    if (!validPlans.includes(formData.plan.toLowerCase())) {
+      toast.error('Please select a valid training plan');
+      return;
+    }
+    
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    toast({
-      title: "Booking Request Sent!",
-      description: "We'll contact you within 24 hours to schedule your free consultation.",
-    });
-    
-    setFormData({ 
-      name: '', 
-      email: '', 
-      phone: '', 
-      package: selectedPlan, 
-      experience: '', 
-      goals: '' 
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading('Submitting your booking request...');
+      
+      // Prepare booking data according to API requirements
+      const bookingData = {
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phoneNumber: formData.phoneNumber.trim(),
+        experienceLevel: formData.experienceLevel.toLowerCase(), // Ensure lowercase
+        plan: formData.plan.toLowerCase(), // Ensure lowercase
+        fitnessGoal: formData.fitnessGoal.trim()
+      };
+
+      console.log('Submitting booking data:', bookingData);
+
+      // Submit to API
+      const response = await fetch('/api/training-booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result: BookingResponse = await response.json();
+      console.log('Booking response:', result);
+
+      if (!response.ok) {
+        // Dismiss loading toast and show error
+        toast.dismiss(loadingToast);
+        toast.error(result.message || 'Failed to submit booking request');
+        throw new Error(result.message || 'Failed to submit booking');
+      }
+
+      // Check if booking was successful
+      if (result.statusCode === '00' || result.message?.includes('success')) {
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success('Booking request sent successfully! We\'ll contact you within 24 hours.');
+        
+        // Reset form
+        setFormData({ 
+          fullName: '', 
+          email: '', 
+          phoneNumber: '', 
+          experienceLevel: '', 
+          plan: selectedPlanBackendValue, 
+          fitnessGoal: '' 
+        });
+      } else {
+        throw new Error(result.message || 'Booking submission failed');
+      }
+      
+    } catch (error) {
+      console.error('Error submitting booking:', error);
+      toast.error(
+        error instanceof Error ? error.message : 'An unexpected error occurred'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const isFormValid = () => {
+    const requiredFields = ['fullName', 'email', 'phoneNumber', 'experienceLevel', 'plan', 'fitnessGoal'];
+    return requiredFields.every(field => {
+      const value = formData[field as keyof BookingFormData];
+      return typeof value === 'string' && value.trim() !== '';
     });
   };
 
@@ -122,6 +235,20 @@ const Training = () => {
       video.currentTime = 0;
       setPlayingVideos(prev => prev.filter(i => i !== index));
     }
+  };
+
+  const handleFormChange = (field: keyof BookingFormData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handlePlanSelect = (planTitle: string, backendValue: string) => {
+    setSelectedPlan(planTitle);
+    setSelectedPlanBackendValue(backendValue);
+    setFormData(prev => ({ ...prev, plan: backendValue }));
+    document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -285,14 +412,11 @@ const Training = () => {
 
                   {/* Select Button */}
                   <button
-                    onClick={() => {
-                      setSelectedPlan(plan.title);
-                      setFormData(prev => ({ ...prev, package: plan.title }));
-                      document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
+                    onClick={() => handlePlanSelect(plan.title, plan.backendValue)}
                     className={`w-full py-2.5 md:py-3 rounded-xl font-bold transition-all duration-300 cursor-pointer text-sm md:text-base ${plan.popular 
                       ? 'bg-[#ff8a00] text-white hover:bg-[#ff8a00]/90' 
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}
+                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={isSubmitting}
                   >
                     {selectedPlan === plan.title ? '✓ SELECTED' : 'SELECT PLAN'}
                   </button>
@@ -444,9 +568,10 @@ const Training = () => {
                   <input
                     type="text"
                     required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent text-sm md:text-base"
+                    value={formData.fullName}
+                    onChange={(e) => handleFormChange('fullName', e.target.value)}
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="John Doe"
                   />
                 </div>
@@ -460,8 +585,9 @@ const Training = () => {
                       type="email"
                       required
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent text-sm md:text-base"
+                      onChange={(e) => handleFormChange('email', e.target.value)}
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="john@example.com"
                     />
                   </div>
@@ -472,9 +598,10 @@ const Training = () => {
                     <input
                       type="tel"
                       required
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent text-sm md:text-base"
+                      value={formData.phoneNumber}
+                      onChange={(e) => handleFormChange('phoneNumber', e.target.value)}
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="+234 801 234 5678"
                     />
                   </div>
@@ -482,12 +609,14 @@ const Training = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Fitness Experience
+                    Fitness Experience *
                   </label>
                   <select
-                    value={formData.experience}
-                    onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent text-sm md:text-base"
+                    value={formData.experienceLevel}
+                    onChange={(e) => handleFormChange('experienceLevel', e.target.value)}
+                    required
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="">Select your experience level</option>
                     <option value="beginner">Beginner (New to fitness)</option>
@@ -502,25 +631,44 @@ const Training = () => {
                   </label>
                   <textarea
                     required
-                    value={formData.goals}
-                    onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
+                    value={formData.fitnessGoal}
+                    onChange={(e) => handleFormChange('fitnessGoal', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent resize-none text-sm md:text-base"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008020] focus:border-transparent resize-none text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Tell us about your fitness goals, challenges, and what you hope to achieve..."
                   />
                 </div>
 
                 {/* Selected Package (Hidden but auto-filled) */}
-                <input type="hidden" value={selectedPlan} />
+                <input 
+                  type="hidden" 
+                  value={selectedPlanBackendValue}
+                  onChange={(e) => handleFormChange('plan', e.target.value)}
+                />
 
                 <motion.button
                   type="submit"
-                  disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-3 md:py-4 bg-[#ff8a00] text-white text-sm md:text-lg font-bold rounded-xl hover:shadow-2xl hover:shadow-[#ff8a00]/25 transition-all duration-300 cursor-pointer disabled:opacity-50"
+                  disabled={isSubmitting || !isFormValid()}
+                  whileHover={{ scale: isFormValid() && !isSubmitting ? 1.02 : 1 }}
+                  whileTap={{ scale: isFormValid() && !isSubmitting ? 0.98 : 1 }}
+                  className={`w-full py-3 md:py-4 text-sm md:text-lg font-bold rounded-xl transition-all duration-300 cursor-pointer ${
+                    isFormValid() && !isSubmitting 
+                      ? 'bg-[#ff8a00] text-white hover:shadow-2xl hover:shadow-[#ff8a00]/25' 
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
                 >
-                  {isSubmitting ? 'Processing...' : 'Book Free Consultation'}
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    'Book Free Consultation'
+                  )}
                 </motion.button>
 
                 <div className="text-center text-xs md:text-sm text-gray-500 pt-4 border-t border-gray-200">

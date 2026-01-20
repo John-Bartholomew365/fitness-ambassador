@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import confetti from 'canvas-confetti';
+import toast from 'react-hot-toast';
 
 interface Vest {
   colorName: string;
@@ -13,21 +14,18 @@ interface Vest {
   price: string;
 }
 
-interface BioData {
+interface UserData {
+  userId: string;
   fullName: string;
-  phoneNumber: string;
   email: string;
-  gender: string;
-  ageRange: string;
-  hasMedicalCondition: string;
-  medicalConditionNote: string;
-  emergencyContactName: string;
-  emergencyContactPhone: string;
+  registrationId: string;
 }
 
-interface RegistrationData {
-  vest: Vest;
-  bio: BioData;
+interface PaymentSuccessData {
+  vest: Vest | null;
+  user: UserData | null;
+  timestamp: string;
+  paymentId: string;
 }
 
 interface EventInfo {
@@ -38,79 +36,86 @@ interface EventInfo {
 
 const SuccessPage = () => {
   const router = useRouter();
-  const [registrationData, setRegistrationData] = useState<RegistrationData | null>(null);
-  const [registrationId, setRegistrationId] = useState<string>('');
+  const [vestData, setVestData] = useState<Vest | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [paymentId, setPaymentId] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
   const [eventInfo] = useState<EventInfo>({
-    date: 'March 15, 2024',
-    time: '6:00 AM - 10:00 AM',
-    venue: 'University of Ilorin Main Gate'
+    date: 'February 7, 2026',
+    time: '7:00 AM - 10:00 AM',
+    venue: 'Starwood Hotels 02 Arena, Ajase Ipo Road, Opp Gaa-Akanbi Junction, Ilorin, Kwara State',
   });
 
-  // Generate a deterministic registration ID based on user data
-  const generateRegistrationId = useCallback((data: RegistrationData): string => {
-    // Create a stable ID from user data and timestamp
-    const timestamp = Date.now().toString(36);
-    const nameInitials = data.bio.fullName
-      .split(' ')
-      .map(n => n.charAt(0))
-      .join('')
-      .toUpperCase();
-    
-    // Simple hash of phone number for uniqueness
-    const phoneHash = data.bio.phoneNumber
-      .split('')
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0)
-      .toString(36)
-      .toUpperCase()
-      .substring(0, 4);
-    
-    return `W2F5-${nameInitials}-${phoneHash}-${timestamp.substring(4, 8)}`;
-  }, []);
+  useEffect(() => {
+    const loadRegistrationData = () => {
+      try {
+        // Check if payment success data exists in sessionStorage
+        const paymentSuccessData = sessionStorage.getItem('paymentSuccessData');
+        
+        if (!paymentSuccessData) {
+          toast.error('Registration data not found. Please complete your registration.');
+          router.push('/register');
+          return;
+        }
 
- // In your SuccessPage component
-useEffect(() => {
-  const loadRegistrationData = () => {
-    try {
-      // Check if registration was completed
-      const registrationComplete = localStorage.getItem('registrationComplete');
-      const successData = localStorage.getItem('registrationSuccessData');
-      
-      if (!registrationComplete || !successData) {
+        const parsedData: PaymentSuccessData = JSON.parse(paymentSuccessData);
+        
+        
+        if (!parsedData.vest || !parsedData.user) {
+          toast.error('Incomplete registration data');
+          router.push('/register');
+          return;
+        }
+
+        setVestData(parsedData.vest);
+        setUserData(parsedData.user);
+        setPaymentId(parsedData.paymentId || `PAY-${Date.now().toString(36).toUpperCase()}`);
+
+        // Launch confetti
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+
+      } catch (error) {
+        console.error('Error loading registration data:', error);
+        toast.error('Failed to load registration details');
         router.push('/register');
-        return;
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      const parsedData: RegistrationData = JSON.parse(successData);
-      
-      setRegistrationData(parsedData);
-      setRegistrationId(generateRegistrationId(parsedData));
-
-      // Launch confetti
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-
-    } catch (error) {
-      console.error('Error loading registration data:', error);
-      router.push('/register');
-    }
-  };
-
-  loadRegistrationData();
-}, [router, generateRegistrationId]);
+    loadRegistrationData();
+  }, [router]);
 
   const handlePrint = useCallback(() => {
     window.print();
   }, []);
 
-  if (!registrationData) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-linear-to-b from-green-50 to-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-t-[#ff8a00] border-b-[#008020] rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading registration details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!vestData || !userData) {
+    return (
+      <div className="min-h-screen bg-linear-to-b from-green-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Registration Data Not Found</h2>
+          <p className="text-gray-600 mb-4">Please complete your registration process.</p>
+          <Link href="/register">
+            <button className="px-6 py-2 bg-[#008020] text-white font-semibold rounded-lg hover:bg-[#006a1a] transition-colors">
+              Go to Registration
+            </button>
+          </Link>
         </div>
       </div>
     );
@@ -162,20 +167,22 @@ useEffect(() => {
                 <div className="space-y-3 print:space-y-2">
                   <div>
                     <label className="text-sm text-gray-500 print:text-xs">Full Name</label>
-                    <p className="font-medium">{registrationData.bio.fullName}</p>
+                    <p className="font-medium">{userData.fullName}</p>
                   </div>
                   <div>
                     <label className="text-sm text-gray-500 print:text-xs">Email</label>
-                    <p className="font-medium">{registrationData.bio.email}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-500 print:text-xs">Phone</label>
-                    <p className="font-medium">{registrationData.bio.phoneNumber}</p>
+                    <p className="font-medium">{userData.email}</p>
                   </div>
                   <div>
                     <label className="text-sm text-gray-500 print:text-xs">Registration ID</label>
+                    <p className="font-medium text-[#008020]">
+                      {userData.registrationId}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-500 print:text-xs">Payment Reference</label>
                     <p className="font-medium text-[#ff8a00]">
-                      {registrationId}
+                      {paymentId}
                     </p>
                   </div>
                 </div>
@@ -187,19 +194,19 @@ useEffect(() => {
                 <div className="space-y-3 print:space-y-2">
                   <div>
                     <label className="text-sm text-gray-500 print:text-xs">Vest Type</label>
-                    <p className="font-medium">{registrationData.vest.type}</p>
+                    <p className="font-medium">{vestData.type}</p>
                   </div>
                   <div>
                     <label className="text-sm text-gray-500 print:text-xs">Color & Size</label>
-                    <p className="font-medium">{registrationData.vest.colorName} - Size {registrationData.vest.size}</p>
+                    <p className="font-medium">{vestData.colorName} - Size {vestData.size}</p>
                   </div>
                   <div>
                     <label className="text-sm text-gray-500 print:text-xs">Amount Paid</label>
-                    <p className="font-medium text-[#ff8a00]">{registrationData.vest.price}</p>
+                    <p className="font-medium text-[#ff8a00]">{vestData.price}</p>
                   </div>
                   <div>
                     <label className="text-sm text-gray-500 print:text-xs">Payment Status</label>
-                    <p className="font-medium text-[#008020]">Verified ✓</p>
+                    <p className="font-medium text-[#008020]">Pending Verification</p>
                   </div>
                 </div>
               </div>
@@ -223,6 +230,26 @@ useEffect(() => {
                 </div>
               </div>
             </div>
+
+            {/* Important Notice */}
+            <div className="mt-8 pt-8 border-t border-gray-100 print:mt-6 print:pt-6">
+              <div className="p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-600 mt-1 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Important Notice</h4>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• Your payment receipt is being verified</li>
+                      <li>• You will receive confirmation via email within 24-48 hours</li>
+                      <li>• Bring your Registration ID <b>{userData.registrationId}</b> and ID card to collect your vest</li>
+                      <li>• Vest collection starts 30 minutes before the event</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </motion.div>
 
           {/* Next Steps - Hidden in print */}
@@ -240,7 +267,7 @@ useEffect(() => {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Check Your Email</h3>
                 <p className="text-sm text-gray-600">
-                  You&apos;ll receive a confirmation email with your registration details within 24 hours.
+                  You&apos;ll receive a confirmation email with your registration details within 24-48 hours.
                 </p>
               </div>
               
@@ -248,9 +275,9 @@ useEffect(() => {
                 <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4 mx-auto">
                   <span className="text-green-600 font-bold">2</span>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">Vest Collection</h3>
+                <h3 className="font-bold text-gray-900 mb-2">Payment Verification</h3>
                 <p className="text-sm text-gray-600">
-                  Bring your ID card to the event venue to collect your vest on the day of the event.
+                  Our team will verify your payment. You&apos;ll be notified once it&apos;s confirmed.
                 </p>
               </div>
               
@@ -260,7 +287,7 @@ useEffect(() => {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Event Day</h3>
                 <p className="text-sm text-gray-600">
-                  Arrive 30 minutes early with comfortable shoes and a positive attitude!
+                  Arrive 30 minutes early with your ID and confirmation to collect your vest.
                 </p>
               </div>
             </div>
@@ -307,7 +334,7 @@ useEffect(() => {
               Need help? Contact our support team:
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="tel:+2341234567890" className="text-[#008020] font-medium hover:underline">
+              <a href="tel:+2348163702286" className="text-[#008020] font-medium hover:underline">
                 📞 +234 816 370 2286
               </a>
               <a href="mailto:fitnessambassador84@gmail.com" className="text-[#008020] font-medium hover:underline">
@@ -324,11 +351,11 @@ useEffect(() => {
               <div className="mt-4 flex justify-center space-x-8">
                 <div>
                   <div className="text-xs text-gray-500">Support Phone</div>
-                  <div className="font-medium">+234 123 456 7890</div>
+                  <div className="font-medium">+234 816 370 2286</div>
                 </div>
                 <div>
                   <div className="text-xs text-gray-500">Support Email</div>
-                  <div className="font-medium">support@walk2fitness.com</div>
+                  <div className="font-medium">fitnessambassador84@gmail.com</div>
                 </div>
               </div>
             </div>

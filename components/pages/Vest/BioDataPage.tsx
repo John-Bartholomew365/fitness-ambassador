@@ -4,12 +4,24 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 interface Vest {
   colorName: string;
   type: string;
   size: string;
   price: string;
+}
+
+interface RegistrationResponse {
+  statusCode: string;
+  message: string;
+  data: {
+    userId: string;
+    fullName: string;
+    email: string;
+    registration_id: string;
+  };
 }
 
 interface FormData {
@@ -28,7 +40,9 @@ interface FormData {
 const BioDataPage = () => {
   const router = useRouter();
   const [selectedVest, setSelectedVest] = useState<Vest | null>(null);
+  const [vestId, setVestId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     phoneNumber: '',
@@ -45,7 +59,7 @@ const BioDataPage = () => {
   // Get today's date
   const today = useMemo(() => new Date(), []);
   const currentDay = today.getDate();
-  const currentMonth = today.getMonth() + 1; // Months are 0-indexed in JS
+  const currentMonth = today.getMonth() + 1;
 
   // Generate arrays for days and months
   const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
@@ -68,13 +82,21 @@ const BioDataPage = () => {
   useEffect(() => {
     const loadInitialData = () => {
       try {
-        const vest = localStorage.getItem('selectedVest');
-        if (!vest) {
+        // Get vestId and vest details from sessionStorage
+        const storedVestId = sessionStorage.getItem('selectedVestId');
+        const storedVestDetails = sessionStorage.getItem('selectedVestDetails');
+        
+        if (!storedVestId || !storedVestDetails) {
+          toast.error('Please select a vest first');
           router.push('/register');
           return;
         }
         
-        const parsedVest = JSON.parse(vest);
+        // Set vestId for API call
+        setVestId(storedVestId);
+        
+        // Set vest details for display
+        const parsedVest = JSON.parse(storedVestDetails);
         setSelectedVest(parsedVest);
         
         // Set default birth day/month to today's date
@@ -85,6 +107,7 @@ const BioDataPage = () => {
         }));
       } catch (error) {
         console.error('Error loading vest data:', error);
+        toast.error('Failed to load vest selection');
         router.push('/register');
       } finally {
         setIsLoading(false);
@@ -116,18 +139,95 @@ const BioDataPage = () => {
     }));
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!isFormValid()) {
+      toast.error('Please fill in all required fields');
       return;
     }
     
-    // Save form data
-    localStorage.setItem('bioData', JSON.stringify(formData));
+    if (!vestId) {
+      toast.error('Vest selection not found. Please select a vest again.');
+      router.push('/register');
+      return;
+    }
     
-    // Redirect to payment page
-    router.push('/register/payment');
+    setIsSubmitting(true);
+    
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading('Submitting your information...');
+      
+      // Prepare bio-data payload according to your API requirements
+      const bioDataPayload = {
+        email: formData.email,
+        vestId: vestId,
+        fullName: formData.fullName,
+        phoneNumber: formData.phoneNumber,
+        gender: formData.gender,
+        dobDay: parseInt(formData.birthDay),
+        dobMonth: formData.birthMonth,
+        medicalCondition: formData.hasMedicalCondition === 'Yes',
+        medicalDetails: formData.hasMedicalCondition === 'Yes' ? formData.medicalConditionNote : null,
+        emergencyName: formData.emergencyContactName,
+        emergencyPhone: formData.emergencyContactPhone,
+      };
+
+      console.log('Submitting bio-data:', bioDataPayload);
+
+      // Submit to API
+      const response = await fetch('/api/biodata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bioDataPayload),
+      });
+
+      const result = await response.json();
+      console.log('Bio-data response:', result);
+
+      if (!response.ok) {
+        // Dismiss loading toast and show error
+        toast.dismiss(loadingToast);
+        toast.error(result.message || 'Failed to submit your information');
+        throw new Error(result.message || 'Failed to submit bio-data');
+      }
+
+      // Check if registration was successful (statusCode "00")
+      if (result.statusCode === '00' && result.data) {
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success('Registration successful!');
+        
+        // Save the registration response for the payment page
+        sessionStorage.setItem('registrationResponse', JSON.stringify(result));
+        
+        // Also save user data for display
+        sessionStorage.setItem('userData', JSON.stringify({
+          userId: result.data.userId,
+          fullName: result.data.fullName,
+          email: result.data.email,
+          registrationId: result.data.registration_id
+        }));
+        
+        // Add a small delay before redirect to show the success toast
+        setTimeout(() => {
+          router.push('/register/payment');
+        }, 1500);
+      } else {
+        throw new Error(result.message || 'Registration failed');
+      }
+      
+    } catch (error) {
+      console.error('Error submitting bio-data:', error);
+      toast.error(
+        error instanceof Error ? error.message : 'An unexpected error occurred'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid = () => {
@@ -225,7 +325,8 @@ const BioDataPage = () => {
                       value={formData.fullName}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -240,7 +341,8 @@ const BioDataPage = () => {
                       value={formData.phoneNumber}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Enter your phone number"
                     />
                   </div>
@@ -255,7 +357,8 @@ const BioDataPage = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -274,7 +377,8 @@ const BioDataPage = () => {
                             checked={formData.gender === gender}
                             onChange={() => handleRadioChange('gender', gender)}
                             required
-                            className="w-4 h-4 text-[#008020] focus:ring-[#008020]"
+                            disabled={isSubmitting}
+                            className="w-4 h-4 text-[#008020] focus:ring-[#008020] disabled:opacity-50 disabled:cursor-not-allowed"
                           />
                           <span className="text-gray-700">{gender}</span>
                         </label>
@@ -286,9 +390,6 @@ const BioDataPage = () => {
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-4">
                       Day & Month of Birth *
-                      {/* <span className="ml-2 text-gray-500 text-xs font-normal">
-                        (Defaults to today - scroll to select yours)
-                      </span> */}
                     </label>
                     <div className="flex flex-col sm:flex-row gap-6">
                       {/* Day Selector */}
@@ -303,7 +404,8 @@ const BioDataPage = () => {
                             value={formData.birthDay}
                             onChange={(e) => handleDateChange('day', e.target.value)}
                             required
-                            className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none appearance-none bg-white text-center text-lg font-medium"
+                            disabled={isSubmitting}
+                            className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none appearance-none bg-white text-center text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{
                               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                               backgroundPosition: 'right 1rem center',
@@ -323,17 +425,7 @@ const BioDataPage = () => {
                               </option>
                             ))}
                           </select>
-                          {formData.birthDay && (
-                            <div className="absolute top-1/2 right-3 transform -translate-y-1/2 pointer-events-none">
-                              <span className="text-gray-400 text-sm">
-                                {formData.birthDay === currentDay.toString() ? '' : ''}
-                              </span>
-                            </div>
-                          )}
                         </div>
-                        {/* <div className="text-xs text-gray-500 mt-2 text-center">
-                          Today is {currentDay}
-                        </div> */}
                       </div>
 
                       {/* Month Selector */}
@@ -348,7 +440,8 @@ const BioDataPage = () => {
                             value={formData.birthMonth}
                             onChange={(e) => handleDateChange('month', e.target.value)}
                             required
-                            className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none appearance-none bg-white text-center text-lg font-medium"
+                            disabled={isSubmitting}
+                            className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none appearance-none bg-white text-center text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{
                               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                               backgroundPosition: 'right 1rem center',
@@ -368,17 +461,7 @@ const BioDataPage = () => {
                               </option>
                             ))}
                           </select>
-                          {formData.birthMonth && (
-                            <div className="absolute top-1/2 right-3 transform -translate-y-1/2 pointer-events-none">
-                              <span className="text-gray-400 text-sm">
-                                {parseInt(formData.birthMonth) === currentMonth ? '' : ''}
-                              </span>
-                            </div>
-                          )}
                         </div>
-                        {/* <div className="text-xs text-gray-500 mt-2 text-center">
-                          This month is {months[currentMonth - 1]?.label}
-                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -405,7 +488,8 @@ const BioDataPage = () => {
                           checked={formData.hasMedicalCondition === option}
                           onChange={() => handleRadioChange('hasMedicalCondition', option)}
                           required
-                          className="w-5 h-5 text-[#008020] focus:ring-[#008020]"
+                          disabled={isSubmitting}
+                          className="w-5 h-5 text-[#008020] focus:ring-[#008020] disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <span className="text-gray-700 font-medium">{option}</span>
                       </label>
@@ -427,7 +511,8 @@ const BioDataPage = () => {
                       value={formData.medicalConditionNote}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none resize-none"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Enter details about your medical condition..."
                     />
                   </motion.div>
@@ -451,7 +536,8 @@ const BioDataPage = () => {
                       value={formData.emergencyContactName}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Full name of emergency contact"
                     />
                   </div>
@@ -466,7 +552,8 @@ const BioDataPage = () => {
                       value={formData.emergencyContactPhone}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Phone number of emergency contact"
                     />
                   </div>
@@ -480,7 +567,8 @@ const BioDataPage = () => {
                 <Link href="/register" className="flex-1">
                   <button
                     type="button"
-                    className="w-full cursor-pointer py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                    disabled={isSubmitting}
+                    className="w-full cursor-pointer py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     ← Back to Vest Selection
                   </button>
@@ -488,10 +576,20 @@ const BioDataPage = () => {
                 
                 <button
                   type="submit"
-                  disabled={!isFormValid()}
-                  className={`flex-1 py-4 font-semibold rounded-xl transition-all cursor-pointer outline-none ${isFormValid() ? 'bg-[#ff8a00] text-white hover:bg-[#e67a00] focus:ring-2 focus:ring-[#ff8a00] focus:ring-offset-2' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                  disabled={!isFormValid() || isSubmitting}
+                  className={`flex-1 py-4 font-semibold rounded-xl transition-all cursor-pointer outline-none ${isFormValid() && !isSubmitting ? 'bg-[#ff8a00] text-white hover:bg-[#e67a00] focus:ring-2 focus:ring-[#ff8a00] focus:ring-offset-2' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
                 >
-                  Continue to Payment
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Submitting...
+                    </span>
+                  ) : (
+                    'Continue to Payment'
+                  )}
                 </button>
               </div>
             </div>

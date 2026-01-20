@@ -1,13 +1,13 @@
-// app/admin/blog/page.tsx
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Plus, Edit, Trash2, Eye, Search, Save, X, AlertCircle, Image as ImageIcon, Upload, EyeOff,
-  ChevronRight, Calendar, Clock, Users, MessageCircle, BarChart
+  Plus, Edit, Trash2, Eye, Search, AlertCircle, Image as ImageIcon, EyeOff,
+  Calendar, Clock, Users, MessageCircle, BarChart
 } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+import toast from 'react-hot-toast';
 import Image from 'next/image';
+import BlogPostForm from './BlogPostForm';
 
 // Types
 interface BlogPost {
@@ -38,7 +38,7 @@ interface NewPostData {
   tags: string[];
   featured: boolean;
   published: boolean;
-  image: string;
+  image: File | string | null;
 }
 
 const AdminBlogDashboard = () => {
@@ -110,24 +110,8 @@ const AdminBlogDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('all');
-  const [isEditing, setIsEditing] = useState(false);
+  const [showPostForm, setShowPostForm] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
-  const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string>('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // New post form state
-  const [newPost, setNewPost] = useState<NewPostData>({
-    title: '',
-    excerpt: '',
-    content: '',
-    category: 'Fitness Tips',
-    tags: [],
-    featured: false,
-    published: false,
-    image: ''
-  });
-  const [tagInput, setTagInput] = useState('');
 
   // Save posts to localStorage whenever they change
   useEffect(() => {
@@ -164,52 +148,11 @@ const AdminBlogDashboard = () => {
     totalComments: posts.reduce((sum, post) => sum + post.comments, 0)
   };
 
-  // Handle image upload
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // In a real app, you would upload to cloud storage
-      // For demo, we'll create a local URL and simulate upload
-      const imageUrl = URL.createObjectURL(file);
-      setImagePreview(imageUrl);
-      setNewPost(prev => ({ ...prev, image: imageUrl }));
-      
-      toast({
-        title: "Image Uploaded",
-        description: "Image has been successfully uploaded.",
-      });
-    }
-  };
-
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
-
-  // Generate slug from title
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-  };
-
-  // Calculate read time
-  const calculateReadTime = (content: string) => {
-    const wordsPerMinute = 200;
-    const words = content.trim().split(/\s+/).length;
-    const time = Math.ceil(words / wordsPerMinute);
-    return `${time} min read`;
-  };
-
   // Handlers
   const handleDelete = (id: number) => {
     if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
       setPosts(posts.filter(post => post.id !== id));
-      toast({
-        title: "Post Deleted",
-        description: "The blog post has been successfully deleted.",
-        variant: "destructive",
-      });
+      toast.success('The blog post has been successfully deleted.');
     }
   };
 
@@ -221,168 +164,80 @@ const AdminBlogDashboard = () => {
         date: !post.published ? new Date().toISOString().split('T')[0] : post.date
       } : post
     ));
-    toast({
-      title: "Status Updated",
-      description: "The post publication status has been updated.",
-    });
+    toast.success('The post publication status has been updated.');
   };
 
   const handleToggleFeatured = (id: number) => {
     setPosts(posts.map(post => 
       post.id === id ? { ...post, featured: !post.featured } : post
     ));
-    toast({
-      title: "Featured Status Updated",
-      description: "The post featured status has been updated.",
-    });
+    toast.success('The post featured status has been updated.');
   };
 
   const handleEdit = (post: BlogPost) => {
-    setIsEditing(true);
     setEditingPost(post);
-    setImagePreview(post.image);
-    setNewPost({
-      title: post.title,
-      excerpt: post.excerpt,
-      content: post.content,
-      category: post.category,
-      tags: [...post.tags],
-      featured: post.featured,
-      published: post.published,
-      image: post.image
-    });
+    setShowPostForm(true);
   };
 
-  const handleSave = () => {
-    if (!newPost.title.trim()) {
-      toast({
-        title: "Error",
-        description: "Title is required",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!newPost.excerpt.trim()) {
-      toast({
-        title: "Error",
-        description: "Excerpt is required",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!newPost.content.trim()) {
-      toast({
-        title: "Error",
-        description: "Content is required",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleSavePost = (postData: NewPostData) => {
     if (editingPost) {
-      // Update existing post
+      // For local state management (fallback)
       setPosts(posts.map(post => 
         post.id === editingPost.id 
           ? { 
               ...post, 
-              ...newPost,
-              slug: generateSlug(newPost.title),
-              readTime: calculateReadTime(newPost.content),
-              date: new Date().toISOString().split('T')[0]
+              title: postData.title,
+              excerpt: postData.excerpt,
+              content: postData.content,
+              category: postData.category,
+              tags: postData.tags,
+              featured: postData.featured,
+              published: postData.published,
+              image: postData.image instanceof File ? URL.createObjectURL(postData.image) : postData.image || post.image
             } 
           : post
       ));
-      toast({
-        title: "Post Updated",
-        description: "The blog post has been successfully updated.",
-      });
+      toast.success('Post updated successfully!');
     } else {
-      // Create new post
+      // Create new post for local state (fallback)
       const newId = posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1;
       const newPostData: BlogPost = {
         id: newId,
-        title: newPost.title,
-        slug: generateSlug(newPost.title),
-        excerpt: newPost.excerpt,
-        content: newPost.content,
+        title: postData.title,
+        slug: postData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+        excerpt: postData.excerpt,
+        content: postData.content,
         author: 'Ajisafe Sulaiman',
         authorRole: 'The Fitness Ambassador',
         date: new Date().toISOString().split('T')[0],
-        readTime: calculateReadTime(newPost.content),
-        category: newPost.category,
-        tags: newPost.tags,
-        image: newPost.image || `/blog/default-${newPost.category.toLowerCase().replace(' ', '-')}.jpg`,
-        featured: newPost.featured,
-        published: newPost.published,
+        readTime: `${Math.ceil(postData.content.trim().split(/\s+/).length / 200)} min read`,
+        category: postData.category,
+        tags: postData.tags,
+        image: postData.image instanceof File ? URL.createObjectURL(postData.image) : postData.image || `/blog/default-${postData.category.toLowerCase().replace(' ', '-')}.jpg`,
+        featured: postData.featured,
+        published: postData.published,
         views: 0,
         likes: 0,
         comments: 0
       };
       
       setPosts([newPostData, ...posts]);
-      toast({
-        title: "Post Created",
-        description: "The new blog post has been created successfully.",
-      });
+      toast.success('New blog post created successfully!');
     }
     
     handleCloseForm();
   };
 
   const handleCloseForm = () => {
-    setIsEditing(false);
+    setShowPostForm(false);
     setEditingPost(null);
-    setShowNewPostForm(false);
-    setImagePreview('');
-    setNewPost({
-      title: '',
-      excerpt: '',
-      content: '',
-      category: 'Fitness Tips',
-      tags: [],
-      featured: false,
-      published: false,
-      image: ''
-    });
-    setTagInput('');
-    
-    // Clear file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
   };
 
-  const handleAddTag = () => {
-    const trimmedTag = tagInput.trim();
-    if (trimmedTag && !newPost.tags.includes(trimmedTag)) {
-      setNewPost({
-        ...newPost,
-        tags: [...newPost.tags, trimmedTag]
-      });
-      setTagInput('');
-    }
+  const refreshPosts = () => {
+    // This function would fetch posts from your API
+    // For now, we'll just show a message
+    toast.success('Posts refreshed!');
   };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setNewPost({
-      ...newPost,
-      tags: newPost.tags.filter(tag => tag !== tagToRemove)
-    });
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddTag();
-    }
-  };
-
-  const categories = [
-    'Fitness Tips', 'Nutrition', 'Training', 'Community', 
-    'Mindset', 'Recovery', 'Events', 'Success Stories'
-  ];
 
   if (loading) {
     return (
@@ -408,8 +263,8 @@ const AdminBlogDashboard = () => {
               <p className="text-gray-600 text-xs sm:text-sm lg:text-base">Manage your blog posts, track performance, and create new content</p>
             </div>
             <button
-              onClick={() => setShowNewPostForm(true)}
-              className="flex items-center justify-center cursor-pointer gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-[#008020] text-white font-semibold rounded-lg sm:rounded-xl hover:bg-[#008020]/90 transition-colors w-full sm:w-auto text-sm sm:text-base"
+              onClick={() => setShowPostForm(true)}
+              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-[#008020] text-white font-semibold rounded-lg sm:rounded-xl hover:bg-[#008020]/90 transition-colors w-full sm:w-auto text-sm sm:text-base cursor-pointer"
             >
               <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>New Post</span>
@@ -463,7 +318,7 @@ const AdminBlogDashboard = () => {
               </select>
               <button 
                 onClick={() => setFilter('all')}
-                className="px-3 py-2 sm:py-3 bg-gray-100 text-gray-700 rounded-lg sm:rounded-xl hover:bg-gray-200 transition-colors text-xs sm:text-sm lg:text-base"
+                className="px-3 py-2 sm:py-3 bg-gray-100 text-gray-700 rounded-lg sm:rounded-xl hover:bg-gray-200 transition-colors text-xs sm:text-sm lg:text-base cursor-pointer"
               >
                 Reset
               </button>
@@ -502,7 +357,7 @@ const AdminBlogDashboard = () => {
                           <td className="p-6 whitespace-nowrap">
                             <div className="flex items-center gap-3 min-w-[200px]">
                               {/* Image */}
-                              <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-gray-100">
+                              <div className="shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-gray-100">
                                 {post.image ? (
                                   <Image
                                     src={post.image}
@@ -556,7 +411,7 @@ const AdminBlogDashboard = () => {
                                   className={`px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap ${post.published 
                                     ? 'bg-green-100 text-green-800 border border-green-200' 
                                     : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-                                  }`}
+                                  } cursor-pointer`}
                                 >
                                   {post.published ? 'Published' : 'Draft'}
                                 </button>
@@ -600,7 +455,7 @@ const AdminBlogDashboard = () => {
                               {/* Edit Button */}
                               <button
                                 onClick={() => handleEdit(post)}
-                                className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                                className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
                                 title="Edit Post"
                               >
                                 <Edit className="w-4 h-4" />
@@ -609,7 +464,7 @@ const AdminBlogDashboard = () => {
                               {/* Featured Toggle */}
                               <button
                                 onClick={() => handleToggleFeatured(post.id)}
-                                className={`p-2 rounded-lg transition-colors ${
+                                className={`p-2 rounded-lg transition-colors cursor-pointer ${
                                   post.featured 
                                     ? 'bg-[#ff8a00]/10 text-[#ff8a00] hover:bg-[#ff8a00]/20' 
                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -628,7 +483,7 @@ const AdminBlogDashboard = () => {
                                 href={`/blog/${post.slug}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+                                className="p-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
                                 title="Preview Post"
                               >
                                 <Eye className="w-4 h-4" />
@@ -637,7 +492,7 @@ const AdminBlogDashboard = () => {
                               {/* Delete Button */}
                               <button
                                 onClick={() => handleDelete(post.id)}
-                                className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
                                 title="Delete Post"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -654,7 +509,7 @@ const AdminBlogDashboard = () => {
               {/* TABLET VIEW (md) */}
               <div className="hidden md:block lg:hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[768px]">
+                  <table className="w-full min-w-3xl">
                     <thead className="bg-gray-50">
                       <tr>
                         <th className="text-left p-4 font-semibold text-gray-900 text-sm whitespace-nowrap">
@@ -678,7 +533,7 @@ const AdminBlogDashboard = () => {
                           <td className="p-4 whitespace-nowrap">
                             <div className="flex items-center gap-3 min-w-[200px]">
                               {/* Image */}
-                              <div className="flex-shrink-0 w-10 h-10 rounded-md overflow-hidden bg-gray-100">
+                              <div className="shrink-0 w-10 h-10 rounded-md overflow-hidden bg-gray-100">
                                 {post.image ? (
                                   <Image
                                     src={post.image}
@@ -713,7 +568,7 @@ const AdminBlogDashboard = () => {
                             <div className="space-y-1">
                               <button
                                 onClick={() => handleTogglePublish(post.id)}
-                                className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap w-full text-center ${post.published 
+                                className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap w-full text-center cursor-pointer ${post.published 
                                   ? 'bg-green-100 text-green-800 border border-green-200' 
                                   : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
                                 }`}
@@ -758,14 +613,14 @@ const AdminBlogDashboard = () => {
                             <div className="flex flex-wrap gap-1">
                               <button
                                 onClick={() => handleEdit(post)}
-                                className="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
+                                className="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
                                 title="Edit Post"
                               >
                                 <Edit className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => handleToggleFeatured(post.id)}
-                                className={`p-1.5 rounded-md transition-colors ${
+                                className={`p-1.5 rounded-md transition-colors cursor-pointer ${
                                   post.featured 
                                     ? 'bg-[#ff8a00]/10 text-[#ff8a00] hover:bg-[#ff8a00]/20' 
                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -780,7 +635,7 @@ const AdminBlogDashboard = () => {
                               </button>
                               <button
                                 onClick={() => handleDelete(post.id)}
-                                className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                                className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-md transition-colors cursor-pointer"
                                 title="Delete Post"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -802,7 +657,7 @@ const AdminBlogDashboard = () => {
                       {/* Top Row: Image and Basic Info */}
                       <div className="flex items-start gap-3 mb-3">
                         {/* Image */}
-                        <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
+                        <div className="shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
                           {post.image ? (
                             <Image
                               src={post.image}
@@ -824,7 +679,7 @@ const AdminBlogDashboard = () => {
                             {post.title}
                           </h3>
                           <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
-                            <Calendar className="w-3 h-3 flex-shrink-0" />
+                            <Calendar className="w-3 h-3 shrink-0" />
                             <span className="truncate">
                               {new Date(post.date).toLocaleDateString('en-US', { 
                                 month: 'short', 
@@ -832,7 +687,7 @@ const AdminBlogDashboard = () => {
                               })}
                             </span>
                             <span>•</span>
-                            <Clock className="w-3 h-3 flex-shrink-0" />
+                            <Clock className="w-3 h-3 shrink-0" />
                             <span className="font-medium">{post.readTime}</span>
                           </div>
                           <div className="flex flex-wrap gap-1">
@@ -894,14 +749,14 @@ const AdminBlogDashboard = () => {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleEdit(post)}
-                            className="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
+                            className="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
                             title="Edit Post"
                           >
                             <Edit className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleToggleFeatured(post.id)}
-                            className={`p-1.5 rounded-md transition-colors ${
+                            className={`p-1.5 rounded-md transition-colors cursor-pointer ${
                               post.featured 
                                 ? 'bg-[#ff8a00]/10 text-[#ff8a00] hover:bg-[#ff8a00]/20' 
                                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -916,7 +771,7 @@ const AdminBlogDashboard = () => {
                           </button>
                           <button
                             onClick={() => handleDelete(post.id)}
-                            className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                            className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-md transition-colors cursor-pointer"
                             title="Delete Post"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -938,8 +793,8 @@ const AdminBlogDashboard = () => {
                 {searchQuery ? 'Try adjusting your search terms' : 'Create your first blog post to get started'}
               </p>
               <button
-                onClick={() => setShowNewPostForm(true)}
-                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-[#008020] text-white font-semibold rounded-lg sm:rounded-xl hover:bg-[#008020]/90 transition-colors text-sm sm:text-base"
+                onClick={() => setShowPostForm(true)}
+                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-[#008020] text-white font-semibold rounded-lg sm:rounded-xl hover:bg-[#008020]/90 transition-colors text-sm sm:text-base cursor-pointer"
               >
                 <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                 Create New Post
@@ -948,234 +803,25 @@ const AdminBlogDashboard = () => {
           )}
         </div>
 
-        {/* New/Edit Post Modal (unchanged) */}
-        {(showNewPostForm || isEditing) && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-3 lg:p-4 z-50 overflow-y-auto">
-            <div className="bg-white rounded-lg sm:rounded-xl w-full max-w-[95vw] sm:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-white border-b border-gray-200 p-3 sm:p-4 lg:p-6 flex items-center justify-between">
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
-                  {isEditing ? 'Edit Post' : 'Create New Post'}
-                </h2>
-                <button
-                  onClick={handleCloseForm}
-                  className="p-1 sm:p-1.5 hover:bg-gray-100 rounded-md sm:rounded-lg transition-colors"
-                >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                </button>
-              </div>
-
-              <div className="p-3 sm:p-4 lg:p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {/* Form */}
-                  <div className="lg:col-span-2">
-                    <div className="space-y-3 sm:space-y-4 lg:space-y-6">
-                      {/* Title */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">
-                          Post Title *
-                        </label>
-                        <input
-                          type="text"
-                          value={newPost.title}
-                          onChange={(e) => setNewPost({...newPost, title: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-gray-50 border-2 border-gray-200 focus:border-[#008020] focus:outline-none text-xs sm:text-sm lg:text-base"
-                          placeholder="Enter post title..."
-                        />
-                      </div>
-
-                      {/* Excerpt */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">
-                          Excerpt *
-                        </label>
-                        <textarea
-                          value={newPost.excerpt}
-                          onChange={(e) => setNewPost({...newPost, excerpt: e.target.value})}
-                          rows={3}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-gray-50 border-2 border-gray-200 focus:border-[#008020] focus:outline-none resize-none text-xs sm:text-sm lg:text-base"
-                          placeholder="Brief summary of the post..."
-                        />
-                      </div>
-
-                      {/* Content */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1 sm:mb-2">
-                          Content *
-                        </label>
-                        <textarea
-                          value={newPost.content}
-                          onChange={(e) => setNewPost({...newPost, content: e.target.value})}
-                          rows={8}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-gray-50 border-2 border-gray-200 focus:border-[#008020] focus:outline-none resize-none font-mono text-xs sm:text-sm lg:text-base"
-                          placeholder="Write your post content here... (Markdown supported)"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Sidebar */}
-                  <div className="space-y-3 sm:space-y-4 lg:space-y-6">
-                    {/* Publish & Featured */}
-                    <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6">
-                      <h3 className="font-semibold text-gray-900 mb-2 sm:mb-3 lg:mb-4 text-sm sm:text-base">Publish</h3>
-                      <div className="space-y-2 sm:space-y-3 lg:space-y-4">
-                        <label className="flex items-center gap-2 sm:gap-3">
-                          <input
-                            type="checkbox"
-                            checked={newPost.published}
-                            onChange={(e) => setNewPost({...newPost, published: e.target.checked})}
-                            className="rounded border-gray-300 text-[#008020] focus:ring-[#008020] w-3 h-3 sm:w-4 sm:h-4"
-                          />
-                          <span className="text-xs sm:text-sm lg:text-base font-medium">Publish immediately</span>
-                        </label>
-                        <label className="flex items-center gap-2 sm:gap-3">
-                          <input
-                            type="checkbox"
-                            checked={newPost.featured}
-                            onChange={(e) => setNewPost({...newPost, featured: e.target.checked})}
-                            className="rounded border-gray-300 text-[#ff8a00] focus:ring-[#ff8a00] w-3 h-3 sm:w-4 sm:h-4"
-                          />
-                          <span className="text-xs sm:text-sm lg:text-base font-medium">Featured post</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Category */}
-                    <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6">
-                      <h3 className="font-semibold text-gray-900 mb-2 sm:mb-3 lg:mb-4 text-sm sm:text-base">Category</h3>
-                      <select
-                        value={newPost.category}
-                        onChange={(e) => setNewPost({...newPost, category: e.target.value})}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-md sm:rounded-lg bg-white border border-gray-300 focus:border-[#008020] focus:outline-none text-xs sm:text-sm lg:text-base"
-                      >
-                        {categories.map((category) => (
-                          <option key={category} value={category}>{category}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Tags */}
-                    <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6">
-                      <h3 className="font-semibold text-gray-900 mb-2 sm:mb-3 lg:mb-4 text-sm sm:text-base">Tags</h3>
-                      <div className="space-y-2 sm:space-y-3">
-                        <div className="flex gap-1 sm:gap-2">
-                          <input
-                            type="text"
-                            value={tagInput}
-                            onChange={(e) => setTagInput(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            placeholder="Add tag..."
-                            className="flex-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg border border-gray-300 focus:border-[#008020] focus:outline-none text-xs sm:text-sm"
-                          />
-                          <button
-                            onClick={handleAddTag}
-                            className="px-2 sm:px-3 py-1.5 sm:py-2 bg-[#008020] cursor-pointer text-white rounded-md sm:rounded-lg hover:bg-[#008020]/90 transition-colors text-xs sm:text-sm"
-                          >
-                            Add
-                          </button>
-                        </div>
-                        <div className="flex flex-wrap gap-1 sm:gap-2">
-                          {newPost.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex items-center gap-1 px-2 py-1 bg-[#008020]/10 text-[#008020] rounded-full text-xs"
-                            >
-                              {tag}
-                              <button
-                                onClick={() => handleRemoveTag(tag)}
-                                className="hover:text-[#008020]/70"
-                                type="button"
-                              >
-                                <X className="w-2 h-2 sm:w-3 sm:h-3" />
-                              </button>
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Image Upload */}
-                    <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6">
-                      <h3 className="font-semibold text-gray-900 mb-2 sm:mb-3 lg:mb-4 text-sm sm:text-base">Featured Image</h3>
-                      <div className="space-y-2 sm:space-y-3 lg:space-y-4">
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                        />
-                        
-                        {imagePreview ? (
-                          <div className="relative">
-                            <div className="w-full h-40 sm:h-48 md:h-64 rounded-lg overflow-hidden">
-                              <Image
-                                src={imagePreview}
-                                alt="Preview"
-                                width={400}
-                                height={256}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setImagePreview('');
-                                setNewPost(prev => ({ ...prev, image: '' }));
-                              }}
-                              className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
-                            >
-                              <X className="w-3 h-3 sm:w-4 sm:h-4" />
-                            </button>
-                          </div>
-                        ) : (
-                          <div 
-                            onClick={triggerFileInput}
-                            className="border-2 border-dashed border-gray-300 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 text-center cursor-pointer hover:border-[#008020] transition-colors"
-                          >
-                            <Upload className="w-6 h-6 sm:w-8 sm:h-8 lg:w-12 lg:h-12 text-gray-400 mx-auto mb-1.5 sm:mb-2 lg:mb-3" />
-                            <p className="text-xs text-gray-600 mb-1 sm:mb-2 lg:mb-3">
-                              Click to upload or drag and drop
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              PNG, JPG, WEBP up to 5MB
-                            </p>
-                          </div>
-                        )}
-                        
-                        <button
-                          type="button"
-                          onClick={triggerFileInput}
-                          className="w-full py-2 sm:py-2.5 bg-white border border-gray-300 text-gray-700 rounded-md sm:rounded-lg hover:bg-gray-50 transition-colors text-xs sm:text-sm lg:text-base flex items-center justify-center gap-1 sm:gap-2"
-                        >
-                          <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
-                          {imagePreview ? 'Change Image' : 'Select Image'}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                      <button
-                        onClick={handleSave}
-                        className="flex-1 py-2 sm:py-2.5 bg-[#008020] cursor-pointer text-white font-semibold rounded-lg sm:rounded-xl hover:bg-[#008020]/90 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm lg:text-base"
-                      >
-                        <Save className="w-3 h-3 sm:w-4 sm:h-4" />
-                        {isEditing ? 'Update Post' : 'Publish Post'}
-                      </button>
-                      <button
-                        onClick={handleCloseForm}
-                        className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 cursor-pointer text-gray-700 font-semibold rounded-lg sm:rounded-xl hover:bg-gray-200 transition-colors text-xs sm:text-sm lg:text-base"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Blog Post Form Component */}
+        <BlogPostForm
+          isOpen={showPostForm}
+          isEditing={!!editingPost}
+          editingPost={editingPost}
+          onClose={handleCloseForm}
+          onSave={handleSavePost}
+          refreshPosts={refreshPosts}
+          initialData={editingPost ? {
+            title: editingPost.title,
+            excerpt: editingPost.excerpt,
+            content: editingPost.content,
+            category: editingPost.category,
+            tags: editingPost.tags,
+            featured: editingPost.featured,
+            published: editingPost.published,
+            image: editingPost.image
+          } : undefined}
+        />
       </div>
     </div>
   );

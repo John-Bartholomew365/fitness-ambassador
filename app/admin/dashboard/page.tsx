@@ -13,6 +13,7 @@ import Subscribers from '@/components/pages/admin/Subscribers'
 import Training from '@/components/pages/admin/Training'
 import UserRegistrationDetails from '@/components/pages/UserRegistrationDetails'
 import { useState } from 'react'
+import { AuthProvider } from '@/components/contexts/AuthContext'
 
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState('dashboard')
@@ -45,18 +46,20 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <Sidebar 
-        activeSection={activeSection} 
-        setActiveSection={setActiveSection} 
-      />
-      
-      <div className="flex-1 flex flex-col lg:ml-0">
-        <Header activeSection={activeSection} />
-        <main className="flex-1 p-1 sm:p-1 lg:p-6 overflow-auto">
-          {renderContent()}
-        </main>
+    <AuthProvider requireAuth={true}> 
+      <div className="min-h-screen bg-background flex">
+        <Sidebar 
+          activeSection={activeSection} 
+          setActiveSection={setActiveSection} 
+        />
+        
+        <div className="flex-1 flex flex-col lg:ml-0">
+          <Header activeSection={activeSection} />
+          <main className="flex-1 p-1 sm:p-1 lg:p-6 overflow-auto">
+            {renderContent()}
+          </main>
+        </div>
       </div>
-    </div>
+    </AuthProvider>
   )
 }

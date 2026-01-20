@@ -1,120 +1,151 @@
 // app/blog/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import BlogCard from './BlogCard';
 
-// Mock blog data
-const blogPosts = [
-  {
-    id: 1,
-    title: 'The Beginner\'s Guide to Sustainable Fitness',
-    slug: 'beginners-guide-sustainable-fitness',
-    excerpt: 'Learn how to build lasting fitness habits that transform your lifestyle, not just your workouts. Discover practical strategies for staying consistent.',
-    author: 'Ajisafe Sulaiman',
-    date: '2024-03-15',
-    readTime: '5 min read',
-    category: 'Fitness Tips',
-    featured: true
-  },
-  {
-    id: 2,
-    title: 'Nutrition Myths Debunked: What Really Works',
-    slug: 'nutrition-myths-debunked',
-    excerpt: 'Separating fact from fiction in the world of fitness nutrition and supplementation. Learn evidence-based approaches to fueling your body.',
-    author: 'Ajisafe Sulaiman',
-    date: '2024-03-10',
-    readTime: '7 min read',
-    category: 'Nutrition',
-    featured: false
-  },
-  {
-    id: 3,
-    title: 'Community Fitness: Why It\'s More Effective',
-    slug: 'community-fitness-effectiveness',
-    excerpt: 'Discover how group workouts and community support can accelerate your fitness journey and keep you motivated long-term.',
-    author: 'Ajisafe Sulaiman',
-    date: '2024-03-05',
-    readTime: '6 min read',
-    category: 'Community',
-    featured: true
-  },
-  {
-    id: 4,
-    title: 'Progressive Overload: The Key to Continuous Gains',
-    slug: 'progressive-overload-key',
-    excerpt: 'Master the principle of progressive overload to ensure continuous improvement in your strength and fitness journey.',
-    author: 'Ajisafe Sulaiman',
-    date: '2024-03-01',
-    readTime: '8 min read',
-    category: 'Training',
-    featured: false
-  },
-  {
-    id: 5,
-    title: 'Mindset Matters: Building Mental Strength',
-    slug: 'mindset-matters-mental-strength',
-    excerpt: 'How developing the right mindset is just as important as physical training for achieving lasting fitness success.',
-    author: 'Ajisafe Sulaiman',
-    date: '2024-02-25',
-    readTime: '4 min read',
-    category: 'Mindset',
-    featured: false
-  },
-  {
-    id: 6,
-    title: 'Recovery Strategies for Optimal Performance',
-    slug: 'recovery-strategies-performance',
-    excerpt: 'Essential recovery techniques to prevent injury, reduce soreness, and maximize your training results.',
-    author: 'Ajisafe Sulaiman',
-    date: '2024-02-20',
-    readTime: '6 min read',
-    category: 'Recovery',
-    featured: false
-  },
-  {
-    id: 7,
-    title: 'Goal Setting for Fitness Success',
-    slug: 'goal-setting-fitness-success',
-    excerpt: 'Learn how to set SMART fitness goals that keep you motivated and trackable throughout your journey.',
-    author: 'Ajisafe Sulaiman',
-    date: '2024-02-15',
-    readTime: '5 min read',
-    category: 'Fitness Tips',
-    featured: false
-  },
-  {
-    id: 8,
-    title: 'Hydration: The Overlooked Performance Factor',
-    slug: 'hydration-performance-factor',
-    excerpt: 'Discover why proper hydration is crucial for performance and how to optimize your water intake.',
-    author: 'Ajisafe Sulaiman',
-    date: '2024-02-10',
-    readTime: '4 min read',
-    category: 'Nutrition',
-    featured: false
-  }
-];
+interface BlogPost {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  category: string;
+  tags: string[];
+  author: string;
+  featured: boolean;
+  isPublished: boolean;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 
-const categories = [
-  'All Categories',
-  'Fitness Tips',
-  'Nutrition',
-  'Training',
-  'Community',
-  'Mindset',
-  'Recovery'
-];
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  count: number;
+  total: number;
+  page: number;
+  pages: number;
+  blogs: BlogPost[];
+}
 
 const BlogPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('newest');
   const [visiblePosts, setVisiblePosts] = useState(6);
   const [searchQuery, setSearchQuery] = useState('');
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch blog data from API
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Try the exact endpoint from your response
+        const response = await fetch('/api/get-blog', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-cache'
+        });
+        
+        if (!response.ok) {
+          // Try direct backend API as fallback
+          const fallbackResponse = await fetch('https://fitness-ambassador-api.onrender.com/api/get-blog', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            cache: 'no-cache'
+          });
+          
+          if (!fallbackResponse.ok) {
+            throw new Error(`Failed to fetch blogs: ${response.statusText}`);
+          }
+          
+          const data: ApiResponse = await fallbackResponse.json();
+          handleData(data);
+        } else {
+          const data: ApiResponse = await response.json();
+          handleData(data);
+        }
+      } catch (err) {
+        console.error('Error fetching blog posts:', err);
+        setError('Failed to load articles. Please check your internet connection and try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const handleData = (data: ApiResponse) => {
+      if (data.success && data.blogs) {
+        // Filter only published blogs
+        const publishedBlogs = data.blogs.filter(blog => 
+          blog.isPublished && blog.status === 'published'
+        );
+        setBlogPosts(publishedBlogs);
+      } else {
+        throw new Error(data.message || 'Failed to fetch blogs');
+      }
+    };
+
+    fetchBlogPosts();
+  }, []);
+
+  // Format blog data for display
+  const formatBlogData = (blog: BlogPost) => {
+    const formatDate = (dateString: string) => {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    };
+
+    const calculateReadTime = (content: string) => {
+      const wordsPerMinute = 200;
+      const words = content.split(/\s+/).length;
+      const minutes = Math.ceil(words / wordsPerMinute);
+      return `${minutes} min read`;
+    };
+
+    return {
+      id: blog._id,
+      title: blog.title,
+      slug: blog.slug,
+      excerpt: blog.excerpt,
+      content: blog.content,
+      coverImage: blog.coverImage,
+      author: blog.author === 'Admin' ? 'Ajisafe Sulaiman' : blog.author,
+      date: formatDate(blog.createdAt),
+      readTime: calculateReadTime(blog.content),
+      category: blog.category,
+      tags: blog.tags,
+      featured: blog.featured,
+      isPublished: blog.isPublished,
+      status: blog.status
+    };
+  };
+
+  // Get unique categories from actual blog data
+  const allCategories = ['All Categories'];
+  if (blogPosts.length > 0) {
+    const uniqueCategories = [...new Set(blogPosts.map(post => post.category))].sort();
+    allCategories.push(...uniqueCategories);
+  }
 
   // Filter and sort posts
   const filteredPosts = blogPosts
+    .map(formatBlogData)
     .filter(post => {
       if (selectedCategory !== 'All Categories') {
         return post.category === selectedCategory;
@@ -179,8 +210,9 @@ const BlogPage = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search articles..."
+                placeholder="Search articles by title, content, or tags..."
                 className="w-full pl-12 pr-4 py-3 rounded-xl bg-white border-2 border-gray-200 focus:border-[#008020] focus:outline-none"
+                disabled={loading}
               />
             </div>
           </div>
@@ -194,15 +226,16 @@ const BlogPage = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
             {/* Categories */}
             <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
+              {allCategories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
+                  disabled={loading}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                     selectedCategory === category
                       ? 'bg-[#008020] text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {category}
                 </button>
@@ -215,7 +248,10 @@ const BlogPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-[#008020] focus:outline-none text-sm"
+                disabled={loading}
+                className={`px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-[#008020] focus:outline-none text-sm ${
+                  loading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -223,54 +259,97 @@ const BlogPage = () => {
             </div>
           </div>
 
-          {/* Results Count */}
-          <div className="mb-8">
-            <p className="text-gray-600">
-              Showing {displayedPosts.length} of {filteredPosts.length} articles
-            </p>
-          </div>
-
-          {/* Blog Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {displayedPosts.map((post) => (
-              <BlogCard
-                key={post.id}
-                id={post.id}
-                title={post.title}
-                slug={post.slug}
-                excerpt={post.excerpt}
-                author={post.author}
-                date={post.date}
-                readTime={post.readTime}
-                category={post.category}
-                featured={post.featured}
-              />
-            ))}
-          </div>
-
-          {/* Empty State */}
-          {displayedPosts.length === 0 && (
-            <div className="text-center py-16">
-              <div className="text-gray-400 mb-4">
-                <Search className="w-16 h-16 mx-auto" />
+          {/* Loading State for content only */}
+          {loading ? (
+            <div className="py-16 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#008020] mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading articles...</p>
+            </div>
+          ) : error ? (
+            <div className="py-16 text-center">
+              <div className="text-red-500 mb-4 text-4xl">⚠️</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Error Loading Articles</h3>
+              <p className="text-gray-600 mb-6">{error}</p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-3 bg-[#008020] text-white font-semibold rounded-xl hover:bg-[#008020]/90 transition-colors"
+                >
+                  Try Again
+                </button>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No articles found</h3>
-              <p className="text-gray-600">
-                Try adjusting your search or filter to find what you&apos;re looking for.
-              </p>
             </div>
-          )}
+          ) : (
+            <>
+              {/* Results Count */}
+              <div className="mb-8">
+                <p className="text-gray-600">
+                  {blogPosts.length === 0 ? (
+                    'No articles available'
+                  ) : (
+                    `Showing ${displayedPosts.length} of ${filteredPosts.length} article${filteredPosts.length !== 1 ? 's' : ''}`
+                  )}
+                </p>
+              </div>
 
-          {/* Load More */}
-          {hasMorePosts && (
-            <div className="text-center mt-12">
-              <button
-                onClick={handleLoadMore}
-                className="px-8 py-3 bg-white border-2 border-gray-200 text-gray-900 font-semibold rounded-xl hover:border-[#008020] hover:text-[#008020] transition-all duration-300 lg:w-auto w-full"
-              >
-                Load More Articles
-              </button>
-            </div>
+              {/* Blog Grid */}
+              {blogPosts.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {displayedPosts.map((post) => (
+                      <BlogCard
+                        key={post.id}
+                        id={post.id}
+                        title={post.title}
+                        slug={post.slug}
+                        excerpt={post.excerpt}
+                        author={post.author}
+                        date={post.date}
+                        readTime={post.readTime}
+                        category={post.category}
+                        featured={post.featured}
+                        coverImage={post.coverImage}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Empty Search State */}
+                  {displayedPosts.length === 0 && filteredPosts.length > 0 && (
+                    <div className="text-center py-16">
+                      <div className="text-gray-400 mb-4">
+                        <Search className="w-16 h-16 mx-auto" />
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">No matching articles found</h3>
+                      <p className="text-gray-600">
+                        Try adjusting your search or filter to find what you&apos;re looking for.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Load More */}
+                  {hasMorePosts && (
+                    <div className="text-center mt-12">
+                      <button
+                        onClick={handleLoadMore}
+                        className="px-8 py-3 bg-white border-2 border-gray-200 text-gray-900 font-semibold rounded-xl hover:border-[#008020] hover:text-[#008020] transition-all duration-300 lg:w-auto w-full"
+                      >
+                        Load More Articles
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-16">
+                  <div className="text-gray-400 mb-4">
+                    <div className="text-6xl mb-2">📄</div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">No articles published yet</h3>
+                  <p className="text-gray-600">
+                    Check back soon for new fitness articles and tips.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

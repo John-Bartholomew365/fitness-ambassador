@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { 
   LayoutDashboard, 
-  // Calendar, 
   ShoppingBag, 
   Book, 
   Dumbbell, 
@@ -11,15 +10,18 @@ import {
   MessageSquare,
   Menu,
   X,
-  ChevronLeft
+  ChevronLeft,
+  LogOut
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FaBlog, FaUserPlus } from 'react-icons/fa6'
+import { useAuth } from '@/components/contexts/AuthContext'
+import { authService } from '@/lib/auth'
+import { useRouter } from 'next/navigation'
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', key: 'dashboard' },
-  // { icon: Calendar, label: 'Events', key: 'events' },
   { icon: ShoppingBag, label: 'Shop / Products', key: 'shop' },
   { icon: Book, label: 'Book Management', key: 'book' },
   { icon: Dumbbell, label: 'Training', key: 'training' },
@@ -37,6 +39,13 @@ interface SidebarProps {
 export default function Sidebar({ activeSection, setActiveSection }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const { logout } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = () => {
+    logout()
+    setIsMobileOpen(false)
+  }
 
   return (
     <>
@@ -125,7 +134,15 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border space-y-2">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-red-50 text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+          >
+            <LogOut className="w-5 h-5" />
+            {isOpen && <span className="font-medium text-sm">Logout</span>}
+          </button>
+          
           <Link
             href="/"
             className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"

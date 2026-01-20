@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Quote } from 'lucide-react';
+import Jam2FitWaitingList from './newsletters/Jam2FitWaitingList';
 
 const Jam2FitPage = () => {
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -377,140 +378,74 @@ const Jam2FitPage = () => {
             </section>
 
             {/* Testimonials */}
-      {/* Testimonials */}
-<section id="testimonials" className="py-16 md:py-24 px-4 md:px-8 bg-linear-to-b from-white to-gray-50/30">
-    <div className="max-w-6xl mx-auto">
-        <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-        >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                Voices from the <span className="text-[#ffde00]">Night</span>
-            </h2>
-            <p className="text-gray-600 text-[16px] lg:w-[370px] w-auto mx-auto leading-normal">
-                Hear what makes Jam2Fit the most talked-about fitness experience in Ilorin.
-            </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-                <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="p-8 rounded-2xl bg-white border-2 border-gray-100 hover:shadow-lg transition-all duration-300 relative"
-                >
-                    {/* Quote Mark */}
-                    <div
-                        className="text-4xl mb-4"
-                        style={{ color: testimonial.color + '30' }}
-                    >
-                        <Quote size={42} className="text-secondary/20" />
-                    </div>
-
-                    <p className="text-gray-700 italic mb-6">&quot;{testimonial.content}&quot;</p>
-
-                    <div className="flex items-center gap-3">
-                        <div
-                            className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white"
-                            style={{ backgroundColor: testimonial.color }}
-                        >
-                            {testimonial.name.charAt(0)}
-                        </div>
-                        <div>
-                            <div className="font-bold text-gray-900">{testimonial.name}</div>
-                            <div className="text-sm text-gray-600">{testimonial.role}</div>
-                        </div>
-                    </div>
-
-                    {/* Highlight Badge - This will now show correctly */}
-                    <div
-                        className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-medium"
-                        style={{
-                            backgroundColor: testimonial.color + '15',
-                            color: testimonial.color
-                        }}
-                    >
-                        {testimonial.highlight}
-                    </div>
-                </motion.div>
-            ))}
-        </div>
-    </div>
-</section>
-
-            {/* Final CTA with Email Form */}
-            <section className="py-16 md:py-24 px-4 md:px-8 bg-linear-to-br from-[#ffde00]/5 via-white to-[#008020]/5">
-                <div className="max-w-4xl mx-auto text-center">
+            {/* Testimonials */}
+            <section id="testimonials" className="py-16 md:py-24 px-4 md:px-8 bg-linear-to-b from-white to-gray-50/30">
+                <div className="max-w-6xl mx-auto">
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
+                        className="text-center mb-16"
                     >
-                        <div className="inline-flex items-center gap-3 mb-8">
-                            <div className="w-3 h-3 rounded-full bg-[#008020]" />
-                            <div className="w-3 h-3 rounded-full bg-[#ffde00]" />
-                            <div className="w-3 h-3 rounded-full bg-[#ff8a00]" />
-                        </div>
-
-                        <h2 className="text-[30px] lg:text-[40px] font-bold text-gray-900 mb-6">
-                            Ready for the Next <br className="block lg:hidden" /> <span className="text-[#ffde00]">Nighttime</span> Revolution?
+                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                            Voices from the <span className="text-[#ffde00]">Night</span>
                         </h2>
-
-                        <p className="text-gray-700 text-[16px] mb-10 max-w-2xl mx-auto">
-                            Be the first to know when Jam2Fit returns with even more energy, better production, and unforgettable fitness experiences. Join our exclusive waiting list now!
+                        <p className="text-gray-600 text-[16px] lg:w-[370px] w-auto mx-auto leading-normal">
+                            Hear what makes Jam2Fit the most talked-about fitness experience in Ilorin.
                         </p>
-
-                        {/* Email Subscription Form */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            className="mb-8"
-                        >
-                            <form
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    // Handle form submission here
-                                    alert('Thank you! You\'ll be notified when Jam2Fit returns.');
-                                }}
-                                className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto"
-                            >
-                                <div className="flex-1">
-                                    <input
-                                        type="email"
-                                        placeholder="Enter your email address"
-                                        required
-                                        className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300"
-                                    />
-                                </div>
-                                <motion.button
-                                    type="submit"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="px-8 py-4 bg-[#ffde00] text-gray-900 font-semibold rounded-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center gap-3 min-w-[200px] cursor-pointer"
-                                >
-                                    Join Waiting List
-                                </motion.button>
-                            </form>
-                            <p className="text-gray-500 text-sm mt-3">
-                                We respect your privacy. No spam, ever.
-                            </p>
-                        </motion.div>
-                        <div className="mt-12 pt-8 border-t border-gray-300/30">
-                            <p className="text-gray-600">
-                                <span className="font-semibold text-[#008020]">Ilorin&apos;s First & Only Nighttime Fitness Party</span><br />
-                                <span className="text-sm">Redefining what fitness experiences can be</span>
-                            </p>
-                        </div>
                     </motion.div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {testimonials.map((testimonial, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                                className="p-8 rounded-2xl bg-white border-2 border-gray-100 hover:shadow-lg transition-all duration-300 relative"
+                            >
+                                {/* Quote Mark */}
+                                <div
+                                    className="text-4xl mb-4"
+                                    style={{ color: testimonial.color + '30' }}
+                                >
+                                    <Quote size={42} className="text-secondary/20" />
+                                </div>
+
+                                <p className="text-gray-700 italic mb-6">&quot;{testimonial.content}&quot;</p>
+
+                                <div className="flex items-center gap-3">
+                                    <div
+                                        className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white"
+                                        style={{ backgroundColor: testimonial.color }}
+                                    >
+                                        {testimonial.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-gray-900">{testimonial.name}</div>
+                                        <div className="text-sm text-gray-600">{testimonial.role}</div>
+                                    </div>
+                                </div>
+
+                                {/* Highlight Badge - This will now show correctly */}
+                                <div
+                                    className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-medium"
+                                    style={{
+                                        backgroundColor: testimonial.color + '15',
+                                        color: testimonial.color
+                                    }}
+                                >
+                                    {testimonial.highlight}
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </section>
+
+            {/* Final CTA with Email Form */}
+           <Jam2FitWaitingList/>
         </div>
     );
 };

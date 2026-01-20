@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { authService } from '@/lib/auth';
+import { useAuth } from '@/components/contexts/AuthContext';
 
 interface Vest {
   id: number;
@@ -38,7 +41,47 @@ interface Registration {
   verificationNotes?: string;
 }
 
+// Define backend response interfaces
+interface BackendVest {
+  _id: string;
+  type: string;
+  color: string;
+  colorName: string;
+  price: string;
+  size: string;
+}
+
+interface BackendUser {
+  _id: string;
+  email: string;
+  vestId: BackendVest;
+  registration_id: string;
+  fullName: string;
+  phoneNumber: string;
+  gender: string;
+  dobDay: number;
+  dobMonth: string;
+  medicalCondition: boolean;
+  medicalDetails: string | null;
+  emergencyName: string;
+  emergencyPhone: string;
+  registrationStatus: string;
+  payment_status: string;
+  paymentProof: string | null;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface BackendResponse {
+  success: boolean;
+  count: number;
+  users: BackendUser[];
+}
+
 const UserRegistrationDetails = () => {
+  const router = useRouter();
+  const { user, isLoading: authLoading } = useAuth();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,120 +90,209 @@ const UserRegistrationDetails = () => {
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [verificationNotes, setVerificationNotes] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<'pending' | 'verified' | 'rejected'>('pending');
+  const [error, setError] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Check authentication on component mount
+  useEffect(() => {
+    if (!authLoading) {
+      const token = authService.getToken();
+      if (!token || !user) {
+        setError('Please login to view registration data');
+        setLoading(false);
+        router.push('/login');
+      } else {
+        setAuthChecked(true);
+      }
+    }
+  }, [authLoading, user, router]);
 
   useEffect(() => {
-    const loadRegistrations = () => {
+    const fetchRegistrations = async () => {
+      // Don't fetch if not authenticated
+      const token = authService.getToken();
+      if (!token || !user) {
+        setError('Authentication required. Please login.');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const storedData = localStorage.getItem('registrations');
+        setLoading(true);
+        setError(null);
         
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          setRegistrations(parsedData);
-        } else {
-          const demoRegistrations: Registration[] = [
-            {
-              id: 'W2F5-JDO-7B3C-5891',
-              vest: {
-                id: 1,
-                type: 'Hoodie',
-                color: '#1e40af',
-                colorName: 'Royal Blue',
-                price: '₦12,000',
-                image: '/blue-hoodie.png',
-                size: 'L'
-              },
-              bio: {
-                fullName: 'John Doe',
-                phoneNumber: '+2348012345678',
-                email: 'john.doe@example.com',
-                gender: 'Male',
-                birthDay: '15',
-                birthMonth: '6',
-                hasMedicalCondition: 'No',
-                medicalConditionNote: '',
-                emergencyContactName: 'Jane Doe',
-                emergencyContactPhone: '+2348098765432'
-              },
-              receiptUrl: '/receipts/sample-receipt.jpg',
-              receiptFilename: 'payment_receipt_001.jpg',
-              paymentMethod: 'Bank Transfer - GT Bank',
-              registrationDate: '2024-01-15T10:30:00Z',
-              status: 'verified',
-              verificationNotes: 'Payment verified successfully. Receipt clear and matches amount.'
-            },
-            {
-              id: 'W2F5-ASM-4F2A-6723',
-              vest: {
-                id: 3,
-                type: 'T-Shirt',
-                color: '#008020',
-                colorName: 'Forest Green',
-                price: '₦10,000',
-                image: '/green-shirt.png',
-                size: 'M'
-              },
-              bio: {
-                fullName: 'Alice Smith',
-                phoneNumber: '+2348023456789',
-                email: 'alice.smith@example.com',
-                gender: 'Female',
-                birthDay: '22',
-                birthMonth: '8',
-                hasMedicalCondition: 'Yes',
-                medicalConditionNote: 'Mild asthma - will bring inhaler',
-                emergencyContactName: 'Bob Smith',
-                emergencyContactPhone: '+2348076543210'
-              },
-              receiptUrl: '/receipts/sample-receipt-2.jpg',
-              receiptFilename: 'payment_receipt_002.jpg',
-              paymentMethod: 'Bank Transfer - Jaiz Bank',
-              registrationDate: '2024-01-16T14:45:00Z',
-              status: 'pending'
-            },
-            {
-              id: 'W2F5-RBW-9E1D-3345',
-              vest: {
-                id: 5,
-                type: 'Armless Vest',
-                color: '#008020',
-                colorName: 'Forest Green',
-                price: '₦10,000',
-                image: '/green-armless.jpeg',
-                size: 'XL'
-              },
-              bio: {
-                fullName: 'Robert Brown',
-                phoneNumber: '+2348034567890',
-                email: 'robert.brown@example.com',
-                gender: 'Male',
-                birthDay: '3',
-                birthMonth: '11',
-                hasMedicalCondition: 'No',
-                medicalConditionNote: '',
-                emergencyContactName: 'Sarah Brown',
-                emergencyContactPhone: '+2348065432109'
-              },
-              receiptUrl: '/receipts/sample-receipt-3.jpg',
-              receiptFilename: 'payment_receipt_003.pdf',
-              paymentMethod: 'Bank Transfer - GT Bank',
-              registrationDate: '2024-01-17T09:15:00Z',
-              status: 'rejected',
-              verificationNotes: 'Receipt amount does not match vest price. Need to pay balance.'
+        const response = await fetch('/api/get-users', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.status === 401) {
+          throw new Error('Unauthorized - Invalid or expired token');
+        }
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+        }
+        
+        const data: BackendResponse = await response.json();
+        
+        if (data.success && data.users) {
+          // Map backend data to your frontend format
+          const mappedRegistrations: Registration[] = data.users.map((user, index) => {
+            // Map payment_status to your status
+            let status: 'pending' | 'verified' | 'rejected' = 'pending';
+            const paymentStatus = user.payment_status?.toLowerCase();
+            if (paymentStatus === 'verified' || paymentStatus === 'completed' || paymentStatus === 'paid') {
+              status = 'verified';
+            } else if (paymentStatus === 'rejected' || paymentStatus === 'failed') {
+              status = 'rejected';
             }
-          ];
+            
+            // Determine vest image based on type and color
+            const getVestImage = (type: string, colorName: string) => {
+              const color = colorName.toLowerCase().includes('blue') ? 'blue' : 
+                           colorName.toLowerCase().includes('green') ? 'green' : 'blue';
+              
+              if (type.toLowerCase().includes('hoodie')) {
+                return `/${color}-hoodie.png`;
+              } else if (type.toLowerCase().includes('armless')) {
+                return `/${color}-armless.jpeg`;
+              } else {
+                return `/${color}-shirt.png`;
+              }
+            };
+            
+            // Extract filename from paymentProof URL if available
+            let receiptFilename = '';
+            if (user.paymentProof) {
+              const urlParts = user.paymentProof.split('/');
+              receiptFilename = urlParts[urlParts.length - 1];
+            }
+            
+            // Format price to include ₦ symbol if not already present
+            let formattedPrice = user.vestId.price;
+            if (!formattedPrice.includes('₦')) {
+              const numericPrice = parseInt(formattedPrice) || 0;
+              formattedPrice = `₦${numericPrice.toLocaleString()}`;
+            }
+            
+            // Format month if it's a number
+            let birthMonth = user.dobMonth;
+            if (!isNaN(parseInt(user.dobMonth))) {
+              const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                             'July', 'August', 'September', 'October', 'November', 'December'];
+              const monthIndex = parseInt(user.dobMonth) - 1;
+              if (monthIndex >= 0 && monthIndex < months.length) {
+                birthMonth = months[monthIndex];
+              }
+            }
+            
+            return {
+              id: user.registration_id,
+              vest: {
+                id: index + 1,
+                type: user.vestId.type,
+                color: user.vestId.color,
+                colorName: user.vestId.colorName,
+                price: formattedPrice,
+                image: getVestImage(user.vestId.type, user.vestId.colorName),
+                size: user.vestId.size
+              },
+              bio: {
+                fullName: user.fullName,
+                phoneNumber: user.phoneNumber,
+                email: user.email,
+                gender: user.gender,
+                birthDay: user.dobDay.toString(),
+                birthMonth: birthMonth,
+                hasMedicalCondition: user.medicalCondition ? 'Yes' : 'No',
+                medicalConditionNote: user.medicalDetails || '',
+                emergencyContactName: user.emergencyName,
+                emergencyContactPhone: user.emergencyPhone
+              },
+              receiptUrl: user.paymentProof || undefined,
+              receiptFilename: receiptFilename || undefined,
+              paymentMethod: user.paymentProof ? 'Bank Transfer' : 'Not specified',
+              registrationDate: user.createdAt,
+              status: status,
+              verificationNotes: ''
+            };
+          });
           
-          setRegistrations(demoRegistrations);
-          localStorage.setItem('registrations', JSON.stringify(demoRegistrations));
+          setRegistrations(mappedRegistrations);
+        } else {
+          throw new Error('Invalid data format from server');
         }
       } catch (error) {
-        console.error('Error loading registrations:', error);
+        console.error('Error fetching registrations:', error);
+        if (error instanceof Error) {
+          setError(`Failed to load registration data: ${error.message}`);
+        } else {
+          setError('Failed to load registration data. Please try again later.');
+        }
+        setRegistrations([]);
       } finally {
         setLoading(false);
       }
     };
 
-    loadRegistrations();
-  }, []);
+    if (authChecked && !authLoading) {
+      fetchRegistrations();
+    }
+  }, [authChecked, authLoading, user]);
+
+  const handleUpdateStatus = async () => {
+    if (!selectedRegistration) return;
+
+    const token = authService.getToken();
+    if (!token) {
+      setError('Authentication required. Please login.');
+      return;
+    }
+
+    try {
+      // Update local state
+      const updatedRegistrations = registrations.map(reg => {
+        if (reg.id === selectedRegistration.id) {
+          return {
+            ...reg,
+            status: selectedStatus,
+            verificationNotes: verificationNotes
+          };
+        }
+        return reg;
+      });
+
+      setRegistrations(updatedRegistrations);
+      
+      setSelectedRegistration({
+        ...selectedRegistration,
+        status: selectedStatus,
+        verificationNotes: verificationNotes
+      });
+
+      // TODO: Make API call to update status on backend
+      // await fetch(`/api/update-status/${selectedRegistration.id}`, {
+      //   method: 'PUT',
+      //   headers: { 
+      //     'Content-Type': 'application/json',
+      //     'Authorization': `Bearer ${token}`
+      //   },
+      //   body: JSON.stringify({ 
+      //     status: selectedStatus,
+      //     verificationNotes: verificationNotes 
+      //   })
+      // });
+
+      alert('Status updated successfully!');
+    } catch (error) {
+      console.error('Error updating status:', error);
+      alert('Failed to update status. Please try again.');
+    }
+  };
 
   const filteredRegistrations = registrations.filter(reg => {
     const matchesSearch = 
@@ -192,41 +324,22 @@ const UserRegistrationDetails = () => {
     }
   };
 
-  const handleUpdateStatus = () => {
-    if (!selectedRegistration) return;
-
-    const updatedRegistrations = registrations.map(reg => {
-      if (reg.id === selectedRegistration.id) {
-        return {
-          ...reg,
-          status: selectedStatus,
-          verificationNotes: verificationNotes
-        };
-      }
-      return reg;
-    });
-
-    setRegistrations(updatedRegistrations);
-    localStorage.setItem('registrations', JSON.stringify(updatedRegistrations));
-    
-    setSelectedRegistration({
-      ...selectedRegistration,
-      status: selectedStatus,
-      verificationNotes: verificationNotes
-    });
-
-    alert('Status updated successfully!');
-  };
-
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-GB', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+    } catch (error) {
+      return 'Invalid date';
+    }
   };
 
   const exportToCSV = () => {
@@ -306,12 +419,62 @@ const UserRegistrationDetails = () => {
 
   const stats = calculateStats();
 
+  // Don't render if auth is still loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-t-[#008020] border-b-[#ff8a00] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  const token = authService.getToken();
+  if (!token || !user) {
+    return null;
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-t-[#008020] border-b-[#ff8a00] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading registration data...</p>
+          <p className="text-gray-600">Fetching registration data from server...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Error Loading Data</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-[#008020] text-white font-semibold rounded-lg hover:bg-[#006a1a] transition-colors"
+            >
+              Retry
+            </button>
+            <button
+              onClick={() => {
+                router.push('/login');
+              }}
+              className="px-4 py-2 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-gray-400 transition-colors"
+            >
+              Login Again
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -322,8 +485,18 @@ const UserRegistrationDetails = () => {
       <div className="max-w-[100vw] lg:max-w-7xl mx-auto w-full">
         {/* Header */}
         <div className="mb-6 lg:mb-8 px-1">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">User Registration Management</h1>
-          <p className="text-gray-600 mt-1 text-sm md:text-base">View and manage all Walk2Fitness 5.0 registrations</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">User Registration Management</h1>
+              <p className="text-gray-600 mt-1 text-sm md:text-base">View and manage all Walk2Fitness 5.0 registrations</p>
+            </div>
+            {user && (
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>Logged in as: {user.email}</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -702,7 +875,7 @@ const UserRegistrationDetails = () => {
                 {/* Receipt Preview */}
                 <div className="w-full max-w-2xl aspect-4/3 bg-gray-100 rounded-lg lg:rounded-xl mb-4 lg:mb-6 flex items-center justify-center">
                   {selectedRegistration.receiptUrl ? (
-                    <div className="text-center p-4 lg:p-8">
+                    <div className="text-center p-4 lg:p-8 w-full">
                       <div className="w-16 h-16 lg:w-24 lg:h-24 mx-auto mb-3 lg:mb-4 bg-blue-100 rounded-full flex items-center justify-center">
                         <svg className="w-8 h-8 lg:w-12 lg:h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -710,8 +883,31 @@ const UserRegistrationDetails = () => {
                       </div>
                       <div className="font-medium text-gray-900 text-sm lg:text-base">{selectedRegistration.receiptFilename}</div>
                       <div className="text-xs lg:text-sm text-gray-500">Payment Receipt</div>
-                      <div className="mt-3 lg:mt-4 text-xs lg:text-sm text-gray-500">
-                        Note: In a real application, this would display the actual uploaded receipt image
+                      <div className="mt-3 lg:mt-4">
+                        <img 
+                          src={selectedRegistration.receiptUrl} 
+                          alt="Payment Receipt" 
+                          className="max-w-full max-h-64 rounded-lg shadow mx-auto"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const parent = target.parentElement;
+                            if (parent) {
+                              parent.innerHTML = `
+                                <div class="w-16 h-16 lg:w-24 lg:h-24 mx-auto mb-3 lg:mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+                                  <svg class="w-8 h-8 lg:w-12 lg:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                  </svg>
+                                </div>
+                                <div class="font-medium text-gray-900 text-sm lg:text-base">${selectedRegistration.receiptFilename}</div>
+                                <div class="text-xs lg:text-sm text-gray-500">Unable to load image</div>
+                                <div class="mt-2 text-xs text-blue-600">
+                                  <a href="${selectedRegistration.receiptUrl}" target="_blank" class="hover:underline">View receipt in new tab</a>
+                                </div>
+                              `;
+                            }
+                          }}
+                        />
                       </div>
                     </div>
                   ) : (

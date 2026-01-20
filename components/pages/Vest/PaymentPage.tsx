@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 interface Vest {
   colorName: string;
@@ -12,17 +13,11 @@ interface Vest {
   price: string;
 }
 
-interface BioData {
+interface UserData {
+  userId: string;
   fullName: string;
-  phoneNumber: string;
   email: string;
-  gender: string;
-  birthDay: string;
-  birthMonth: string;
-  hasMedicalCondition: string;
-  medicalConditionNote: string;
-  emergencyContactName: string;
-  emergencyContactPhone: string;
+  registrationId: string;
 }
 
 interface BankAccount {
@@ -37,7 +32,7 @@ type BankType = 'gtBank' | 'jaizBank';
 const PaymentPage = () => {
   const router = useRouter();
   const [selectedVest, setSelectedVest] = useState<Vest | null>(null);
-  const [bioData, setBioData] = useState<BioData | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [activeBank, setActiveBank] = useState<BankType>('gtBank');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -61,18 +56,31 @@ const PaymentPage = () => {
   useEffect(() => {
     const loadData = () => {
       try {
-        const vest = localStorage.getItem('selectedVest');
-        const bio = localStorage.getItem('bioData');
+        // Get vest details and user data from sessionStorage
+        const storedVestDetails = sessionStorage.getItem('selectedVestDetails');
+        const storedUserData = sessionStorage.getItem('userData');
         
-        if (!vest || !bio) {
+        console.log('Loading data:', { storedVestDetails, storedUserData });
+        
+        if (!storedVestDetails || !storedUserData) {
+          toast.error('Registration data not found. Please complete your registration.');
           router.push('/register');
           return;
         }
         
-        setSelectedVest(JSON.parse(vest));
-        setBioData(JSON.parse(bio));
+        // Set vest details
+        const parsedVest = JSON.parse(storedVestDetails);
+        setSelectedVest(parsedVest);
+        
+        // Set user data (from registration response)
+        const parsedUserData = JSON.parse(storedUserData);
+        setUserData(parsedUserData);
+        
+        console.log('Loaded user data:', parsedUserData);
+        
       } catch (error) {
         console.error('Error loading registration data:', error);
+        toast.error('Failed to load registration data');
         router.push('/register');
       } finally {
         setIsLoading(false);
@@ -84,7 +92,20 @@ const PaymentPage = () => {
 
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setReceiptFile(e.target.files[0]);
+      const file = e.target.files[0];
+      // Check file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size too large. Maximum size is 5MB.');
+        return;
+      }
+      // Check file type
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      if (!validTypes.includes(file.type)) {
+        toast.error('Invalid file type. Please upload JPG, PNG, or PDF.');
+        return;
+      }
+      setReceiptFile(file);
+      toast.success('File selected successfully');
     }
   }, []);
 
@@ -92,41 +113,79 @@ const PaymentPage = () => {
     e.preventDefault();
     
     if (!receiptFile) {
-      alert('Please upload your payment receipt');
+      toast.error('Please upload your payment receipt');
+      return;
+    }
+    
+    if (!userData?.userId) {
+      toast.error('User information not found. Please complete registration again.');
+      router.push('/register');
       return;
     }
 
     setUploading(true);
     
     try {
-      // Here you would typically upload to your backend
+      // Show loading toast
+      const loadingToast = toast.loading('Uploading payment receipt...');
+      
+      // Create FormData for file upload
       const formData = new FormData();
-      formData.append('receipt', receiptFile);
-      formData.append('vest', JSON.stringify(selectedVest));
-      formData.append('bioData', JSON.stringify(bioData));
+      formData.append('userId', userData.userId);
+      formData.append('paymentProof', receiptFile);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      console.log('Submitting payment with userId:', userData.userId);
+
+      // Submit to API
+      const response = await fetch('/api/payment', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      console.log('Payment response:', result);
+
+      if (!response.ok) {
+        // Dismiss loading toast and show error
+        toast.dismiss(loadingToast);
+        toast.error(result.message || 'Failed to upload receipt');
+        throw new Error(result.message || 'Failed to upload receipt');
+      }
+
+      // Dismiss loading toast and show success
+      toast.dismiss(loadingToast);
+      toast.success('Payment receipt uploaded successfully!');
       
-      // Save a flag in localStorage to indicate successful registration
-      localStorage.setItem('registrationComplete', 'true');
+      // Generate a unique payment ID for display
+      const paymentId = `PAY-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
       
-      // Save the data in a different key for the success page
-      localStorage.setItem('registrationSuccessData', JSON.stringify({
+      // Save ONLY the data needed for success page
+      sessionStorage.setItem('paymentSuccessData', JSON.stringify({
         vest: selectedVest,
-        bio: bioData,
-        timestamp: new Date().toISOString()
+        user: userData,
+        timestamp: new Date().toISOString(),
+        paymentId: paymentId
       }));
       
-      // Optionally clear the original registration data (or keep it for backup)
-      // localStorage.removeItem('selectedVest');
-      // localStorage.removeItem('bioData');
+      // CLEAR ALL registration data from sessionStorage
+      // We only keep paymentSuccessData for the success page
+      sessionStorage.removeItem('selectedVestId');
+      sessionStorage.removeItem('selectedVestDetails');
+      sessionStorage.removeItem('registrationResponse');
+      sessionStorage.removeItem('userData');
       
-      // Redirect to success page
-      router.push('/register/success');
+      console.log('Cleared registration data, saved payment success data');
+      
+      // Add a small delay before redirect to show the success toast
+      setTimeout(() => {
+        router.push('/register/success');
+      }, 1500);
+      
     } catch (error) {
       console.error('Error uploading receipt:', error);
-      alert('Error uploading receipt. Please try again.');
+      toast.error(
+        error instanceof Error ? error.message : 'An unexpected error occurred'
+      );
     } finally {
       setUploading(false);
     }
@@ -135,11 +194,11 @@ const PaymentPage = () => {
   const copyToClipboard = useCallback((text: string) => {
     navigator.clipboard.writeText(text)
       .then(() => {
-        alert('Copied to clipboard!');
+        toast.success('Copied to clipboard!');
       })
       .catch((error) => {
         console.error('Failed to copy:', error);
-        alert('Failed to copy to clipboard. Please copy manually.');
+        toast.error('Failed to copy to clipboard. Please copy manually.');
       });
   }, []);
 
@@ -209,25 +268,27 @@ const PaymentPage = () => {
             </div>
           </div>
 
-          {/* Personal Info Summary */}
+          {/* Registration Info */}
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <h3 className="font-bold text-gray-900 mb-4">Personal Info</h3>
+            <h3 className="font-bold text-gray-900 mb-4">Registration Details</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600">Name:</span>
-                <span className="font-medium text-right">{bioData?.fullName}</span>
+                <span className="text-gray-600">Registration ID:</span>
+                <span className="font-medium text-right">{userData?.registrationId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Phone:</span>
-                <span className="font-medium">{bioData?.phoneNumber}</span>
+                <span className="text-gray-600">Name:</span>
+                <span className="font-medium">{userData?.fullName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Email:</span>
-                <span className="font-medium">{bioData?.email}</span>
+                <span className="font-medium">{userData?.email}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Emergency Contact:</span>
-                <span className="font-medium">{bioData?.emergencyContactName}</span>
+              <div className="pt-3 border-t border-gray-100">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">User ID:</span>
+                  <span className="font-medium text-xs">{userData?.userId?.substring(0, 8)}...</span>
+                </div>
               </div>
             </div>
           </div>
@@ -307,7 +368,8 @@ const PaymentPage = () => {
                       </code>
                       <button
                         onClick={() => copyToClipboard(bankAccounts[activeBank].accountNumber)}
-                        className="px-3 md:px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap"
+                        disabled={uploading}
+                        className="px-3 md:px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Copy
                       </button>
@@ -322,7 +384,8 @@ const PaymentPage = () => {
                       </code>
                       <button
                         onClick={() => copyToClipboard(bankAccounts[activeBank].accountName)}
-                        className="px-3 md:px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap"
+                        disabled={uploading}
+                        className="px-3 md:px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Copy
                       </button>
@@ -356,7 +419,8 @@ const PaymentPage = () => {
                     <div>
                       <h4 className="font-medium text-gray-900">Reference</h4>
                       <p className="text-gray-600 text-sm mt-1">
-                        Use your phone number as payment reference: <strong>{bioData?.phoneNumber}</strong>
+                        Use your Registration ID as payment reference: <br />
+                        <strong>{userData?.registrationId}</strong>
                       </p>
                     </div>
                   </div>
@@ -404,12 +468,13 @@ const PaymentPage = () => {
                     accept="image/*,.pdf"
                     onChange={handleFileChange}
                     className="hidden"
+                    disabled={uploading}
                   />
-                  <label htmlFor="receipt-upload" className="cursor-pointer">
+                  <label htmlFor="receipt-upload" className={`cursor-pointer ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
                     <div className="flex flex-col items-center">
                       <div className="w-16 h-16 rounded-full bg-[#008020]/10 flex items-center justify-center mb-4">
                         <svg className="w-8 h-8 text-[#008020]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          <path strokeLinecap="round" stroke-linejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
                       </div>
                       
@@ -417,12 +482,14 @@ const PaymentPage = () => {
                         <div>
                           <p className="font-medium text-gray-900 text-sm md:text-base">{receiptFile.name}</p>
                           <p className="text-xs md:text-sm text-gray-500 mt-1">
-                            {(receiptFile.size / 1024).toFixed(2)} KB • Click to change
+                            {(receiptFile.size / 1024).toFixed(2)} KB • {uploading ? 'Uploading...' : 'Click to change'}
                           </p>
                         </div>
                       ) : (
                         <div>
-                          <p className="font-medium text-gray-900 text-sm md:text-base">Click to upload receipt</p>
+                          <p className="font-medium text-gray-900 text-sm md:text-base">
+                            {uploading ? 'Uploading...' : 'Click to upload receipt'}
+                          </p>
                           <p className="text-xs md:text-sm text-gray-500 mt-1">
                             PNG, JPG, PDF up to 5MB
                           </p>
@@ -445,7 +512,7 @@ const PaymentPage = () => {
                       <li>• Your registration is only confirmed after receipt verification</li>
                       <li>• Receipt verification takes 24-48 hours</li>
                       <li>• You will receive a confirmation email and SMS</li>
-                      <li>• Bring your ID card to the event for vest collection</li>
+                      <li>• Bring your Registration ID <b>{userData?.registrationId}</b> to the event for vest collection</li>
                     </ul>
                   </div>
                 </div>
@@ -456,7 +523,8 @@ const PaymentPage = () => {
                 <Link href="/register/bio-data" className="flex-1">
                   <button
                     type="button"
-                    className="w-full py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                    disabled={uploading}
+                    className="w-full py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     ← Back to Personal Info
                   </button>
@@ -473,7 +541,7 @@ const PaymentPage = () => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Verifying...
+                      Uploading...
                     </span>
                   ) : (
                     'Complete Registration'

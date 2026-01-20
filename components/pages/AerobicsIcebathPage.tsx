@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import AerobicsIceBathWaitingList from './newsletters/AerobicsIceBathWaitingList';
 
 const AerobicsIceBathPage = () => {
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -523,75 +524,7 @@ const AerobicsIceBathPage = () => {
             </section>
 
             {/* Final CTA */}
-            <section className="py-16 md:py-24 px-4 md:px-8 bg-linear-to-br from-[#ff8a00]/5 via-white to-[#1e90ff]/5">
-                <div className="max-w-4xl mx-auto text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        {/* Temperature Symbol Header */}
-                        <div className="flex justify-center gap-6 mb-8">
-                            <div className="text-3xl">🔥</div>
-                            <div className="text-3xl">+</div>
-                            <div className="text-3xl">❄️</div>
-                        </div>
-
-                        <h2 className="text-[30px] lg:text-[40px] font-bold text-gray-900 mb-6">
-                            Ready for the <span className="text-[#ff8a00]">Heat</span> & <span className="text-[#1e90ff]">Cold</span> Contrast?
-                        </h2>
-
-                        <p className="text-gray-700 text-[16px] mb-10 max-w-2xl mx-auto">
-                            Experience revolutionary thermal contrast therapy. Join our waiting list
-                            for the next Aerobics + Ice Bath session and transform your fitness recovery.
-                        </p>
-
-                        {/* Email Subscription Form */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            className="mb-8"
-                        >
-                            <form
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    alert('Thank you! You\'ll be notified about the next Aerobics + Ice Bath session.');
-                                }}
-                                className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto"
-                            >
-                                <div className="flex-1">
-                                    <input
-                                        type="email"
-                                        placeholder="Enter your email for session updates"
-                                        required
-                                        className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300"
-                                    />
-                                </div>
-                                <motion.button
-                                    type="submit"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="px-8 py-4 bg-[#008020] text-white font-semibold rounded-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center gap-3 min-w-[200px] cursor-pointer"
-                                >
-                                    Join Waiting List
-                                </motion.button>
-                            </form>
-                            <p className="text-gray-500 text-sm mt-3">
-                                Experience the perfect balance of exertion and recovery
-                            </p>
-                        </motion.div>
-
-                        <div className="mt-12 pt-8 border-t border-gray-300/30">
-                            <p className="text-gray-600">
-                                <span className="font-semibold text-[#008020]">In Collaboration with Massage Alchemy</span><br />
-                                <span className="text-sm">Professional wellness meets innovative fitness methodology</span>
-                            </p>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
+            <AerobicsIceBathWaitingList />
         </div>
     );
 };

@@ -1,6 +1,18 @@
+'use client';
+
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Mail, Send, CheckCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
+
+interface NewsletterResponse {
+  statusCode: string;
+  message: string;
+  data?: {
+    subscriptionId: string;
+    email: string;
+  };
+}
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');
@@ -10,16 +22,78 @@ const NewsletterSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    
+    // Validate email
+    if (!email.trim()) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
 
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    setIsSubscribed(true);
-    setEmail('');
-    // Show success message
-    alert("Thanks for subscribing! Welcome to the Fitness Ambassador community.");
+    
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading('Subscribing to newsletter...');
+      
+      // Prepare subscription data
+      const subscriptionData = {
+        email: email.trim(),
+      };
+
+      console.log('Subscribing with email:', subscriptionData);
+
+      // Submit to API
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(subscriptionData),
+      });
+
+      const result: NewsletterResponse = await response.json();
+      console.log('Newsletter response:', result);
+
+      if (!response.ok) {
+        // Dismiss loading toast and show error
+        toast.dismiss(loadingToast);
+        toast.error(result.message || 'Failed to subscribe to newsletter');
+        throw new Error(result.message || 'Failed to subscribe');
+      }
+
+      // Check if subscription was successful
+      if (result.statusCode === '00' || result.message?.includes('success')) {
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success('Thanks for subscribing! Welcome to the Fitness Ambassador community.');
+        
+        // Update local state
+        setIsSubscribed(true);
+        setEmail('');
+        
+        // Reset subscription status after 5 seconds
+        setTimeout(() => {
+          setIsSubscribed(false);
+        }, 5000);
+      } else {
+        throw new Error(result.message || 'Subscription failed');
+      }
+      
+    } catch (error) {
+      console.error('Error subscribing to newsletter:', error);
+      toast.error(
+        error instanceof Error ? error.message : 'An unexpected error occurred'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -79,18 +153,27 @@ const NewsletterSection = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address"
-                  className="flex-1 px-6 py-4 rounded-2xl bg-background border-2 border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground"
+                  disabled={isSubmitting}
+                  className="flex-1 px-6 py-4 rounded-2xl bg-background border-2 border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                   required
                 />
                 <motion.button
                   type="submit"
-                  disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="btn-primary inline-flex items-center justify-center gap-2 disabled:opacity-50 min-w-[140px]"
+                  disabled={isSubmitting || !email.trim()}
+                  whileHover={{ scale: isSubmitting || !email.trim() ? 1 : 1.02 }}
+                  whileTap={{ scale: isSubmitting || !email.trim() ? 1 : 0.98 }}
+                  className={`btn-primary cursor-pointer inline-flex items-center justify-center gap-2 min-w-[140px] ${
+                    isSubmitting || !email.trim() ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
                   {isSubmitting ? (
-                    <span>Subscribing...</span>
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Subscribing...
+                    </span>
                   ) : (
                     <>
                       Subscribe <Send size={18} />

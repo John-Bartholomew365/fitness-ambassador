@@ -1,7 +1,16 @@
+// next.config.js
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'fitness-ambassador-api.onrender.com',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;

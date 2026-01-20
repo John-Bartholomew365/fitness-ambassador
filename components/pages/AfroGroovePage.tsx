@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Play, Users, Music, Heart, Award } from 'lucide-react';
+import AfroGrooveWaitingList from './newsletters/AfroGrooveWaitingList';
 
 const AfroGroovePage = () => {
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -487,75 +488,7 @@ const AfroGroovePage = () => {
             </section>
 
             {/* Final CTA */}
-            <section className="py-16 md:py-24 px-4 md:px-8 bg-linear-to-br from-[#008020]/5 via-white to-[#ff8a00]/5">
-                <div className="max-w-4xl mx-auto text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        {/* Cultural Pattern Header */}
-                        <div className="flex justify-center gap-4 mb-8">
-                            <div className="w-8 h-0.5 bg-[#008020] mt-3" />
-                            <div className="text-2xl">✨</div>
-                            <div className="w-8 h-0.5 bg-[#ff8a00] mt-3" />
-                        </div>
-
-                        <h2 className="text-[30px] lg:text-[40px] font-bold text-gray-900 mb-6">
-                            Ready to Experience <br className="block lg:hidden" /> <span className="text-[#ff8a00]">Cultural</span> Fitness?
-                        </h2>
-
-                        <p className="text-gray-700 text-[16px] mb-10 max-w-2xl mx-auto">
-                            Join our community to be notified about the next AfroGroove session. Experience the perfect
-                            fusion of cultural heritage and modern fitness in collaboration with the University of Ilorin.
-                        </p>
-
-                        {/* Email Subscription Form */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            className="mb-8"
-                        >
-                            <form
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    alert('Thank you! You\'ll be notified about the next AfroGroove session.');
-                                }}
-                                className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto"
-                            >
-                                <div className="flex-1">
-                                    <input
-                                        type="email"
-                                        placeholder="Enter your email for cultural fitness updates"
-                                        required
-                                        className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300"
-                                    />
-                                </div>
-                                <motion.button
-                                    type="submit"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="px-8 py-4 bg-[#ff8a00] text-white font-semibold rounded-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center gap-3 min-w-[200px] cursor-pointer"
-                                >
-                                    Stay Connected
-                                </motion.button>
-                            </form>
-                            <p className="text-gray-500 text-sm mt-3">
-                                Celebrate culture. Stay fit. Join the movement.
-                            </p>
-                        </motion.div>
-
-                        <div className="mt-12 pt-8 border-t border-gray-300/30">
-                            <p className="text-gray-600">
-                                <span className="font-semibold text-[#008020]">In Partnership with University of Ilorin Sports Council</span><br />
-                                <span className="text-sm">Bridging cultural heritage with modern fitness innovation</span>
-                            </p>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
+         <AfroGrooveWaitingList/>
         </div>
     );
 };

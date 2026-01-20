@@ -16,9 +16,15 @@ interface VestSelectionModalProps {
   vest: Vest;
   onClose: () => void;
   onSizeSelect: (size: string) => void;
+  isSubmitting: boolean;
 }
 
-const VestSelectionModal: React.FC<VestSelectionModalProps> = ({ vest, onClose, onSizeSelect }) => {
+const VestSelectionModal: React.FC<VestSelectionModalProps> = ({ 
+  vest, 
+  onClose, 
+  onSizeSelect,
+  isSubmitting 
+}) => {
   const [selectedSize, setSelectedSize] = useState<string>('');
 
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -43,6 +49,7 @@ const VestSelectionModal: React.FC<VestSelectionModalProps> = ({ vest, onClose, 
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              disabled={isSubmitting}
             >
               <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -84,7 +91,8 @@ const VestSelectionModal: React.FC<VestSelectionModalProps> = ({ vest, onClose, 
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`py-3 cursor-pointer rounded-lg font-medium transition-all ${selectedSize === size ? 'bg-[#008020] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                  disabled={isSubmitting}
+                  className={`py-3 cursor-pointer rounded-lg font-medium transition-all ${selectedSize === size ? 'bg-[#008020] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {size}
                 </button>
@@ -111,16 +119,27 @@ const VestSelectionModal: React.FC<VestSelectionModalProps> = ({ vest, onClose, 
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 transition-colors"
+              disabled={isSubmitting}
+              className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               onClick={handleContinue}
-              disabled={!selectedSize}
-              className={`flex-1 py-3 text-[14px] font-semibold cursor-pointer rounded-xl transition-all ${selectedSize ? 'bg-[#ff8a00] text-white hover:bg-[#e67a00]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              disabled={!selectedSize || isSubmitting}
+              className={`flex-1 py-3 text-[14px] font-semibold cursor-pointer rounded-xl transition-all ${selectedSize && !isSubmitting ? 'bg-[#ff8a00] text-white hover:bg-[#e67a00]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             >
-              Continue with {selectedSize ? `Size ${selectedSize}` : 'Size'}
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </span>
+              ) : (
+                `Continue with ${selectedSize ? `Size ${selectedSize}` : 'Size'}`
+              )}
             </button>
           </div>
         </div>
