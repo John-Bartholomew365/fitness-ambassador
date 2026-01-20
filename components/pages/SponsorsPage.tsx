@@ -13,6 +13,7 @@ import {
     Quote
 } from 'lucide-react';
 import Image from 'next/image';
+import ContactForm from './newsletters/ContactForm';
 
 const SponsorsPage = () => {
     const [activePackage, setActivePackage] = useState<'gold' | 'silver' | 'bronze'>('gold');
@@ -862,127 +863,7 @@ const SponsorsPage = () => {
             </section>
 
             {/* Contact CTA */}
-            <section id="contact" className="py-16 md:py-24 px-4 md:px-8 bg-linear-to-br from-[#008020]/5 via-white to-[#ff8a00]/5">
-                <div className="max-w-4xl mx-auto">
-                    <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="bg-white rounded-3xl p-8 md:p-12 border-2 border-gray-100 shadow-xl"
-                    >
-                        <div className="text-center mb-10">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                                Start Your <span className="text-[#ff8a00]">Partnership</span> Journey
-                            </h2>
-                            <p className="text-gray-600">
-                                Let&apos;s discuss how we can create mutual success together.
-                            </p>
-                        </div>
-
-                        {/* Contact Form */}
-                        <form className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Your Name *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300"
-                                        placeholder="John Doe"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Company Name *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300"
-                                        placeholder="Your Company"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Email Address *
-                                    </label>
-                                    <input
-                                        type="email"
-                                        required
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300"
-                                        placeholder="contact@company.com"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Phone Number
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300"
-                                        placeholder="+234 800 000 0000"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Interested Partnership Level
-                                </label>
-                                <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300">
-                                    <option value="">Select a package</option>
-                                    <option value="gold">Gold Partnership</option>
-                                    <option value="silver">Silver Partnership</option>
-                                    <option value="bronze">Bronze Partnership</option>
-                                    <option value="custom">Custom Partnership</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Partnership Goals
-                                </label>
-                                <textarea
-                                    rows={4}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#008020] focus:ring-2 focus:ring-[#008020]/20 transition-all duration-300"
-                                    placeholder="Tell us about your brand goals and how you'd like to partner..."
-                                />
-                            </div>
-
-                            <motion.button
-                                type="submit"
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="w-full py-4 bg-[#008020] text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 cursor-pointer"
-                            >
-                                Submit Partnership Inquiry
-                            </motion.button>
-
-                            <p className="text-center text-sm text-gray-500 mt-4">
-                                We&apos;ll respond within 24-48 hours to discuss partnership opportunities.
-                            </p>
-                        </form>
-                    </motion.div>
-
-                    {/* Quick Contact */}
-                    <div className="mt-12 text-center">
-                        <p className="text-gray-600">
-                            Prefer a quicker response? Email us directly at{' '}
-                            <a href="mailto:fitnessambassador84@gmail.com" className="text-[#008020] font-semibold hover:underline">
-                              fitnessambassador84@gmail.com
-                            </a>
-                        </p>
-                        <p className="text-sm text-gray-500 mt-2">
-                            Ajisafe Sulaiman - The Fitness Ambassador
-                        </p>
-                    </div>
-                </div>
-            </section>
+            <ContactForm />
         </div>
     );
 };
