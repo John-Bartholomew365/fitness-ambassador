@@ -116,18 +116,18 @@ const VestSelectionModal: React.FC<VestSelectionModalProps> = ({
 
         {/* Modal Footer */}
         <div className="p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
-          <div className="flex gap-3">
+          <div className="lg:flex block gap-3">
             <button
               onClick={onClose}
               disabled={isSubmitting}
-              className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 py-3 lg:mb-0 mb-4 lg:w-auto w-full border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               onClick={handleContinue}
               disabled={!selectedSize || isSubmitting}
-              className={`flex-1 py-3 text-[14px] font-semibold cursor-pointer rounded-xl transition-all ${selectedSize && !isSubmitting ? 'bg-[#ff8a00] text-white hover:bg-[#e67a00]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              className={`flex-1 py-3 text-[14px] lg:w-auto w-full font-semibold cursor-pointer rounded-xl transition-all ${selectedSize && !isSubmitting ? 'bg-[#ff8a00] text-white hover:bg-[#e67a00]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">
