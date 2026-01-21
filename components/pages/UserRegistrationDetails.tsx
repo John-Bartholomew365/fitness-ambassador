@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/lib/auth';
 import { useAuth } from '@/components/contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 interface Vest {
   id: number;
@@ -30,6 +31,7 @@ interface BioData {
 }
 
 interface Registration {
+  _id: string;
   id: string;
   vest: Vest;
   bio: BioData;
@@ -37,7 +39,8 @@ interface Registration {
   receiptFilename?: string;
   paymentMethod?: string;
   registrationDate: string;
-  status: 'pending' | 'verified' | 'rejected';
+  status: 'approved' | 'rejected' | 'pending';
+  payment_status: 'approved' | 'rejected' | 'pending';
   verificationNotes?: string;
 }
 
@@ -66,7 +69,7 @@ interface BackendUser {
   emergencyName: string;
   emergencyPhone: string;
   registrationStatus: string;
-  payment_status: string;
+  payment_status: 'approved' | 'rejected' | 'pending';
   paymentProof: string | null;
   role: string;
   createdAt: string;
@@ -79,6 +82,12 @@ interface BackendResponse {
   users: BackendUser[];
 }
 
+interface StatusUpdateResponse {
+  success?: boolean;
+  message: string;
+  data?: Record<string, unknown>;
+}
+
 const UserRegistrationDetails = () => {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
@@ -89,9 +98,10 @@ const UserRegistrationDetails = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [verificationNotes, setVerificationNotes] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState<'pending' | 'verified' | 'rejected'>('pending');
+  const [selectedStatus, setSelectedStatus] = useState<'approved' | 'rejected' | 'pending'>('pending');
   const [error, setError] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // Check authentication on component mount
   useEffect(() => {
@@ -120,7 +130,7 @@ const UserRegistrationDetails = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const response = await fetch('/api/get-users', {
           method: 'GET',
           headers: {
@@ -128,34 +138,31 @@ const UserRegistrationDetails = () => {
             'Content-Type': 'application/json',
           },
         });
-        
+
         if (response.status === 401) {
           throw new Error('Unauthorized - Invalid or expired token');
         }
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
         }
-        
+
         const data: BackendResponse = await response.json();
-        
+
         if (data.success && data.users) {
           // Map backend data to your frontend format
           const mappedRegistrations: Registration[] = data.users.map((user, index) => {
-            // Map payment_status to your status
-            let status: 'pending' | 'verified' | 'rejected' = 'pending';
-            const paymentStatus = user.payment_status?.toLowerCase();
-            if (paymentStatus === 'verified' || paymentStatus === 'completed' || paymentStatus === 'paid') {
-              status = 'verified';
-            } else if (paymentStatus === 'rejected' || paymentStatus === 'failed') {
-              status = 'rejected';
+            // Use payment_status from backend as the main status
+            let status: 'approved' | 'rejected' | 'pending' = user.payment_status;
+            if (!status || !['approved', 'rejected', 'pending'].includes(status)) {
+              status = 'pending';
             }
-            
+
             // Determine vest image based on type and color
             const getVestImage = (type: string, colorName: string) => {
-              const color = colorName.toLowerCase().includes('blue') ? 'blue' : 
-                           colorName.toLowerCase().includes('green') ? 'green' : 'blue';
-              
+              const color = colorName.toLowerCase().includes('blue') ? 'blue' :
+                colorName.toLowerCase().includes('green') ? 'green' : 'blue';
+
               if (type.toLowerCase().includes('hoodie')) {
                 return `/${color}-hoodie.png`;
               } else if (type.toLowerCase().includes('armless')) {
@@ -164,33 +171,34 @@ const UserRegistrationDetails = () => {
                 return `/${color}-shirt.png`;
               }
             };
-            
+
             // Extract filename from paymentProof URL if available
             let receiptFilename = '';
             if (user.paymentProof) {
               const urlParts = user.paymentProof.split('/');
               receiptFilename = urlParts[urlParts.length - 1];
             }
-            
+
             // Format price to include ₦ symbol if not already present
             let formattedPrice = user.vestId.price;
             if (!formattedPrice.includes('₦')) {
               const numericPrice = parseInt(formattedPrice) || 0;
               formattedPrice = `₦${numericPrice.toLocaleString()}`;
             }
-            
+
             // Format month if it's a number
             let birthMonth = user.dobMonth;
             if (!isNaN(parseInt(user.dobMonth))) {
-              const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-                             'July', 'August', 'September', 'October', 'November', 'December'];
+              const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
               const monthIndex = parseInt(user.dobMonth) - 1;
               if (monthIndex >= 0 && monthIndex < months.length) {
                 birthMonth = months[monthIndex];
               }
             }
-            
+
             return {
+              _id: user._id, // Store the MongoDB _id
               id: user.registration_id,
               vest: {
                 id: index + 1,
@@ -217,17 +225,17 @@ const UserRegistrationDetails = () => {
               receiptFilename: receiptFilename || undefined,
               paymentMethod: user.paymentProof ? 'Bank Transfer' : 'Not specified',
               registrationDate: user.createdAt,
-              status: status,
+              status: status, // Use backend status for display
+              payment_status: status, // Keep separate reference
               verificationNotes: ''
             };
           });
-          
+
           setRegistrations(mappedRegistrations);
         } else {
           throw new Error('Invalid data format from server');
         }
       } catch (error) {
-        console.error('Error fetching registrations:', error);
         if (error instanceof Error) {
           setError(`Failed to load registration data: ${error.message}`);
         } else {
@@ -245,70 +253,132 @@ const UserRegistrationDetails = () => {
   }, [authChecked, authLoading, user]);
 
   const handleUpdateStatus = async () => {
-    if (!selectedRegistration) return;
-
-    const token = authService.getToken();
-    if (!token) {
-      setError('Authentication required. Please login.');
+    if (!selectedRegistration) {
+      toast.error('No registration selected');
       return;
     }
 
+    const token = authService.getToken();
+    if (!token) {
+      toast.error('Authentication required. Please login.');
+      return;
+    }
+
+    setIsUpdating(true);
+
     try {
-      // Update local state
-      const updatedRegistrations = registrations.map(reg => {
-        if (reg.id === selectedRegistration.id) {
-          return {
-            ...reg,
-            status: selectedStatus,
-            verificationNotes: verificationNotes
-          };
+      const loadingToast = toast.loading('Updating payment status...');
+
+      const response = await fetch('/api/update-status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          id: selectedRegistration._id,
+          status: selectedStatus,
+          verificationNotes: verificationNotes
+        })
+      });
+
+      // Check response content type
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+
+        // If it's HTML, try to extract error message
+        if (text.includes('<title>') || text.includes('<!DOCTYPE')) {
+          // Try to find error in HTML
+          const errorMatch = text.match(/<pre[^>]*>([\s\S]*?)<\/pre>/i) ||
+            text.match(/<div[^>]*error[^>]*>([\s\S]*?)<\/div>/i) ||
+            text.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+
+          const errorMessage = errorMatch ?
+            `Server error: ${errorMatch[1].substring(0, 200)}` :
+            `Server returned HTML error page. Status: ${response.status}`;
+
+          throw new Error(errorMessage);
         }
-        return reg;
-      });
 
-      setRegistrations(updatedRegistrations);
-      
-      setSelectedRegistration({
-        ...selectedRegistration,
-        status: selectedStatus,
-        verificationNotes: verificationNotes
-      });
+        throw new Error(`Server returned non-JSON response. Status: ${response.status}`);
+      }
 
-      // TODO: Make API call to update status on backend
-      // await fetch(`/api/update-status/${selectedRegistration.id}`, {
-      //   method: 'PUT',
-      //   headers: { 
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify({ 
-      //     status: selectedStatus,
-      //     verificationNotes: verificationNotes 
-      //   })
-      // });
+      const result: StatusUpdateResponse = await response.json();
 
-      alert('Status updated successfully!');
+      if (!response.ok) {
+        toast.dismiss(loadingToast);
+        toast.error(result.message || `Failed to update status: ${response.status}`);
+        throw new Error(result.message || `HTTP ${response.status}`);
+      }
+
+      // Check if update was successful
+      if (result.success || result.message?.includes('success') || response.status === 200) {
+        toast.dismiss(loadingToast);
+        toast.success('Payment status updated successfully!');
+
+        // Update local state
+        const updatedRegistrations = registrations.map(reg => {
+          if (reg._id === selectedRegistration._id) {
+            return {
+              ...reg,
+              status: selectedStatus,
+              payment_status: selectedStatus,
+              verificationNotes: verificationNotes
+            };
+          }
+          return reg;
+        });
+
+        setRegistrations(updatedRegistrations);
+
+        setSelectedRegistration({
+          ...selectedRegistration,
+          status: selectedStatus,
+          payment_status: selectedStatus,
+          verificationNotes: verificationNotes
+        });
+      } else {
+        throw new Error(result.message || 'Update failed');
+      }
     } catch (error) {
-      console.error('Error updating status:', error);
-      alert('Failed to update status. Please try again.');
+
+      let errorMessage = 'Failed to update status. Please try again.';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+
+        // More specific error messages
+        if (error.message.includes('HTML error page')) {
+          errorMessage = 'Server returned an error page. Please check the API endpoint.';
+        } else if (error.message.includes('non-JSON response')) {
+          errorMessage = 'Server is not responding correctly. Please check the API.';
+        } else if (error.message.includes('404')) {
+          errorMessage = 'Update endpoint not found (404). Please check the route file exists at /app/api/update-status/route.ts';
+        }
+      }
+
+      toast.error(errorMessage);
+
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const filteredRegistrations = registrations.filter(reg => {
-    const matchesSearch = 
+    const matchesSearch =
       reg.bio.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       reg.bio.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       reg.bio.phoneNumber.includes(searchTerm) ||
       reg.id.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'all' || reg.status === statusFilter;
-    
+
     return matchesSearch && matchesStatus;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'verified': return 'bg-green-100 text-green-800';
+      case 'approved': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'rejected': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -317,7 +387,7 @@ const UserRegistrationDetails = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'verified': return '✓';
+      case 'approved': return '✓';
       case 'pending': return '⏳';
       case 'rejected': return '✗';
       default: return '?';
@@ -359,7 +429,7 @@ const UserRegistrationDetails = () => {
       'Emergency Phone',
       'Payment Method',
       'Registration Date',
-      'Status',
+      'Payment Status',
       'Verification Notes'
     ];
 
@@ -379,7 +449,7 @@ const UserRegistrationDetails = () => {
       reg.bio.emergencyContactPhone,
       reg.paymentMethod || 'N/A',
       formatDate(reg.registrationDate),
-      reg.status,
+      reg.payment_status.toUpperCase(),
       reg.verificationNotes || ''
     ]);
 
@@ -391,11 +461,11 @@ const UserRegistrationDetails = () => {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-    
+
     link.setAttribute('href', url);
     link.setAttribute('download', `walk2fitness_registrations_${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
-    
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -403,18 +473,18 @@ const UserRegistrationDetails = () => {
 
   const calculateStats = () => {
     const total = registrations.length;
-    const verified = registrations.filter(r => r.status === 'verified').length;
-    const pending = registrations.filter(r => r.status === 'pending').length;
-    const rejected = registrations.filter(r => r.status === 'rejected').length;
-    
+    const approved = registrations.filter(r => r.payment_status === 'approved').length;
+    const pending = registrations.filter(r => r.payment_status === 'pending').length;
+    const rejected = registrations.filter(r => r.payment_status === 'rejected').length;
+
     const revenue = registrations
-      .filter(r => r.status === 'verified')
+      .filter(r => r.payment_status === 'approved')
       .reduce((sum, reg) => {
         const amount = parseInt(reg.vest.price.replace(/[^0-9]/g, ''));
         return sum + (isNaN(amount) ? 0 : amount);
       }, 0);
 
-    return { total, verified, pending, rejected, revenue };
+    return { total, approved, pending, rejected, revenue };
   };
 
   const stats = calculateStats();
@@ -442,7 +512,7 @@ const UserRegistrationDetails = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-t-[#008020] border-b-[#ff8a00] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Fetching registration data from server...</p>
+          <p className="text-gray-600">Fetching registration data...</p>
         </div>
       </div>
     );
@@ -488,7 +558,7 @@ const UserRegistrationDetails = () => {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">User Registration Management</h1>
-              <p className="text-gray-600 mt-1 text-sm md:text-base">View and manage all Walk2Fitness 5.0 registrations</p>
+              <p className="text-gray-600 mt-1 text-sm md:text-base">View and manage all Walk2Fitness 5.0 Vest registrations</p>
             </div>
             {user && (
               <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -506,8 +576,8 @@ const UserRegistrationDetails = () => {
             <div className="text-xs lg:text-sm text-gray-500">Total Registrations</div>
           </div>
           <div className="bg-white rounded-lg lg:rounded-xl p-4 lg:p-6 shadow border border-gray-100">
-            <div className="text-xl lg:text-3xl font-bold text-green-600">{stats.verified}</div>
-            <div className="text-xs lg:text-sm text-gray-500">Verified</div>
+            <div className="text-xl lg:text-3xl font-bold text-green-600">{stats.approved}</div>
+            <div className="text-xs lg:text-sm text-gray-500">Approved</div>
           </div>
           <div className="bg-white rounded-lg lg:rounded-xl p-4 lg:p-6 shadow border border-gray-100">
             <div className="text-xl lg:text-3xl font-bold text-yellow-600">{stats.pending}</div>
@@ -535,15 +605,15 @@ const UserRegistrationDetails = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              
+
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 lg:px-4 py-2 lg:py-3 text-sm lg:text-base border border-gray-300 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-[#008020] focus:border-transparent outline-none"
               >
                 <option value="all">All Status</option>
+                <option value="approved">Approved</option>
                 <option value="pending">Pending</option>
-                <option value="verified">Verified</option>
                 <option value="rejected">Rejected</option>
               </select>
             </div>
@@ -571,13 +641,13 @@ const UserRegistrationDetails = () => {
                   <th className="px-3 lg:px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Vest Details</th>
                   <th className="px-3 lg:px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Contact</th>
                   <th className="px-3 lg:px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Date</th>
-                  <th className="px-3 lg:px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                  <th className="px-3 lg:px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Payment Status</th>
                   <th className="px-3 lg:px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredRegistrations.map((registration) => (
-                  <tr key={registration.id} className="hover:bg-gray-50">
+                  <tr key={registration._id} className="hover:bg-gray-50">
                     <td className="px-3 lg:px-3 py-4 whitespace-nowrap">
                       <code className="text-xs lg:text-sm font-mono text-gray-900">{registration.id}</code>
                     </td>
@@ -588,7 +658,7 @@ const UserRegistrationDetails = () => {
                     <td className="px-3 lg:px-3 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2 lg:gap-3">
                         <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                          <div 
+                          <div
                             className="w-5 h-5 lg:w-6 lg:h-6 rounded"
                             style={{ backgroundColor: registration.vest.color }}
                           />
@@ -607,13 +677,13 @@ const UserRegistrationDetails = () => {
                       <div className="text-xs lg:text-sm">{formatDate(registration.registrationDate)}</div>
                     </td>
                     <td className="px-3 lg:px-3 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2 lg:px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(registration.status)}`}>
-                        <span className="mr-1">{getStatusIcon(registration.status)}</span>
+                      <span className={`inline-flex items-center px-2 lg:px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(registration.payment_status)}`}>
+                        <span className="mr-1">{getStatusIcon(registration.payment_status)}</span>
                         <span className="hidden sm:inline">
-                          {registration.status.charAt(0).toUpperCase() + registration.status.slice(1)}
+                          {registration.payment_status.charAt(0).toUpperCase() + registration.payment_status.slice(1)}
                         </span>
                         <span className="sm:hidden">
-                          {registration.status.charAt(0).toUpperCase()}
+                          {registration.payment_status.charAt(0).toUpperCase()}
                         </span>
                       </span>
                     </td>
@@ -622,7 +692,7 @@ const UserRegistrationDetails = () => {
                         <button
                           onClick={() => {
                             setSelectedRegistration(registration);
-                            setSelectedStatus(registration.status);
+                            setSelectedStatus(registration.payment_status);
                             setVerificationNotes(registration.verificationNotes || '');
                           }}
                           className="px-2 lg:px-4 py-1 lg:py-2 text-xs lg:text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors whitespace-nowrap"
@@ -729,7 +799,7 @@ const UserRegistrationDetails = () => {
                     <div>
                       <label className="text-xs lg:text-sm text-gray-500">Medical Conditions</label>
                       <div className="font-medium text-sm lg:text-base mt-1">
-                        {selectedRegistration.bio.hasMedicalCondition === 'Yes' 
+                        {selectedRegistration.bio.hasMedicalCondition === 'Yes'
                           ? selectedRegistration.bio.medicalConditionNote || 'No details provided'
                           : 'None'
                         }
@@ -750,7 +820,7 @@ const UserRegistrationDetails = () => {
                       <div>
                         <label className="text-xs lg:text-sm text-gray-500">Color</label>
                         <div className="flex items-center gap-2">
-                          <div 
+                          <div
                             className="w-5 h-5 rounded-full border border-gray-300 shrink-0"
                             style={{ backgroundColor: selectedRegistration.vest.color }}
                           />
@@ -780,6 +850,13 @@ const UserRegistrationDetails = () => {
                         <div className="font-medium text-sm lg:text-base">{formatDate(selectedRegistration.registrationDate)}</div>
                       </div>
                       <div>
+                        <label className="text-xs lg:text-sm text-gray-500">Current Payment Status</label>
+                        <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${getStatusColor(selectedRegistration.payment_status)}`}>
+                          <span className="mr-1">{getStatusIcon(selectedRegistration.payment_status)}</span>
+                          {selectedRegistration.payment_status.charAt(0).toUpperCase() + selectedRegistration.payment_status.slice(1)}
+                        </div>
+                      </div>
+                      <div>
                         <label className="text-xs lg:text-sm text-gray-500">Receipt</label>
                         <button
                           onClick={() => setShowReceiptModal(true)}
@@ -797,28 +874,28 @@ const UserRegistrationDetails = () => {
 
                   {/* Status Update Section */}
                   <div>
-                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-4">Status Management</h3>
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-4">Update Payment Status</h3>
                     <div className="space-y-3 lg:space-y-4">
                       <div>
-                        <label className="text-xs lg:text-sm text-gray-500 mb-1 lg:mb-2 block">Update Status</label>
+                        <label className="text-xs lg:text-sm text-gray-500 mb-1 lg:mb-2 block">Select New Status</label>
                         <div className="flex flex-wrap gap-1 lg:gap-2 mb-3 lg:mb-4">
-                          {(['pending', 'verified', 'rejected'] as const).map((status) => (
+                          {(['approved', 'rejected', 'pending'] as const).map((status) => (
                             <button
                               key={status}
                               onClick={() => setSelectedStatus(status)}
-                              className={`px-2 lg:px-4 py-1.5 lg:py-2 rounded-lg transition-colors text-xs lg:text-sm ${selectedStatus === status 
-                                ? status === 'verified' ? 'bg-green-100 text-green-800' 
-                                : status === 'pending' ? 'bg-yellow-100 text-yellow-800' 
-                                : 'bg-red-100 text-red-800'
+                              className={`px-2 lg:px-4 py-1.5 lg:py-2 rounded-lg transition-colors text-xs lg:text-sm ${selectedStatus === status
+                                ? status === 'approved' ? 'bg-green-100 text-green-800'
+                                  : status === 'pending' ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                              }`}
+                                }`}
                             >
                               {status.charAt(0).toUpperCase() + status.slice(1)}
                             </button>
                           ))}
                         </div>
                       </div>
-                      
+
                       <div>
                         <label className="text-xs lg:text-sm text-gray-500 mb-1 lg:mb-2 block">Verification Notes</label>
                         <textarea
@@ -832,10 +909,27 @@ const UserRegistrationDetails = () => {
 
                       <button
                         onClick={handleUpdateStatus}
-                        className="w-full py-2 lg:py-3 cursor-pointer bg-[#008020] text-white font-semibold rounded-lg lg:rounded-xl hover:bg-[#006a1a] transition-colors text-sm lg:text-base"
+                        disabled={isUpdating || selectedStatus === selectedRegistration.payment_status}
+                        className={`w-full py-2 lg:py-3 cursor-pointer bg-[#008020] text-white font-semibold rounded-lg lg:rounded-xl hover:bg-[#006a1a] transition-colors text-sm lg:text-base flex items-center justify-center gap-2 ${isUpdating || selectedStatus === selectedRegistration.payment_status ? 'opacity-50 cursor-not-allowed' : ''
+                          }`}
                       >
-                        Update Status
+                        {isUpdating ? (
+                          <>
+                            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Updating...
+                          </>
+                        ) : (
+                          'Update Payment Status'
+                        )}
                       </button>
+                      <p className="text-xs text-gray-500 text-center">
+                        Current status: <span className={`font-medium ${getStatusColor(selectedRegistration.payment_status).split(' ')[0]}`}>
+                          {selectedRegistration.payment_status.toUpperCase()}
+                        </span>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -884,9 +978,9 @@ const UserRegistrationDetails = () => {
                       <div className="font-medium text-gray-900 text-sm lg:text-base">{selectedRegistration.receiptFilename}</div>
                       <div className="text-xs lg:text-sm text-gray-500">Payment Receipt</div>
                       <div className="mt-3 lg:mt-4">
-                        <img 
-                          src={selectedRegistration.receiptUrl} 
-                          alt="Payment Receipt" 
+                        <img
+                          src={selectedRegistration.receiptUrl}
+                          alt="Payment Receipt"
                           className="max-w-full max-h-64 rounded-lg shadow mx-auto"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
