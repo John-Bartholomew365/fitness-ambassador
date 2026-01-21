@@ -373,7 +373,7 @@ export default function BlogPostPage() {
               <div className="absolute inset-0 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                 <div className="text-center p-8">
                   <div className="text-gray-400 text-xl font-semibold mb-2">
-                    {post.coverImage ? 'Image failed to load' : 'No image available'}
+                    {post.coverImage ? 'This image is currently unavailable' : 'No image available'}
                   </div>
                   <p className="text-gray-300">{post.title}</p>
                 </div>

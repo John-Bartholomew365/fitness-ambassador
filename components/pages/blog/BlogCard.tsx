@@ -66,7 +66,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
                 <div className="text-center p-4">
                   <div className="text-gray-400 text-lg font-semibold mb-1">{category}</div>
                   <div className="text-gray-300 text-sm">
-                    {coverImage ? 'Image failed to load' : 'No image'}
+                    {coverImage ? 'This image is currently unavailable' : 'No image'}
                   </div>
                 </div>
               </div>
