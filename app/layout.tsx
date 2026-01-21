@@ -42,7 +42,7 @@ export default function RootLayout({
           {children}
           {/* ✅ Global Toaster Component */}
           <Toaster
-            position="top-right"
+            position="top-center"
             toastOptions={{
               duration: 4000,
               style: {
