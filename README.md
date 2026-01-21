@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Fitness Ambassador Platform
 
-## Getting Started
+This is the official website for **The Fitness Ambassador** — a modern fitness platform designed to showcase experiences, events, programs, and services in a user-friendly, immersive way.
 
-First, run the development server:
+The platform focuses on **experience-first storytelling**, seamless navigation, and clean UX, rather than aggressive selling. It serves as the central hub for fitness events such as **Walk2Fitness**, **Jam2Fit**, and **Workout Compass**, alongside other offerings.
+
+---
+
+## 🚀 Tech Stack
+
+- **Next.js (App Router)**
+- **React (Functional Components)**
+- **TypeScript**
+- **Framer Motion** (animations)
+- **CSS / Tailwind (if applicable)**
+<!-- - **Vercel** (deployment) -->
+
+---
+
+## 🎨 Design System
+
+**Light Mode Only**
+
+<!-- ### Brand Colors (Strict)
+- **Primary:** `#008020`
+- **Secondary:** `#ffde00`
+- **Tertiary:** `#ff8a00` -->
+
+Neutral whites and greys are used for backgrounds and text. No additional colors should be introduced.
+
+---
+
+<!-- ## 🧩 Project Structure -->
+
+- `app/` – App Router pages and layouts  
+- `components/` – Reusable UI components (Hero, Sections, Cards, Carousels, etc.)  
+- `public/` – Static assets (images, icons, media)  
+- `styles/` – Global and component-level styles  
+
+Each major section of the website is built as its **own independent component** for clarity, scalability, and reuse.
+
+---
+
+## ✨ Key Features
+
+- Immersive landing page with animated hero carousel
+- Experience-focused sections (not personal selling)
+- Event and service previews
+- Testimonials and social proof
+- Certification and portfolio pages
+- Fully responsive (mobile, tablet, desktop)
+<!-- - Subtle, tasteful animations using **Framer Motion only** -->
+
+---
+<!-- 
+## 🛠️ Getting Started
+
+First, install dependencies:
 
 ```bash
-npm run dev
+npm install
 # or
-yarn dev
+yarn install
 # or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+pnpm install -->
