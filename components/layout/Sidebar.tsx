@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from 'react'
-import { 
-  LayoutDashboard, 
-  ShoppingBag, 
-  Book, 
-  Dumbbell, 
-  Users, 
-  MessageSquare,
+import {
+  LayoutDashboard,
+  // ShoppingBag, 
+  Book,
+  // Dumbbell, 
+  Users,
+  // MessageSquare,
   Menu,
   X,
   ChevronLeft,
@@ -21,13 +21,13 @@ import { authService } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
 
 const menuItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', key: 'dashboard' },
-  { icon: ShoppingBag, label: 'Shop / Products', key: 'shop' },
-  { icon: Book, label: 'Book Management', key: 'book' },
-  { icon: Dumbbell, label: 'Training', key: 'training' },
-  { icon: FaUserPlus, label: 'Subscribers', key: 'subscribers' },
+  // { icon: LayoutDashboard, label: 'Dashboard', key: 'dashboard' },
+  // { icon: ShoppingBag, label: 'Shop / Products', key: 'shop' },
   { icon: Users, label: 'Registrations', key: 'registration' },
-  { icon: MessageSquare, label: 'Contact Messages', key: 'contacts' },
+  { icon: Book, label: 'Book Management', key: 'book' },
+  // { icon: Dumbbell, label: 'Training', key: 'training' },
+  // { icon: FaUserPlus, label: 'Subscribers', key: 'subscribers' },
+  // { icon: MessageSquare, label: 'Contact Messages', key: 'contacts' },
   { icon: FaBlog, label: 'Blog Article', key: 'blog' },
 ]
 
@@ -59,7 +59,7 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
 
       {/* Overlay for mobile */}
       {isMobileOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black/50 z-40"
           onClick={() => setIsMobileOpen(false)}
         />
@@ -69,7 +69,7 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
       <aside className={`
         ${isOpen ? 'w-64' : 'w-20'} 
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        fixed lg:relative h-screen bg-card border-r border-border flex flex-col z-40
+        fixed lg:sticky top-0 left-0 h-screen bg-card border-r border-border flex flex-col z-40
         transition-all duration-300
       `}>
         {/* Header */}
@@ -86,7 +86,7 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
             </div>
             {isOpen && <span className="font-bold text-lg">Admin Panel</span>}
           </div>
-          
+
           {isOpen && (
             <button
               onClick={() => setIsOpen(false)}
@@ -108,8 +108,8 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
         )}
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <ul className="space-y-2">
+        <nav className="flex-1 overflow-y-auto">
+          <ul className="space-y-2 p-4">
             {menuItems.map((item) => (
               <li key={item.key}>
                 <button
@@ -142,7 +142,7 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
             <LogOut className="w-5 h-5" />
             {isOpen && <span className="font-medium text-sm">Logout</span>}
           </button>
-          
+
           <Link
             href="/"
             className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"

@@ -16,7 +16,8 @@ import { useState } from 'react'
 import { AuthProvider } from '@/components/contexts/AuthContext'
 
 export default function AdminPage() {
-  const [activeSection, setActiveSection] = useState('dashboard')
+  // Changed from 'dashboard' to 'registration'
+  const [activeSection, setActiveSection] = useState('registration')
 
   const renderContent = () => {
     switch (activeSection) {
@@ -41,7 +42,7 @@ export default function AdminPage() {
       case 'media':
         return <MediaLibrary />
       default:
-        return <Dashboard />
+        return <UserRegistrationDetails />
     }
   }
 

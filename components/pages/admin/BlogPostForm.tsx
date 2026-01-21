@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Upload, Save } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/lib/auth';
@@ -11,6 +11,7 @@ import { useAuth } from '@/components/contexts/AuthContext';
 // Types
 interface BlogPost {
   id: number;
+  _id?: string;
   title: string;
   slug: string;
   excerpt: string;
@@ -79,7 +80,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
 
   const categories = [
     'Fitness Tips', 'Nutrition', 'Training', 'Community', 
-    'Mindset', 'Recovery', 'Events', 'Success Stories'
+    'Mindset', 'Recovery', 'Events', 'Success Stories', 'FA Gym'
   ];
 
   // Check authentication when component opens
@@ -249,24 +250,29 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
           toast.dismiss(loadingToast);
           return;
         }
-      } else if (typeof newPost.image === 'string' && !newPost.image.startsWith('http')) {
-        toast.error('Please upload an image for the post');
-        setIsLoading(false);
-        toast.dismiss(loadingToast);
-        return;
+      } else if (typeof newPost.image === 'string') {
+        // If it's a URL string (existing image), we don't need to append it
+        // The backend will keep the existing image
+        console.log('Using existing image URL:', newPost.image);
       }
 
-      // Determine endpoint
-      const endpoint = isEditing && editingPost 
-        ? `/api/blogs/update/${editingPost.id}`
-        : '/api/create-blog';
+      // Determine endpoint and method - FIXED: Use MongoDB _id
+      let endpoint = '/api/create-blog';
+      let method = 'POST';
 
-      console.log('Submitting to:', endpoint);
+      if (isEditing && editingPost) {
+        // Use the MongoDB _id for updates
+        const blogId = editingPost._id || editingPost.id.toString();
+        endpoint = `/api/update-blog?id=${blogId}`;
+        method = 'PUT';
+      }
+
+      console.log('Submitting to:', endpoint, 'Method:', method);
       console.log('Tags being sent:', JSON.stringify(newPost.tags));
 
       // Make API request
       const response = await fetch(endpoint, {
-        method: 'POST',
+        method: method,
         headers: {
           'Authorization': `Bearer ${token}`,
           // Note: Don't set Content-Type for FormData, browser sets it automatically
@@ -349,7 +355,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
           <button
             onClick={handleClose}
             disabled={isLoading}
-            className="p-1 sm:p-1.5 hover:bg-gray-100 rounded-md sm:rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-1 sm:p-1.5 hover:bg-gray-100 rounded-md sm:rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
           </button>
@@ -468,7 +474,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
                     <button
                       onClick={handleAddTag}
                       disabled={isLoading}
-                      className="px-2 sm:px-3 py-1.5 sm:py-2 bg-[#008020] text-white rounded-md sm:rounded-lg hover:bg-[#008020]/90 transition-colors text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-2 sm:px-3 py-1.5 sm:py-2 bg-[#008020] text-white rounded-md sm:rounded-lg hover:bg-[#008020]/90 transition-colors text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       Add
                     </button>
@@ -483,7 +489,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
                         <button
                           onClick={() => handleRemoveTag(tag)}
                           disabled={isLoading}
-                          className="hover:text-[#008020]/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="hover:text-[#008020]/70 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                           type="button"
                         >
                           <X className="w-2 h-2 sm:w-3 sm:h-3" />
@@ -526,7 +532,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
                           setNewPost(prev => ({ ...prev, image: null }));
                         }}
                         disabled={isLoading}
-                        className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       >
                         <X className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
@@ -550,7 +556,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
                     type="button"
                     onClick={!isLoading ? triggerFileInput : undefined}
                     disabled={isLoading}
-                    className="w-full py-2 sm:py-2.5 bg-white border border-gray-300 text-gray-700 rounded-md sm:rounded-lg hover:bg-gray-50 transition-colors text-xs sm:text-sm lg:text-base flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-2 sm:py-2.5 bg-white border border-gray-300 text-gray-700 rounded-md sm:rounded-lg hover:bg-gray-50 transition-colors text-xs sm:text-sm lg:text-base flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
                     {imagePreview ? 'Change Image' : 'Select Image'}
@@ -587,7 +593,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
                 <button
                   onClick={handleClose}
                   disabled={isLoading}
-                  className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg sm:rounded-xl hover:bg-gray-200 transition-colors text-xs sm:text-sm lg:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg sm:rounded-xl hover:bg-gray-200 transition-colors text-xs sm:text-sm lg:text-base disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   Cancel
                 </button>

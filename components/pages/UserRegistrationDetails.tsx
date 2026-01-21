@@ -552,7 +552,7 @@ const UserRegistrationDetails = () => {
 
   return (
     <div className="min-h-screen p-0 md:p-4 lg:p-8 w-[95%]">
-      <div className="max-w-[100vw] lg:max-w-7xl mx-auto w-full">
+      <div className="max-w-[100vw] lg:max-w-6xl mx-auto w-full">
         {/* Header */}
         <div className="mb-6 lg:mb-8 px-1">
           <div className="flex justify-between items-center">
@@ -560,12 +560,12 @@ const UserRegistrationDetails = () => {
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">User Registration Management</h1>
               <p className="text-gray-600 mt-1 text-sm md:text-base">View and manage all Walk2Fitness 5.0 Vest registrations</p>
             </div>
-            {user && (
+            {/* {user && (
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 <span>Logged in as: {user.email}</span>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
