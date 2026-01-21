@@ -76,6 +76,7 @@ export default function Navbar({ isLoading }: NavbarProps) {
         { label: 'Blog', route: '/blog' },
         { label: 'Gallery', route: '/gallery' },
         { label: 'FAQ', route: '/faq' },
+        { label: 'Contact', route: '/contact' },
       ]
     },
     {
@@ -97,10 +98,10 @@ export default function Navbar({ isLoading }: NavbarProps) {
     router.push(route);
   };
 
-  const handleBookSession = () => {
+  const handleSecureVest = () => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
-    router.push('/contact');
+    router.push('/register');
   };
 
   const toggleDropdown = (label: string) => {
@@ -185,14 +186,14 @@ export default function Navbar({ isLoading }: NavbarProps) {
             </div>
           </div>
 
-          {/* Book a Session Button - Right side */}
+          {/* Secure your vest Button - Right side */}
           <div className="hidden lg:flex items-center">
             <Button
-              onClick={handleBookSession}
+              onClick={handleSecureVest}
               className="px-5 py-2.5 bg-primary text-primary-foreground rounded-2xl font-semibold hover:bg-primary/90 transition-colors duration-200 cursor-pointer hover:scale-105 active:scale-95 whitespace-nowrap text-base"
               disabled={isLoading}
             >
-              Book a Session
+              Secure your vest
             </Button>
           </div>
 
@@ -224,7 +225,7 @@ export default function Navbar({ isLoading }: NavbarProps) {
           >
             <div className="container mx-auto px-4 py-6 h-full flex flex-col">
               {/* Dropdown menus in mobile */}
-              <div className="flex flex-col space-y-1 mb-6 flex-grow">
+              <div className="flex flex-col space-y-1 mb-6 grow">
                 {dropdownMenus.map((menu) => (
                   <div key={menu.label} className="border-b border-border/50 last:border-b-0">
                     <button
@@ -272,11 +273,11 @@ export default function Navbar({ isLoading }: NavbarProps) {
               {/* Bottom section with Book Session Button */}
               <div className="mt-auto pt-6 border-t border-border">
                 <Button
-                  onClick={handleBookSession}
+                  onClick={handleSecureVest}
                   className="w-full py-3.5 text-base bg-primary text-primary-foreground rounded-[10px] font-semibold hover:bg-primary/90 transition-colors cursor-pointer mb-4"
                   disabled={isLoading}
                 >
-                  Book a Session
+                  Secure your vest
                 </Button>
                 
                 {/* Footer - now properly positioned at the bottom */}
