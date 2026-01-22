@@ -264,7 +264,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
         // Use the MongoDB _id for updates
         const blogId = editingPost._id || editingPost.id.toString();
         endpoint = `/api/update-blog?id=${blogId}`;
-        method = 'PUT';
+        method = 'PATCH';
       }
 
       console.log('Submitting to:', endpoint, 'Method:', method);

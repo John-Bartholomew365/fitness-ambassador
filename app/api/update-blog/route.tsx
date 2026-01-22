@@ -7,9 +7,9 @@ function getIdFromRequest(req: Request) {
 }
 
 /* =========================
-   UPDATE BLOG (PUT)
+   UPDATE BLOG (PATCH)
 ========================= */
-export async function PUT(req: Request) {
+export async function PATCH(req: Request) {
   try {
     const id = getIdFromRequest(req);
 
@@ -72,7 +72,7 @@ export async function PUT(req: Request) {
       );
     }
 
-    const response = await axios.put(
+    const response = await axios.patch(
       `${base_url}/api/blogs/${id}`,
       payload,
       {
