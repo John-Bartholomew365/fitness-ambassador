@@ -31,13 +31,7 @@ export async function PATCH(req: Request) {
     const featured = formData.get("featured");
     const coverImage = formData.get("coverImage");
 
-    console.log("📝 Update blog request:", {
-      id,
-      title,
-      excerpt,
-      category,
-      hasImage: !!coverImage
-    });
+  
 
     if (!title || !content || !category) {
       return NextResponse.json(
@@ -108,7 +102,6 @@ export async function DELETE(req: Request) {
   try {
     const id = getIdFromRequest(req);
 
-    console.log("Delete blog request for ID:", id);
 
     if (!id) {
       return NextResponse.json(

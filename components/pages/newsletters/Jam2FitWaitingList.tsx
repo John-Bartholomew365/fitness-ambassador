@@ -45,8 +45,6 @@ const Jam2FitWaitingList = () => {
         email: email.trim(),
       };
 
-      console.log('Subscribing to Jam2Fit waiting list:', subscriptionData);
-
       // Submit to API - using the same newsletter endpoint
       const response = await fetch('/api/newsletter', {
         method: 'POST',
@@ -57,8 +55,6 @@ const Jam2FitWaitingList = () => {
       });
 
       const result: NewsletterResponse = await response.json();
-      console.log('Jam2Fit waiting list response:', result);
-
       if (!response.ok) {
         // Dismiss loading toast and show error
         toast.dismiss(loadingToast);

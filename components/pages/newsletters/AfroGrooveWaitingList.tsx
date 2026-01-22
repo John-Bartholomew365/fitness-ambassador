@@ -45,8 +45,6 @@ const AfroGrooveWaitingList = () => {
         email: email.trim(),
       };
 
-      console.log('Subscribing to AfroGroove updates:', subscriptionData);
-
       // Submit to API - using the same newsletter endpoint
       const response = await fetch('/api/newsletter', {
         method: 'POST',
@@ -57,7 +55,6 @@ const AfroGrooveWaitingList = () => {
       });
 
       const result: NewsletterResponse = await response.json();
-      console.log('AfroGroove subscription response:', result);
 
       if (!response.ok) {
         // Dismiss loading toast and show error

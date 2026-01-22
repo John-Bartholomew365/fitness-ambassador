@@ -174,8 +174,6 @@ const BioDataPage = () => {
         emergencyPhone: formData.emergencyContactPhone,
       };
 
-      console.log('Submitting bio-data:', bioDataPayload);
-
       // Submit to API
       const response = await fetch('/api/biodata', {
         method: 'POST',
@@ -186,8 +184,6 @@ const BioDataPage = () => {
       });
 
       const result = await response.json();
-      console.log('Bio-data response:', result);
-
       if (!response.ok) {
         // Dismiss loading toast and show error
         toast.dismiss(loadingToast);

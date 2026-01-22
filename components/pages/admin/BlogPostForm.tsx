@@ -253,10 +253,9 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
       } else if (typeof newPost.image === 'string') {
         // If it's a URL string (existing image), we don't need to append it
         // The backend will keep the existing image
-        console.log('Using existing image URL:', newPost.image);
       }
 
-      // Determine endpoint and method - FIXED: Use MongoDB _id
+      // Determine endpoint and method
       let endpoint = '/api/create-blog';
       let method = 'POST';
 
@@ -266,9 +265,6 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
         endpoint = `/api/update-blog?id=${blogId}`;
         method = 'PATCH';
       }
-
-      console.log('Submitting to:', endpoint, 'Method:', method);
-      console.log('Tags being sent:', JSON.stringify(newPost.tags));
 
       // Make API request
       const response = await fetch(endpoint, {
@@ -281,31 +277,32 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
       });
 
       const result = await response.json();
-      console.log('Response:', result);
 
-      if (!response.ok) {
-        throw new Error(result.message || result.error || 'Operation failed');
+      // Handle different response formats
+      const isSuccess = result.success || result.status === 'success';
+      
+      if (!response.ok || !isSuccess) {
+        const errorMessage = result.message || result.error || 'Operation failed';
+        throw new Error(errorMessage);
       }
 
-      if (result.success) {
-        toast.dismiss(loadingToast);
-        toast.success(result.message || (isEditing ? 'Post updated successfully!' : 'Post created successfully!'));
+      toast.dismiss(loadingToast);
+      toast.success(result.message || (isEditing ? 'Post updated successfully!' : 'Post created successfully!'));
 
-        // Call callback to refresh posts if provided
-        if (refreshPosts) {
+      // Call callback to refresh posts if provided
+      if (refreshPosts) {
+        setTimeout(() => {
           refreshPosts();
-        }
-
-        // If onSave callback is provided, call it
-        if (onSave) {
-          onSave(newPost);
-        }
-
-        // Close form after successful submission
-        handleClose();
-      } else {
-        throw new Error(result.message || 'Operation failed');
+        }, 1000);
       }
+
+      // If onSave callback is provided, call it
+      if (onSave) {
+        onSave(newPost);
+      }
+
+      // Close form after successful submission
+      handleClose();
       
     } catch (error) {
       console.error('Blog post error:', error);

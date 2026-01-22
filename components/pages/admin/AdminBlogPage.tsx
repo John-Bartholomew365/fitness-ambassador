@@ -54,8 +54,12 @@ interface BlogResponse {
 }
 
 interface UpdateResponse {
-  success: boolean;
-  message: string;
+  success?: boolean;
+  status?: string;
+  message?: string;
+  data?: {
+    blog: BlogPost;
+  };
   blog?: BlogPost;
 }
 
@@ -75,7 +79,6 @@ const AdminBlogDashboard = () => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      console.log("📡 Fetching blog posts...");
       
       const response = await fetch('/api/get-blog');
       
@@ -84,7 +87,6 @@ const AdminBlogDashboard = () => {
       }
       
       const data: BlogResponse = await response.json();
-      console.log("✅ Blog posts fetched:", data);
       
       if (data.success && data.blogs) {
         setPosts(data.blogs);
@@ -92,7 +94,6 @@ const AdminBlogDashboard = () => {
         throw new Error(data.message || 'Failed to fetch posts');
       }
     } catch (error) {
-      console.error('❌ Error fetching blog posts:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to load blog posts');
     } finally {
       setLoading(false);
@@ -167,35 +168,35 @@ const AdminBlogDashboard = () => {
     return `${minutes} min read`;
   };
 
-  // Parse tags from backend (could be string or array)
-    const parseTags = (tags: unknown[]): string[] => {
-      return tags.flatMap(tag => {
-        if (typeof tag === 'string') {
-          try {
-            // Try to parse if it's a JSON string
-            const parsed = JSON.parse(tag);
-            if (Array.isArray(parsed)) {
-              return parsed.filter((t): t is string => typeof t === 'string');
-            } else if (typeof parsed === 'string') {
-              return [parsed];
-            }
-          } catch {
-            // If not JSON, return the original string
-            return [tag];
+  // Parse tags from backend (handle nested JSON strings)
+  const parseTags = (tags: unknown[]): string[] => {
+    return tags.flatMap(tag => {
+      // If tag is a string, try to parse it
+      if (typeof tag === 'string') {
+        try {
+          // Handle nested JSON strings like "["uu", "real"]"
+          const parsed = JSON.parse(tag);
+          if (Array.isArray(parsed)) {
+            return parsed.filter((t): t is string => typeof t === 'string');
           }
+          return [parsed];
+        } catch {
+          // If not valid JSON, return as is
+          return [tag];
         }
-  
-        if (Array.isArray(tag)) {
-          return tag.filter((t): t is string => typeof t === 'string');
-        }
-  
-        if (typeof tag === 'number' || typeof tag === 'boolean') {
-          return [String(tag)];
-        }
-  
-        return [];
-      });
-    };
+      }
+
+      if (Array.isArray(tag)) {
+        return tag.filter((t): t is string => typeof t === 'string');
+      }
+
+      if (typeof tag === 'number' || typeof tag === 'boolean') {
+        return [String(tag)];
+      }
+
+      return [];
+    });
+  };
 
   // Handlers
   const handleDelete = async (id: string) => {
@@ -228,14 +229,13 @@ const AdminBlogDashboard = () => {
 
       const result: UpdateResponse = await response.json();
       
-      if (result.success) {
+      if (result.success || result.status === 'success') {
         setPosts(posts.filter(post => post._id !== id));
         toast.success('Blog post deleted successfully!');
       } else {
         throw new Error(result.message || 'Failed to delete post');
       }
     } catch (error) {
-      console.error('❌ Error deleting post:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to delete post');
     } finally {
       setIsDeleting(null);
@@ -291,65 +291,18 @@ const AdminBlogDashboard = () => {
   };
 
   const handleSavePost = async (postData: NewPostData) => {
-    if (editingPost) {
-      // Update existing post via API
-      const token = authService.getToken();
-      if (!token) {
-        toast.error('Please login to update posts');
-        router.push('/login');
-        return;
-      }
-
-      try {
-        const formData = new FormData();
-        formData.append("title", postData.title);
-        formData.append("excerpt", postData.excerpt);
-        formData.append("content", postData.content);
-        formData.append("category", postData.category);
-        formData.append("tags", JSON.stringify(postData.tags));
-        formData.append("publish", postData.published.toString());
-        formData.append("featured", postData.featured.toString());
-
-        if (postData.image && postData.image instanceof File) {
-          formData.append("coverImage", postData.image);
-        }
-
-        // Use the MongoDB _id, not the numeric id
-        const response = await fetch(`/api/update-blog?id=${editingPost._id}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-          body: formData,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to update post');
-        }
-
-        const result: UpdateResponse = await response.json();
-        
-        if (result.success && result.blog) {
-          setPosts(posts.map(post => 
-            post._id === editingPost._id ? result.blog! : post
-          ));
-          toast.success('Post updated successfully!');
-        } else {
-          throw new Error(result.message || 'Failed to update post');
-        }
-      } catch (error) {
-        console.error('❌ Error updating post:', error);
-        toast.error(error instanceof Error ? error.message : 'Failed to update post');
-      }
-    }
-    
+    // This will be handled by the BlogPostForm component
+    console.log('Post saved from dashboard:', postData);
     handleCloseForm();
   };
 
   const handleCloseForm = () => {
     setShowPostForm(false);
     setEditingPost(null);
+    // Refresh posts to get updated data
+    setTimeout(() => {
+      fetchPosts();
+    }, 500);
   };
 
   const handleRefresh = () => {
@@ -511,6 +464,7 @@ const AdminBlogDashboard = () => {
                                     width={48}
                                     height={48}
                                     className="w-full h-full object-cover"
+                                    unoptimized={true}
                                   />
                                 ) : (
                                   <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -653,6 +607,7 @@ const AdminBlogDashboard = () => {
                               width={64}
                               height={64}
                               className="w-full h-full object-cover"
+                              unoptimized={true}
                             />
                           ) : (
                             <div className="w-full h-full bg-gray-200 flex items-center justify-center">

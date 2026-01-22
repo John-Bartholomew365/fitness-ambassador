@@ -169,15 +169,6 @@ const BookPurchaseForm = () => {
       formData.append("additionalNotes", customerDetails.additionalNotes || "");
       formData.append("paymentReceipt", receiptFile);
 
-      console.log('📤 Submitting order:', {
-        fullName: customerDetails.fullName,
-        phoneNumber: customerDetails.phoneNumber,
-        email: customerDetails.email,
-        deliveryAddress: customerDetails.deliveryAddress,
-        fileSize: receiptFile.size,
-        fileName: receiptFile.name,
-        fileType: receiptFile.type
-      });
 
       const response = await fetch('/api/order-book', {
         method: 'POST',
@@ -208,7 +199,6 @@ const BookPurchaseForm = () => {
       }
 
       const result: OrderResponse = await response.json();
-      console.log('✅ Order submission response:', result);
 
       if (!response.ok) {
         toast.dismiss(loadingToast);

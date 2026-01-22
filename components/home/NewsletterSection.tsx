@@ -47,8 +47,6 @@ const NewsletterSection = () => {
         email: email.trim(),
       };
 
-      console.log('Subscribing with email:', subscriptionData);
-
       // Submit to API
       const response = await fetch('/api/newsletter', {
         method: 'POST',
@@ -59,7 +57,6 @@ const NewsletterSection = () => {
       });
 
       const result: NewsletterResponse = await response.json();
-      console.log('Newsletter response:', result);
 
       if (!response.ok) {
         // Dismiss loading toast and show error

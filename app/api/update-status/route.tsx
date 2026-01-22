@@ -30,7 +30,6 @@ export async function PUT(req: Request) {
 
     const base_url = process.env.BASE_URL;
     if (!base_url) {
-      console.error("❌ BASE_URL environment variable is not set");
       throw new Error("BASE_URL environment variable is not set");
     }
 
@@ -51,11 +50,6 @@ export async function PUT(req: Request) {
     }
 
     const backendUrl = `${base_url}/api/admin/update-payment-status/${id}`;
-    console.log("📤 Making request to backend:", {
-      url: backendUrl,
-      payload,
-      tokenPresent: !!token,
-    });
 
     const response = await axios.put(
       backendUrl,
@@ -67,11 +61,6 @@ export async function PUT(req: Request) {
         },
       }
     );
-
-    console.log("✅ Backend response:", {
-      status: response.status,
-      data: response.data
-    });
 
     return NextResponse.json(response.data);
   } catch (error) {

@@ -45,7 +45,6 @@ const AerobicsIceBathWaitingList = () => {
         email: email.trim(),
       };
 
-      console.log('Subscribing to Aerobics + Ice Bath waiting list:', subscriptionData);
 
       // Submit to API - using the same newsletter endpoint
       const response = await fetch('/api/newsletter', {
@@ -57,7 +56,6 @@ const AerobicsIceBathWaitingList = () => {
       });
 
       const result: NewsletterResponse = await response.json();
-      console.log('Aerobics + Ice Bath subscription response:', result);
 
       if (!response.ok) {
         // Dismiss loading toast and show error

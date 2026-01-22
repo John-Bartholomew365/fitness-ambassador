@@ -6,11 +6,6 @@ export async function PATCH(req: Request) {
     const body = await req.json();
     const { id, paymentStatus, adminMessage } = body;
 
-    console.log("🚀 Update payment request received:", {
-      id,
-      paymentStatus,
-      adminMessage,
-    });
 
     if (!id) {
       return NextResponse.json(

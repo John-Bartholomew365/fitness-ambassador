@@ -173,8 +173,6 @@ const CheckoutPage = () => {
           totalAmount,
         },
       };
-
-      console.log('Order submitted:', orderData);
       
       // Clear cart and show success
       clearCart();

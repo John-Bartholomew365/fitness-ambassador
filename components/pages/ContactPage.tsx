@@ -55,8 +55,6 @@ const Contact = () => {
         message: formData.message.trim(),
       };
 
-      console.log('Submitting contact data:', contactData);
-
       // Submit to API
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -67,7 +65,6 @@ const Contact = () => {
       });
 
       const result: ContactResponse = await response.json();
-      console.log('Contact response:', result);
 
       if (!response.ok) {
         // Dismiss loading toast and show error

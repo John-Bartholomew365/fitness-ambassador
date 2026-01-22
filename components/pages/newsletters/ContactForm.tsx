@@ -71,8 +71,6 @@ const ContactForm = () => {
         message: formData.goals.trim()
       };
 
-      console.log('Submitting partnership inquiry:', payload);
-
       // Submit to your partner API endpoint
       const response = await fetch('/api/partner', {
         method: 'POST',
@@ -83,7 +81,6 @@ const ContactForm = () => {
       });
 
       const result: PartnershipResponse = await response.json();
-      console.log('Partnership submission response:', result);
 
       if (!response.ok) {
         // Dismiss loading toast and show error

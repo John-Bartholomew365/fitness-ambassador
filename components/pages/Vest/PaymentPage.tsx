@@ -59,9 +59,7 @@ const PaymentPage = () => {
         // Get vest details and user data from sessionStorage
         const storedVestDetails = sessionStorage.getItem('selectedVestDetails');
         const storedUserData = sessionStorage.getItem('userData');
-        
-        console.log('Loading data:', { storedVestDetails, storedUserData });
-        
+                
         if (!storedVestDetails || !storedUserData) {
           toast.error('Registration data not found. Please complete your registration.');
           router.push('/register');
@@ -75,9 +73,7 @@ const PaymentPage = () => {
         // Set user data (from registration response)
         const parsedUserData = JSON.parse(storedUserData);
         setUserData(parsedUserData);
-        
-        console.log('Loaded user data:', parsedUserData);
-        
+                
       } catch (error) {
         console.error('Error loading registration data:', error);
         toast.error('Failed to load registration data');
@@ -134,8 +130,6 @@ const PaymentPage = () => {
       formData.append('userId', userData.userId);
       formData.append('paymentProof', receiptFile);
       
-      console.log('Submitting payment with userId:', userData.userId);
-
       // Submit to API
       const response = await fetch('/api/payment', {
         method: 'POST',
@@ -143,7 +137,6 @@ const PaymentPage = () => {
       });
 
       const result = await response.json();
-      console.log('Payment response:', result);
 
       if (!response.ok) {
         // Dismiss loading toast and show error
@@ -173,9 +166,7 @@ const PaymentPage = () => {
       sessionStorage.removeItem('selectedVestDetails');
       sessionStorage.removeItem('registrationResponse');
       sessionStorage.removeItem('userData');
-      
-      console.log('Cleared registration data, saved payment success data');
-      
+            
       // Add a small delay before redirect to show the success toast
       setTimeout(() => {
         router.push('/register/success');

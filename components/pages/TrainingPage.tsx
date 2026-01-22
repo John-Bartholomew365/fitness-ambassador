@@ -150,8 +150,6 @@ const Training = () => {
         fitnessGoal: formData.fitnessGoal.trim()
       };
 
-      console.log('Submitting booking data:', bookingData);
-
       // Submit to API
       const response = await fetch('/api/training-booking', {
         method: 'POST',
@@ -162,8 +160,6 @@ const Training = () => {
       });
 
       const result: BookingResponse = await response.json();
-      console.log('Booking response:', result);
-
       if (!response.ok) {
         // Dismiss loading toast and show error
         toast.dismiss(loadingToast);
