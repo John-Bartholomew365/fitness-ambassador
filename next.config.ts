@@ -15,11 +15,10 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-    unoptimized: true, // Consider adding this if you have issues with external images
+    unoptimized: true,
   },
-  experimental: {
-    serverComponentsExternalPackages: ['mongoose'],
-  },
+  serverExternalPackages: ['mongoose'],
+  // DO NOT ADD htmlLimitedBots - this breaks Next.js 16
 };
 
 export default nextConfig;

@@ -268,7 +268,7 @@ const ExperienceOverviewSection = () => {
         </div>
 
         {/* Call to Action */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -278,7 +278,7 @@ const ExperienceOverviewSection = () => {
             background: 'linear-gradient(135deg, #008020 0%, #008020dd 100%)'
           }}
         >
-          {/* Simple pattern overlay */}
+          Simple pattern overlay
           <div className="absolute inset-0 opacity-5">
             <div className="absolute inset-0" style={{
               backgroundImage: `radial-gradient(circle at 25px 25px, white 2px, transparent 0)`,
@@ -305,7 +305,7 @@ const ExperienceOverviewSection = () => {
                 Make Enquiry
               </motion.a>
 
-              {/* <motion.a
+              <motion.a
                 href="/book-demo"
                 whileHover={{
                   scale: 1.05,
@@ -318,11 +318,11 @@ const ExperienceOverviewSection = () => {
                 style={{ fontWeight: "600" }}
               >
                 Book a Demo
-              </motion.a> */}
+              </motion.a>
             </div>
 
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Quote Section */}
         <motion.div

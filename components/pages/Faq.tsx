@@ -8,15 +8,15 @@ const faqs = [
     questions: [
       {
         question: "What is Walk2Fitness?",
-        answer: "Walk2Fitness is our flagship fitness event series that combines outdoor walking with structured exercises. It's designed for all fitness levels and promotes community wellness through fun, accessible workouts. We've successfully hosted multiple editions including Walk2Fitness 1.0, 2.0, 3.0, and 4.0."
+        answer: "Walk2Fitness is our flagship fitness event series that combines outdoor walking with structured exercises. It's designed for all fitness levels and promotes community wellness through fun, accessible workouts. We've successfully hosted multiple editions including Walk2Fitness 1.0, 2.0, 3.0, 4.0, and 5.0."
       },
       {
         question: "What makes Walk2Fitness different from regular workouts?",
         answer: "Walk2Fitness uniquely blends cardio, strength training, and community bonding in outdoor settings. Each edition introduces new workout formats, guest trainers, and wellness activities to keep participants engaged and motivated."
       },
       {
-        question: "How can I register for upcoming Walk2Fitness events?",
-        answer: "Registration is available through our Events page. Select the Walk2Fitness edition you're interested in and complete the registration form. We offer early bird discounts and group packages for multiple participants."
+        question: "I missed the last Walk2Fitness event. How can I join future ones?",
+        answer: "Don't worry! We have more Walk2Fitness events coming soon. Sign up for our email alerts to get notified when registration opens. You'll also receive early bird discounts and exclusive offers for our next edition."
       },
       {
         question: "What should I bring to a Walk2Fitness event?",
@@ -243,7 +243,7 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
 // FAQ component remains the same structure
 const FAQ = () => {
   return (
-    <div className="min-h-screen bg-background">      
+    <div className="min-h-screen bg-background">
       {/* Hero Section - unchanged */}
       <section className="pt-32 pb-16 px-4 bg-linear-to-br from-primary/5 to-secondary/5">
         <div className="max-w-4xl mx-auto text-center">

@@ -9,21 +9,30 @@ const FlagshipExperiencesSection = () => {
   const resumeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastInteractionTimeRef = useRef<number>(0);
 
+  // Function to scroll to Newsletter section
+  const scrollToNewsletter = () => {
+    const newsletterSection = document.getElementById('newsletter');
+    if (newsletterSection) {
+      newsletterSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const experiences = [
     {
       id: 'walk2fitness',
       title: 'Walk2Fitness',
-      version: '1.0 - 4.0',
+      version: '1.0 - 5.0',
       description: 'A progressive walking fitness series experienced by thousands, transforming outdoor walking into structured, results-driven workouts. Each edition builds on the last, creating a clear journey from beginner to advanced.',
       features: ['Structured Progression System', 'Outdoor Community Workouts', 'Measurable Fitness Milestones', 'Scalable Intensity Levels'],
       color: '#008020',
-      nextEvent: 'To be announced soon',
+      nextEvent: 'To be announced',
       programPath: ['Foundations', 'Endurance', 'Strength', 'Mastery'],
-      joinLink: 'https://www.tixtango.com/spotlight/walk2fitness-50',
-      isExternal: true, // Added this flag for external links
-      joinText: 'Register Now',
+      joinLink: '#newsletter', // Link to newsletter section
+      isExternal: false, // Changed to false for internal navigation
+      joinText: 'Join Waitlist', // Changed CTA text
       detailsLink: '/events/walk2fitness',
-      detailsText: 'View Edition Details'
+      detailsText: 'View Edition Details',
+      scrollToNewsletter: true // Flag to indicate we should scroll
     },
     {
       id: 'jam2fit',
@@ -37,7 +46,8 @@ const FlagshipExperiencesSection = () => {
       isExternal: false,
       joinText: 'Learn More',
       detailsLink: '/gallery',
-      detailsText: 'See Event Gallery'
+      detailsText: 'See Event Gallery',
+      scrollToNewsletter: false
     },
     {
       id: 'workoutcompass',
@@ -52,7 +62,8 @@ const FlagshipExperiencesSection = () => {
       isExternal: false,
       joinText: 'Get Your Copy',
       detailsLink: '/innovator',
-      detailsText: 'Meet the Author'
+      detailsText: 'Meet the Author',
+      scrollToNewsletter: false
     }
   ];
 
@@ -81,6 +92,18 @@ const FlagshipExperiencesSection = () => {
         setIsAutoPlaying(true);
       }
     }, 10000); // 10 seconds
+  };
+
+  // Handle CTA click with scroll functionality
+  const handleCTAClick = (exp: typeof experiences[0], e: React.MouseEvent) => {
+    if (exp.scrollToNewsletter) {
+      e.preventDefault();
+      scrollToNewsletter();
+      
+      // Optional: Show a toast notification
+      // You can add a toast here if you have a toast system
+      console.log('Scrolling to newsletter subscription');
+    }
   };
 
   // Auto-rotation logic
@@ -185,9 +208,6 @@ const FlagshipExperiencesSection = () => {
           {/* Auto-Play Status Indicator */}
           <div className="flex justify-center items-center gap-2 mt-6">
             <div className={`w-2 h-2 rounded-full ${isAutoPlaying ? 'bg-[#008020] animate-pulse' : 'bg-gray-400'}`} />
-            {/* <span className="text-sm text-gray-600">
-              {isAutoPlaying ? 'Auto-rotating' : 'Paused - tap to resume'}
-            </span> */}
           </div>
         </div>
 
@@ -383,11 +403,12 @@ const FlagshipExperiencesSection = () => {
                 {/* Call to Action */}
                 <div className="pt-8 border-t border-gray-200">
                   <div className="flex flex-col sm:flex-row gap-4">
-                    {/* Primary CTA Button - External link opens in new tab for Walk2Fitness */}
+                    {/* Primary CTA Button with scroll functionality */}
                     <a
                       href={activeExp.joinLink}
                       target={activeExp.isExternal ? "_blank" : "_self"}
                       rel={activeExp.isExternal ? "noopener noreferrer" : ""}
+                      onClick={(e) => handleCTAClick(activeExp, e)}
                       className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:shadow-xl flex-1 text-center"
                       style={{
                         backgroundColor: activeExp.color,

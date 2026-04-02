@@ -14,7 +14,8 @@ interface NewsletterResponse {
   };
 }
 
-const NewsletterSection = () => {
+// Add id prop to the component
+const NewsletterSection = ({ id }: { id?: string }) => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -94,7 +95,8 @@ const NewsletterSection = () => {
   };
 
   return (
-    <section className="section-padding bg-muted relative overflow-hidden">
+    // Add the id prop here
+    <section id={id} className="section-padding bg-muted relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div 

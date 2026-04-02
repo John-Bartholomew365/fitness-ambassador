@@ -333,7 +333,7 @@ const InnovatorPage = () => {
                                         Explore Events
                                     </motion.button>
                                 </Link>
-                                <Link href="/workout-compass">
+                                <Link href="/innovator/workout-compass">
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}

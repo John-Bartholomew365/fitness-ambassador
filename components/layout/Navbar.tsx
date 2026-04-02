@@ -86,7 +86,6 @@ export default function Navbar({ isLoading }: NavbarProps) {
         { label: 'About Innovator', route: '/innovator/about' },
         { label: 'Certification', route: '/innovator/certification' },
         { label: 'Workout Compass', route: '/innovator/workout-compass' },
-        { label: 'Training', route: '/innovator/training' },
         { label: 'Gym Wears', route: '/innovator/gym-wears' },
       ]
     }
@@ -98,10 +97,10 @@ export default function Navbar({ isLoading }: NavbarProps) {
     router.push(route);
   };
 
-  const handleSecureVest = () => {
+  const handleViewTrainingPlans = () => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
-    router.push('/register');
+    router.push('/training');
   };
 
   const toggleDropdown = (label: string) => {
@@ -186,14 +185,14 @@ export default function Navbar({ isLoading }: NavbarProps) {
             </div>
           </div>
 
-          {/* Secure your vest Button - Right side */}
+          {/* View Training Plans Button - Right side */}
           <div className="hidden lg:flex items-center">
             <Button
-              onClick={handleSecureVest}
+              onClick={handleViewTrainingPlans}
               className="px-5 py-2.5 bg-primary text-primary-foreground rounded-2xl font-semibold hover:bg-primary/90 transition-colors duration-200 cursor-pointer hover:scale-105 active:scale-95 whitespace-nowrap text-base"
               disabled={isLoading}
             >
-              Secure your vest
+              View training plans
             </Button>
           </div>
 
@@ -273,11 +272,11 @@ export default function Navbar({ isLoading }: NavbarProps) {
               {/* Bottom section with Book Session Button */}
               <div className="mt-auto pt-6 border-t border-border">
                 <Button
-                  onClick={handleSecureVest}
+                  onClick={handleViewTrainingPlans}
                   className="w-full py-3.5 text-base bg-primary text-primary-foreground rounded-[10px] font-semibold hover:bg-primary/90 transition-colors cursor-pointer mb-4"
                   disabled={isLoading}
                 >
-                  Secure your vest
+                  View training plans
                 </Button>
                 
                 {/* Footer - now properly positioned at the bottom */}

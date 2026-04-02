@@ -57,19 +57,19 @@ const GuidedUserPathSection = () => {
           title: 'Workout Compass',
           description: 'Practical guide with structured workout plans',
           status: 'essential',
-          link: '/resources/workout-compass'
+          link: '/innovator/workout-compass'
         },
         {
           title: 'Fitness Training',
           description: 'One-on-one consultation for personalized guidance',
           status: 'personal',
-          link: '/services/training'
+          link: '/training'
         },
         {
           title: 'Walk2Fitness Progression',
           description: 'Structured walking program with clear milestones',
           status: 'structured',
-          link: '/events/walk2fitness#progression'
+          link: '/events/walk2fitness'
         }
       ]
     },
@@ -83,13 +83,13 @@ const GuidedUserPathSection = () => {
           title: 'Aerobics + Icebath',
           description: 'Workout combined with recovery experience',
           status: 'unique',
-          link: '/services/aerobics-icebath'
+          link: '/events/aerobics-icebath'
         },
         {
           title: 'Future Wellness Programs',
           description: 'Upcoming holistic wellness offerings',
           status: 'coming',
-          link: '/services/wellness'
+          link: '#'
         }
       ]
     },
@@ -103,7 +103,7 @@ const GuidedUserPathSection = () => {
           title: 'Certification Program',
           description: 'Become a certified fitness professional',
           status: 'coming',
-          link: '/certification'
+          link: '#'
         },
         {
           title: 'FA Gym Wears',
@@ -115,7 +115,7 @@ const GuidedUserPathSection = () => {
           title: 'Advanced Training',
           description: 'Specialized fitness consultation',
           status: 'available',
-          link: '/services/advanced-training'
+          link: '/training'
         }
       ]
     }

@@ -52,7 +52,7 @@ const AllServicesOverviewSection = () => {
           description: 'Become a certified fitness professional',
           highlights: ['Industry Standard', 'Practical Training', 'Career Path'],
           status: 'upcoming',
-          path: '/services/certification',
+          path: '/training',
           type: 'Launching Q3 2024'
         },
         {
@@ -60,7 +60,7 @@ const AllServicesOverviewSection = () => {
           description: 'Personal consultation and one-on-one guidance',
           highlights: ['Personalized Plans', 'Expert Mentorship', 'Goal Setting'],
           status: 'active',
-          path: '/services/training'
+          path: '/training'
         }
       ]
     },
@@ -73,14 +73,14 @@ const AllServicesOverviewSection = () => {
           description: 'Premium fitness apparel line designed for performance',
           highlights: ['Performance Fabric', 'Functional Design', 'Brand Identity'],
           status: 'active',
-          path: '/store/gym-wears'
+          path: '/innovator/gym-wears'
         },
         {
           title: 'Wellness Collaborations',
           description: 'Partnerships with health and wellness brands',
           highlights: ['Brand Partnerships', 'Holistic Health', 'Cross-Promotion'],
           status: 'active',
-          path: '/collaborations',
+          path: '/events/sponsors',
           type: 'Ongoing Initiatives'
         }
       ]

@@ -13,9 +13,10 @@ const slides = [
     icon: Users,
     ctas: [
       { label: 'Explore Past Event', href: '/events/walk2fitness', variant: 'primary' },
-      { label: 'Register Now', href: 'https://www.tixtango.com/spotlight/walk2fitness-50', variant: 'secondary' }
+      { label: 'View Gallery', href: '/gallery', variant: 'secondary' }
     ],
     accentColor: 'primary',
+    scrollToNewsletter: false // Walk2Fitness doesn't scroll to newsletter
   },
   {
     id: 2,
@@ -26,9 +27,10 @@ const slides = [
     icon: Music,
     ctas: [
       { label: 'Explore Past Event', href: '/events/jam2fit', variant: 'primary' },
-      { label: 'View Gallery', href: '/gallery', variant: 'secondary' }
+      { label: 'Join Waitlist', href: '#newsletter', variant: 'secondary' } // Changed to Join Waitlist
     ],
     accentColor: 'secondary',
+    scrollToNewsletter: true // Add flag for Jam2Fit
   },
   {
     id: 3,
@@ -42,12 +44,33 @@ const slides = [
       { label: 'Meet the Author', href: '/innovator', variant: 'secondary' }
     ],
     accentColor: 'accent',
+    scrollToNewsletter: false // Workout Compass doesn't scroll to newsletter
   },
 ];
 
 const HeroCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
+
+  // Function to scroll to Newsletter section
+  const scrollToNewsletter = () => {
+    const newsletterSection = document.getElementById('newsletter');
+    if (newsletterSection) {
+      newsletterSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Handle CTA click with scroll functionality
+  const handleCTAClick = (slide: typeof slides[0], ctaIndex: number, e: React.MouseEvent) => {
+    const cta = slide.ctas[ctaIndex];
+    
+    // Check if this is the Join Waitlist button that should scroll
+    if (slide.scrollToNewsletter && cta.label === 'Join Waitlist') {
+      e.preventDefault();
+      scrollToNewsletter();
+      console.log('Scrolling to newsletter subscription for Jam2Fit waitlist');
+    }
+  };
 
   const nextSlide = useCallback(() => {
     setDirection(1);
@@ -210,6 +233,7 @@ const HeroCarousel = () => {
                 <a
                   href={slide.ctas[0].href}
                   className={`group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] w-[90%] sm:w-auto ${getBgColor(slide.accentColor)}`}
+                  onClick={(e) => handleCTAClick(slide, 0, e)}
                 >
                   {slide.ctas[0].label}
                   <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
@@ -219,6 +243,7 @@ const HeroCarousel = () => {
                 <a
                   href={slide.ctas[1].href}
                   className={`group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-transparent text-white border-2 ${getBorderColor(slide.accentColor)} hover:bg-white/10 w-[90%] sm:w-auto`}
+                  onClick={(e) => handleCTAClick(slide, 1, e)}
                 >
                   {slide.ctas[1].label}
                   <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
