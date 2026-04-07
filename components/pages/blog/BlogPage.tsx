@@ -412,7 +412,7 @@ const BlogPage = () => {
               through our training programs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/innovator/training">
+              <a href="/training">
                 <button className="px-8 py-3 bg-[#008020] text-white font-semibold rounded-xl hover:bg-[#008020]/90 transition-colors lg:w-auto w-full">
                   Explore Training
                 </button>

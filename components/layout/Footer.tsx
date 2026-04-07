@@ -14,7 +14,7 @@ const Footer = () => {
     { name: 'Walk2Fitness', path: '/events/walk2fitness' },
     { name: 'Jam2Fit', path: '/events/jam2fit' },
     { name: 'Workout Compass', path: '/innovator/workout-compass' },
-    { name: 'Training', path: '/innovator/training' },
+    { name: 'Training', path: '/training' },
     { name: 'Gym Wears', path: '/innovator/gym-wears' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'FAQ', path: '/faq' },

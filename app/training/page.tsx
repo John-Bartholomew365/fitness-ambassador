@@ -23,7 +23,7 @@ const Training = () => {
           <meta property="og:title" content="Fitness Training & Consultation | The Fitness Ambassador" />
           <meta property="og:description" content="Book personalized fitness training and consultation sessions with The Fitness Ambassador. Achieve your fitness goals with expert guidance." />
           <meta property="og:type" content="service" />
-          <meta property="og:url" content="https://www.thefitnessambassador.com/innovator/training" />
+          <meta property="og:url" content="https://www.thefitnessambassador.com/training" />
           <meta property="og:image" content="https://www.thefitnessambassador.com/favicon.ico" />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content="Fitness Training & Consultation | The Fitness Ambassador" />

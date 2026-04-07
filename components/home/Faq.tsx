@@ -86,7 +86,7 @@ const FAQSection = () => {
                                 {/* Question Header */}
                                 <button
                                     onClick={() => toggleQuestion(faq.id)}
-                                    className="w-full text-left p-6 md:p-8 flex items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors duration-200"
+                                    className="w-full text-left p-4 lg:p-8 flex items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors duration-200"
                                 >
                                     <div className="flex items-start gap-4 cursor-pointer md:gap-6 flex-1">
                                         {/* Question Number */}

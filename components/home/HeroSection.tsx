@@ -1,309 +1,145 @@
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ChevronLeft, ChevronRight, Users, BookOpen, Music } from 'lucide-react';
+'use client';
 
-const slides = [
-  {
-    id: 1,
-    title: 'WALK2FITNESS',
-    subtitle: 'Community Fitness Movement',
-    description: 'Join thousands who have discovered the joy of fitness through our signature walking events. Fresh air, great company, and a healthier you.',
-    image: '/walk.jpg',
-    icon: Users,
-    ctas: [
-      { label: 'Explore Past Event', href: '/events/walk2fitness', variant: 'primary' },
-      { label: 'View Gallery', href: '/gallery', variant: 'secondary' }
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+
+const HeroSection = () => {
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const services = useMemo(
+    () => [
+      'Professional Training',
+      'Personalized Consultations',
+      'Custom Programs',
+      'Community Events',
+      'Fitness Education',
+      'Wellness Guidance'
     ],
-    accentColor: 'primary',
-    scrollToNewsletter: false // Walk2Fitness doesn't scroll to newsletter
-  },
-  {
-    id: 2,
-    title: 'JAM2FIT',
-    subtitle: "Ilorin's First Nighttime Fitness Party",
-    description: 'Where fitness meets the night! Dance, sweat, and celebrate health under the stars with live DJs and an electric atmosphere.',
-    image: '/jamfit.jpg',
-    icon: Music,
-    ctas: [
-      { label: 'Explore Past Event', href: '/events/jam2fit', variant: 'primary' },
-      { label: 'Join Waitlist', href: '#newsletter', variant: 'secondary' } // Changed to Join Waitlist
-    ],
-    accentColor: 'secondary',
-    scrollToNewsletter: true // Add flag for Jam2Fit
-  },
-  {
-    id: 3,
-    title: 'WORKOUT COMPASS',
-    subtitle: 'Your Ultimate Fitness Guide',
-    description: 'Stop guessing, start progressing. The practical guide that transforms beginners into confident gym-goers with clear, actionable routines.',
-    image: '/book2.jpeg',
-    icon: BookOpen,
-    ctas: [
-      { label: 'Get the Book', href: '/innovator/workout-compass', variant: 'primary' },
-      { label: 'Meet the Author', href: '/innovator', variant: 'secondary' }
-    ],
-    accentColor: 'accent',
-    scrollToNewsletter: false // Workout Compass doesn't scroll to newsletter
-  },
-];
+    []
+  );
 
-const HeroCarousel = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [direction, setDirection] = useState(0);
-
-  // Function to scroll to Newsletter section
-  const scrollToNewsletter = () => {
-    const newsletterSection = document.getElementById('newsletter');
-    if (newsletterSection) {
-      newsletterSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  // Handle CTA click with scroll functionality
-  const handleCTAClick = (slide: typeof slides[0], ctaIndex: number, e: React.MouseEvent) => {
-    const cta = slide.ctas[ctaIndex];
-    
-    // Check if this is the Join Waitlist button that should scroll
-    if (slide.scrollToNewsletter && cta.label === 'Join Waitlist') {
-      e.preventDefault();
-      scrollToNewsletter();
-      console.log('Scrolling to newsletter subscription for Jam2Fit waitlist');
-    }
-  };
-
-  const nextSlide = useCallback(() => {
-    setDirection(1);
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  }, []);
-
-  const prevSlide = useCallback(() => {
-    setDirection(-1);
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
-
-  const goToSlide = (index: number) => {
-    setDirection(index > currentSlide ? 1 : -1);
-    setCurrentSlide(index);
-  };
-
-  // Auto-play
+  // Typing effect
   useEffect(() => {
-    const timer = setInterval(nextSlide, 6000);
-    return () => clearInterval(timer);
-  }, [nextSlide]);
+    const currentService = services[currentWordIndex];
+    const typeSpeed = isDeleting ? 40 : 80;
+    const pauseTime = isDeleting ? 40 : 1800;
 
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? '100%' : '-100%',
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? '-100%' : '100%',
-      opacity: 0,
-    }),
-  };
-
-  const slide = slides[currentSlide];
-  const IconComponent = slide.icon;
-
-  // Get border color based on accent color
-  const getBorderColor = (accentColor: string) => {
-    switch (accentColor) {
-      case 'primary':
-        return 'border-primary/50 hover:border-primary';
-      case 'secondary':
-        return 'border-secondary/50 hover:border-secondary';
-      case 'accent':
-        return 'border-accent/50 hover:border-accent';
-      default:
-        return 'border-primary/50 hover:border-primary';
+    if (!isDeleting && displayText === currentService) {
+      timeoutRef.current = setTimeout(() => setIsDeleting(true), pauseTime);
+      return () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      };
     }
-  };
 
-  // Get background color based on accent color
-  const getBgColor = (accentColor: string) => {
-    switch (accentColor) {
-      case 'primary':
-        return 'bg-primary text-primary-foreground hover:shadow-glow-primary';
-      case 'secondary':
-        return 'bg-secondary text-secondary-foreground hover:shadow-glow-secondary';
-      case 'accent':
-        return 'bg-accent text-accent-foreground hover:shadow-glow-accent';
-      default:
-        return 'bg-primary text-primary-foreground hover:shadow-glow-primary';
+    if (isDeleting && displayText === '') {
+      timeoutRef.current = setTimeout(() => {
+        setIsDeleting(false);
+        setCurrentWordIndex((prev) => (prev + 1) % services.length);
+      }, 100);
+      return () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      };
     }
-  };
+
+    timeoutRef.current = setTimeout(() => {
+      setDisplayText(
+        isDeleting
+          ? currentService.substring(0, displayText.length - 1)
+          : currentService.substring(0, displayText.length + 1)
+      );
+    }, typeSpeed);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [displayText, isDeleting, currentWordIndex, services]);
 
   return (
-    <section id="home" className="relative h-screen min-h-[700px] max-h-[900px] overflow-hidden">
-      {/* Background Images */}
-      <AnimatePresence initial={false} custom={direction}>
-        <motion.div
-          key={currentSlide}
-          custom={direction}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 0.7, ease: 'easeInOut' }}
-          className="absolute inset-0"
+    <section className="relative h-screen min-h-[700px] max-h-[900px] overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+          poster="/fa-trainer.jpeg"
         >
-          <div className="relative w-full h-full">
-            <Image
-              src={slide.image}
-              alt={slide.title}
-              fill
-              className="object-cover"
-              priority={currentSlide === 0}
-              sizes="100vw"
-              quality={90}
-            />
-          </div>
-          {/* Dark Gradient Overlay for text readability */}
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="absolute inset-0 bg-linear-to-r from-black/50 via-transparent to-transparent" />
-        </motion.div>
-      </AnimatePresence>
+          <source src="/hero-training.mp4" type="video/mp4" />
+        </video>
+        {/* Dark Overlay for text readability */}
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/40 via-transparent to-transparent" />
+      </div>
 
-      {/* Content */}
-      <div className="relative z-10 h-full container-max flex items-center">
-        <div className="max-w-2xl w-full lg:pt-20 pt-6">
-          <AnimatePresence mode="wait">
-            <motion.div key={currentSlide}>
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="mb-6 flex justify-center lg:justify-start"
-              >
-                <span
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${slide.accentColor === 'primary'
-                      ? 'bg-primary text-primary-foreground'
-                      : slide.accentColor === 'accent'
-                        ? 'bg-accent text-accent-foreground'
-                        : 'bg-secondary text-secondary-foreground'
-                    }`}
-                >
-                  <IconComponent size={16} />
-                  {slide.subtitle}
-                </span>
-              </motion.div>
+      {/* Content - Centered */}
+      <div className="relative z-10 h-full flex items-center justify-center text-center">
+        <div className="container-max px-4 md:px-8 lg:px-12">
+          <div className="max-w-4xl mx-auto">
+            {/* Main Title */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white mb-6 leading-tight"
+            >
+              Transform Your
+              <span className="block text-gradient">Fitness Journey</span>
+            </motion.h1>
 
-              {/* Title */}
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white mb-6 lg:text-start text-center leading-tight"
-              >
-                {slide.title.split('').map((char, i) => (
-                  <span
-                    key={i}
-                    className={char === '2' ? 'text-gradient' : ''}
-                  >
-                    {char}
-                  </span>
-                ))}
-              </motion.h1>
-
-              {/* Description */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="text-lg md:text-xl text-white/90 mb-8 max-w-lg lg:text-start text-center lg:px-0 px-3"
-              >
-                {slide.description}
-              </motion.p>
-
-              {/* CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center w-full"
-              >
-                {/* Primary CTA - Full width on mobile, auto on larger screens */}
-                <a
-                  href={slide.ctas[0].href}
-                  className={`group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] w-[90%] sm:w-auto ${getBgColor(slide.accentColor)}`}
-                  onClick={(e) => handleCTAClick(slide, 0, e)}
-                >
-                  {slide.ctas[0].label}
-                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-                </a>
-
-                {/* Secondary CTA - Full width on mobile, auto on larger screens with matching border */}
-                <a
-                  href={slide.ctas[1].href}
-                  className={`group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-transparent text-white border-2 ${getBorderColor(slide.accentColor)} hover:bg-white/10 w-[90%] sm:w-auto`}
-                  onClick={(e) => handleCTAClick(slide, 1, e)}
-                >
-                  {slide.ctas[1].label}
-                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-                </a>
-              </motion.div>
+            {/* Typing Text */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="mb-6"
+            >
+              <div className="text-white/80 text-lg mb-2">I specialize in</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold min-h-[60px]">
+                <span className="text-[#ffde00]">{displayText}</span>
+                <span className="ml-1 animate-pulse text-white">|</span>
+              </div>
             </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
 
-      {/* Navigation Controls */}
-      <div className="absolute bottom-8 left-0 right-0 z-20 px-4 sm:px-6">
-        <div className="container-max flex items-center justify-between">
-          {/* Dots */}
-          <div className="flex items-center gap-3">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`h-3 rounded-full transition-all duration-300 ${currentSlide === index
-                    ? 'w-8 bg-primary'
-                    : 'w-3 bg-white/30 hover:bg-white/50'
-                  }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
+            {/* Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="text-white/90 text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed"
+            >
+              7+ years of experience helping individuals transform their bodies, build lasting habits, 
+              and achieve sustainable fitness results through personalized guidance and proven systems.
+            </motion.p>
 
-          {/* Arrow Controls */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={prevSlide}
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-all hover:bg-white/20"
-              aria-label="Previous slide"
+            {/* CTA Buttons - Centered */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-all hover:bg-white/20"
-              aria-label="Next slide"
-            >
-              <ChevronRight size={20} className="sm:w-6 sm:h-6" />
-            </button>
+              <Link href="/training">
+                <button className="w-full sm:w-auto px-8 py-4 bg-[#ff8a00] text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-[#ff8a00]/25 transition-all duration-300 hover:scale-105 cursor-pointer">
+                  Start Your Transformation
+                </button>
+              </Link>
+              <Link href="#services">
+                <button className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105 cursor-pointer">
+                  Explore Services
+                </button>
+              </Link>
+            </motion.div>
           </div>
         </div>
-      </div>
-
-      {/* Slide Counter - Responsive and always visible */}
-      <div className="absolute top-17 right-4 sm:top-8 sm:right-8 lg:top-1/2 lg:right-8 lg:-translate-y-1/2 z-20 flex flex-col items-center gap-1 sm:gap-2">
-        <span className="font-display text-2xl sm:text-3xl lg:text-3xl text-white drop-shadow-lg">
-          {String(currentSlide + 1).padStart(2, '0')}
-        </span>
-        <div className="w-px h-6 sm:h-8 lg:h-12 bg-white/50" />
-        <span className="text-xs sm:text-sm text-white/80 drop-shadow-lg">
-          {String(slides.length).padStart(2, '0')}
-        </span>
       </div>
     </section>
   );
 };
 
-export default HeroCarousel;
+export default HeroSection;
